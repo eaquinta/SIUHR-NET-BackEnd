@@ -1,0 +1,82 @@
+﻿@model Apphr.Domain.Entities.Servicio
+
+@{
+    ViewBag.Title = "Editar";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area = "" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index")" style="text-decoration:none">
+                    <span>Índice</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("View", new { id = Model.ServicioId})" style="text-decoration:none">
+                    <span>Ver</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <span>Editar</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Form Title -->
+    <h4>
+        Servicio
+        <a class="btn btn-success float-end" href="@Url.Action("Create", new { id = Model.ServicioId })">
+            Adicionar <i class="fa fa-pen-square"></i>
+        </a>
+    </h4>
+    <hr />
+    <!-- Form Title -->
+    <!-- Formulario -->
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.ServicioId)
+            @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control" } })
+
+
+            <div class="form-group mb-3">
+                @Html.LabelFor(model => model.Area, htmlAttributes: new { @class = "control-label" })
+                <div class="">
+                    @Html.EnumDropDownListFor(model => model.Area, htmlAttributes: new { @class = "form-select" })
+                    @Html.ValidationMessageFor(model => model.Area, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+        </div>
+
+        <!-- Botones formulario -->
+        <div class="col-md-12">
+            <button type="submit" class="btn btn-warning"><i class="fas fa-edit"></i> Actualizar</button>
+            <a class="btn btn-outline-dark" href="@Url.Action("View",new { id = Model.ServicioId })">Regresar</a>
+            <div class="float-end">
+                <a class="btn btn-outline-danger" href="@Url.Action("Delete", new { id = Model.ServicioId})"><i class="fas fa-trash"></i>&nbsp;Eliminar</a>
+            </div>
+        </div>
+        <!-- Botones formulario -->
+    }
+    <!-- Formulario -->
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

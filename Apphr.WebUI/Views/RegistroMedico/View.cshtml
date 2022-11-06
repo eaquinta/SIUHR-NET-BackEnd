@@ -1,0 +1,84 @@
+﻿@model Apphr.Application.RegistrosMedicos.DTOs.RegistroMedicoDTOView
+@{
+    ViewBag.Title = "Ver";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area = "" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index")" style="text-decoration:none">
+                    <span>Indice Registros Médicos</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <span>Ver</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Form Title -->
+    <h4>
+        Registro Médico
+        <a class="btn btn-warning float-end" href="@Url.Action("Edit", new { id = Model.RegistroMedicoId })">
+            <i class="fa fa-pen-square"></i>&nbsp;Editar
+        </a>
+    </h4>
+    <hr />
+    <!-- Form Title -->
+    <!-- Data -->
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card border-secondary">
+                <div class="card-header bg-secondary text-light">
+                    Foto <i class="fa fa-image"></i>
+                </div>
+                <div class="card-body">
+                    <figure class="text-center">
+                        <img src="" class="form-control mw-100" data-aos="@(ViewData["aos"] != null ? ViewData["aos"] : "flip-left")" data-aos-easing="ease-out-back" data-aos-delay="300" />
+                        <figcaption class="text-muted small" title="2022-05-01">
+                            @Model.Person?.ImageDate?.ToLongDateString()
+                        </figcaption>
+                    </figure>
+                    <input type="file" accept="image/*" class="my-pond" name="ImageFile" id="ImageFile" />
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                @Html.DisplayFor(model => model.RegistroMedicoId, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+            <div class="row">
+                @Html.DisplayFor(model => model.Person.Name, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+            <div class="row">
+                <div class="col-md-4">@Html.DisplayFor(model => model.Person.FirstName, new { htmlAttributes = new { @class = "form-control" } })</div>
+                <div class="col-md-4">@Html.DisplayFor(model => model.Person.MiddleName, new { htmlAttributes = new { @class = "form-control" } })</div>
+                <div class="col-md-4">@Html.DisplayFor(model => model.Person.ThirdName, new { htmlAttributes = new { @class = "form-control" } })</div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">@Html.DisplayFor(model => model.Person.LastName, new { htmlAttributes = new { @class = "form-control" } })</div>
+                <div class="col-md-4">@Html.DisplayFor(model => model.Person.MatriName, new { htmlAttributes = new { @class = "form-control" } })</div>
+                <div class="col-md-4">@Html.DisplayFor(model => model.Person.MarriedName, new { htmlAttributes = new { @class = "form-control" } })</div>
+            </div>
+        </div>
+    </div>
+    <!-- Data -->
+    <!-- Botones Formulario -->
+    <div class="col-12 mt-1">
+        <div class="col-md-offset-2 col-md-10">
+            @*<input type="submit" value="Agregar" class="btn btn-sm btn-dark" />*@
+            @Html.ActionLink("Regresar", "Index", null, new { @class = "btn btn-outline-dark" })
+        </div>
+    </div>
+    <!-- Botones Formulario -->
+</div>

@@ -1,0 +1,74 @@
+﻿@model Apphr.Application.Servicios.DTOs.ServicioDTODetails
+
+@{
+    ViewBag.Title = "Ver";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home")" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index")" style="text-decoration:none">
+                    <span>Índice</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <span>Ver</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Form Title -->
+    <h4 class="mb-0">
+        Servicio
+        <a class="btn btn-warning float-end" href="@Url.Action("Edit", new { id = Model.ServicioId })">
+            <i class="fa fa-pen-square"></i>&nbsp;Editar
+        </a>
+    </h4>
+    <hr />
+    <!-- Form Title -->
+    <!-- Formulario  -->
+    <div>
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </dt>
+
+            <dd>
+                @Model.Nombre
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Area)
+            </dt>
+
+            <dd>
+                @Model.Area
+            </dd>
+
+        </dl>
+    </div>
+    <!-- Formulario  -->
+    
+    <!-- Botones Formulario -->
+    <div class="col-12 mt-1">
+        <div class="col-md-offset-2 col-md-10">
+            @Html.ActionLink("Regresar", "Index", null, new { @class = "btn btn-outline-dark" })
+        </div>
+    </div>
+    <!-- Botones Formulario -->
+</div>
+
+@section Scripts
+{
+    @Html.Partial("_ToastrPartial", ViewData["Toast"])
+}
+

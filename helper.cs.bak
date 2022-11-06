@@ -1,0 +1,95 @@
+Add-Migration Inventario-08
+Update-Database -script
+
+Get-Migrations
+Update-Database -TargetMigration:"name_of_migration"
+
+Update-Database -TargetMigration:"Materiales"
+=====================================================
+- RAW SQL
+=====================================================
+DTO regs;
+var parameters = new List<SqlParameter>();
+parameters.Add(new SqlParameter("@xx", value));
+string query = @"SELECT ..";
+var regs = await db.Database.SqlQuery<DTO>(query, parameters.ToArray()).ToListAsync();
+
+
+=====================================================
+- Index
+=====================================================
+[AppAuthorizationAttribute(Permit.View)]
+[AppAuthorization(Permit.View)]
+
+=====================================================
+- Details
+=====================================================
+ public async Task<ActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Bodega reg = await db.Bodegas.FindAsync(id);
+            if (reg == null)
+            {
+                return HttpNotFound();
+            }
+
+            BodegaDTODetails dto = mapper.Map<BodegaDTODetails>(reg);
+
+            return View(dto);
+        }
+
+
+====================================================
+ [LogAction] // 
+ 
+====================================================
+CREATE GET
+====================================================
+
+public async Task<ActionResult> Create()  //GET
+{
+	return View();
+}
+
+====================================================
+CREATE POST
+====================================================
+
+[HttpPost, ValidateAntiForgeryToken]
+public async Task<ActionResult> Create(BodegaDTOCreate dto) //POST
+{
+	if (ModelState.IsValid)
+	{
+		Bodega reg = new Bodega();
+             
+		mapper.Map(dto, reg);
+
+		db.Bodegas.Add(reg);
+		await db.SaveChangesAsync();
+
+		return RedirectToAction("Index");
+		
+	}
+	return View(dto);
+}
+
+
+//-------------------------------------------------------
+// Created By: Estuardo Quintanilla
+//       Date: unknow
+//  Edited By: Estuardo Quintanilla
+//       Date: 23/08/2022 06:26
+//Information: Se agrega para soporte Web.Api
+//-------------------------------------------------------
+
+[DisplayFormat(DataFormatString = "{0:0.00}", ApplyFormatInEditMode = true)]
+		public decimal? Cantidad { get; set; }
+		
+		
+		
+$(document).ready(function () {
+	
+});

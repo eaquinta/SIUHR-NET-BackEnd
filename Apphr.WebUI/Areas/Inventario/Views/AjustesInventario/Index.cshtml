@@ -1,0 +1,145 @@
+﻿@model Apphr.Application.AjustesInventario.DTOs.AjusteInventarioDTOIxFilter
+@using Newtonsoft.Json
+@{
+    ViewBag.Title = "Índice";
+    ViewBag.Entidad = "Ajustes Inventario";
+    ViewBag.Icon = "<i class=\"fas fa-list\"></i>";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+
+@*@Html.Partial("AtWork")*@
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area = "Inventario" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <span>Índice</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Encablezado -->
+  
+    <h4 class="my-2" style="line-height:38px;">
+        @ViewBag.Title @ViewBag.Entidad @Html.Raw(ViewBag.Icon)
+        <a class="btn btn-success ms-3 float-end" href="@Url.Action("CEdit")"><i class="fa fa-plus"></i>&nbsp;@Apphr.Resources.Strings.NewRegister</a>
+        @*<a class="btn btn-default float-end" href="@Url.Action("IndexDBF")">
+                SIAHR <i class="fas fa-link"></i>
+            </a>*@
+    </h4>
+    <div class="clearfix"></div>
+    <!-- Encablezado -->
+    <!-- Filtro -->
+    @using (Ajax.BeginForm("JsFilterIndex", "AjustesInventario", new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnBegin = "filter.begin",
+        OnSuccess = "filter.success",
+        OnFailure = "filter.failure"
+    }, new { id = "form-filter" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.Page)
+        <div class="card border border-dark mb-3">
+            <div class="card-header background-inventory">
+                Filtro
+                <a class="@*collapsed*@" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true" aria-controls="collapseExample">
+                    <i class="fa fa-chevron-up fa-pull-right" style="margin-top: 5px;"></i>
+                </a>
+            </div>
+            @* add class *@
+            <div class="collapse show" id="collapseExample">
+                <div class="card-body">
+                    @Html.EditorFor(x => x.Buscar, "StringP", new { placeholder = "#Ajuste, Fecha, Bodega" })
+                    <div class="form-group">
+                        <div class="float-end mb-3">
+                            <button id="btnFilter" type="submit" class="btn btn-info"><i class="fa fa-filter"></i> Aplicar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <!-- Filtro -->
+    <!-- Tabla -->
+    <div id="Grid1">
+
+    </div>
+    <!-- Tabla -->
+</div>
+
+@section scripts{
+    <script>
+        let urls = @Html.Raw(JsonConvert.SerializeObject(new
+              {
+                  //FindDestinos = Url.Action("JsGetDestinosByFilter", "Destinos"),
+                  //FindBodegas = Url.Action("JsGetBodegasByFilter", "Bodegas"),
+                  //FindMateriales = Url.Action("JsGetMaterialesByFilter", "Materiales"),
+                  //FindProveedores = Url.Action("JsGetProveedoresByFilter", "Proveedores"),
+                  //GetDestino = Url.Action("JsGetDestinoByCodigo", "Destinos"),
+                  //GetBodega = Url.Action("JsGetBodegaByNombre", "Bodegas"),
+                  //GetMaterial = Url.Action("JsGetMaterialByCodigo", "Materiales"),
+                  //GetProveedor = Url.Action("JsGetProveedorByNit", "Proveedores"),
+                  //GetPaciente = Url.Action("JsGetPacienteByHCA", "Pacientes", new { Area = "Medica" }),
+                  //GetChild = Url.Action("JsGetChild"),
+                  CEdit = Url.Action("CEdit"),
+                  //Index = Url.Action("Index"),
+                  //Grid = Url.Action("JsGrid"),
+                  Details = Url.Action("Details")
+                  //Print = Url.Action("Print")
+              }));
+    </script>
+    <script>
+        var filter = {};
+        filter.form = $('#form-filter');
+        filter.btn = $('#btnFilter');
+        filter.begin = function () {
+            filter.btn.prop('disabled', true);
+        }
+        filter.success = function (data) {
+            $('#Grid1').html(data);
+            filter.end();
+        }
+        filter.end = function () {
+            filter.btn.prop('disabled', false);
+        }
+        filter.bindPaged = function () {
+            $(".pagination a").click(function () {
+                if (event.preventDefault) {
+                    event.preventDefault();
+                    console.log('detenido');
+                    console.log($(this).attr('href'));
+                    $('#page').val($(this).attr('href'));
+                    filter.btn.trigger('click');
+                }
+            });
+        }
+        //
+        //filter.begin = function () {
+        //    filter.btn.prop('disabled', true);
+        //};
+        //filter.end = function () {
+        //    filter.btn.prop('disabled', false);
+        //};
+        //filter.success = function (data) {
+        //    $('#Grid1').html(data);
+        //    filter.end();
+        //};
+        //filter.failure = function () {
+        //    jshelper.failure();
+        //    filter.end();
+        //};
+        $(function () {
+            filter.form.submit();
+        });
+    </script>
+}

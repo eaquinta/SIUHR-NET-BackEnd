@@ -1,0 +1,63 @@
+﻿@model PagedList.IPagedList<Apphr.Application.ExistenciasBodega.DTOs.ExistenciaBodegaDTOIndex>
+@using PagedList.Mvc
+<div class="table-responsive">
+    <table class="table">
+        <tr>
+            <th>Bodega</th>
+            <th>Material</th>
+            <th>Nit</th>
+            <th>Descripcion</th>
+            <th>Cantidad</th>
+            <th>Valor</th>          
+        </tr>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.BodegaNombre)</td>
+                    <td>@Html.DisplayFor(modelItem => item.MaterialNombre)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ProveedorNit)</td>
+                    <td>@Html.DisplayFor(modelItem => item.ProveedorDescripcion)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Cantidad)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Valor)</td>
+
+                    @*<td>@Html.DisplayFor(modelItem => item.Line)</td>
+                        <td>
+                            @item.Fecha.ToString("d")
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Cantidad)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Valor)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CantidadAcumulado)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ValorAcumulado)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CostoUnitario)
+                        </td>*@
+                </tr>
+            }
+        }
+        else
+        {
+            <!--Sin registros-->
+            <tr>
+                <td class="text-center" colspan="4">@Apphr.Resources.Strings.NoRegister</td>
+            </tr>
+            <!--Sin registros-->
+        }
+
+    </table>
+</div>
+<!-- Table Paged Navigation-->
+<div class="row">
+    <div class="col-12 text-center">@Html.PagedListPager(Model, page => page.ToString(), (PagedListRenderOptions)ViewBag.PLROpions)</div>
+    <div class="text-center">Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount</div>
+</div>
+<!-- Table Paged Navigation-->

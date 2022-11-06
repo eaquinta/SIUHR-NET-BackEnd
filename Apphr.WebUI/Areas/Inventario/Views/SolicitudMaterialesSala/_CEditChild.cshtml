@@ -1,0 +1,16 @@
+﻿@model Apphr.Application.SolicitudMaterialesSala.DTOs.SolicitudMaterialSalaDetalleDTOCEdit
+@Html.AntiForgeryToken()
+@Html.HiddenFor(x => x.SolicitudMaterialSalaDetalleId)
+@Html.HiddenFor(x => x.SolicitudMaterialSalaId)
+@Html.HiddenFor(x => x.MaterialId)
+@Html.HiddenFor(x => x.ProveedorId)
+<div class="row">
+    <div class="col-md-4">@Html.EditorFor(x => x.MaterialCodigo)</div>
+    <div class="col-md-8">@Html.EditorFor(x => x.MaterialNombre)</div>
+    <div class="col-md-4">@Html.EditorFor(x => x.Cantidad)</div>
+    <div class="col-md-4">@Html.EditorFor(x => x.MaterialUM)</div>
+    <div class="col-md-4">@Html.EditorFor(x => x.Intercambio)</div>
+    <div class="col-md-4">@Html.EditorFor(x => x.ProveedorNit)</div>
+    <div class="col-md-8">@Html.EditorFor(x => x.ProveedorNombre)</div>
+
+</div>

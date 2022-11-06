@@ -1,0 +1,90 @@
+﻿@using Apphr.Domain.Enums
+@model List<Permit>
+@{
+    var fieldName = "SelectedPermits"; //ViewData.TemplateInfo.HtmlFieldPrefix;
+ }
+<div class="card mb-3">
+    <div class="card-header py-1">
+        Permisos <i class="fas fa-key"></i>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12 col-md-8">
+                <div class="list-group">
+                    <div class="list-group-item list-group-item-success">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="1" id="permit-1" name="@fieldName" checked="@(Model != null && Model.Contains(Permit.View) ? "checked" : null)">
+                            <label class="form-check-label" for="permit-1">
+                                <i class="fa fa-eye"></i> Ver
+                            </label>
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-warning">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="2" id="permit-2" name="@fieldName" checked="@(Model != null && Model.Contains(Permit.Edit) ? "checked" : null)">
+                            <label class="form-check-label" for="permit-2">
+                                <i class="fa fa-edit"></i> Editar
+                            </label>
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-info">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="5" id="permit-5" name="@fieldName" checked="@(Model != null && Model.Contains(Permit.ViewAll) ? "checked" : null)">
+                            <label class="form-check-label" for="permit-5">
+                                <i class="fa fa-list-alt"></i> Ver Todos
+                            </label>
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-secondary">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="3" id="permit-3" name="@fieldName" checked="@(Model != null && Model.Contains(Permit.Assign) ? "checked" : null)">
+                            <label class="form-check-label" for="permit-3">
+                                <i class="fa fa-clipboard-check"></i> Asignar
+                            </label>
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-danger">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="4" id="permit-4" name="@fieldName" checked="@(Model != null && Model.Contains(Permit.Delete) ? "checked" : null)">
+                            <label class="form-check-label" for="permit-4">
+                                <i class="fa fa-trash-alt"></i> Eliminar
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="list-group">
+                    <div class="list-group-item list-group-item-primary">
+                        <input class="form-check-input" type="checkbox" value="6" id="permit-6" name="@fieldName" checked="@(Model != null && Model.Contains(Permit.ManageDataOwners) ? "checked" : null)">
+                        <label class="form-check-label" for="permit-6">
+                            <i class="fa fa-user-lock"></i> Propietarios de Datos
+                        </label>
+                    </div>
+                    <div class="list-group-item list-group-item-dark">
+                        <input class="form-check-input" type="checkbox" value="7" id="permit-7" name="@fieldName" checked="@(Model != null && Model.Contains(Permit.ManageRules) ? "checked" : null)">
+                        <label class="form-check-label" for="permit-7">
+                            <i class="fa fa-key"></i> Reglas de Acceso
+                        </label>
+                    </div>
+                    <div class="list-group-item list-group-item-danger">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="8" id="permit-8" name="@fieldName" checked="@(Model != null && Model.Contains(Permit.Cancel) ? "checked" : null)">
+                            <label class="form-check-label" for="permit-8">
+                                <i class="fa fa-times"></i> Cancelar
+                            </label>
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-dark">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="9" id="permit-9" name="@fieldName" checked="@(Model != null && Model.Contains(Permit.Close) ? "checked" : null)">
+                            <label class="form-check-label" for="permit-9">
+                                <i class="fa fa-window-close"></i> Cerrar
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

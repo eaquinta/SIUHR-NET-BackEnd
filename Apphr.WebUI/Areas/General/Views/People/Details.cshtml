@@ -1,0 +1,152 @@
+﻿@model Apphr.Application.Personas.DTOs.PersonaDTOView
+@using Apphr.WebUI.CustomAttributes
+@{
+    ViewBag.Title = "Ver";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area = "" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index")" style="text-decoration:none">
+                    <span>Índice</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <span>Ver</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Form Title -->
+    <h4 class="mb-0">
+        Persona
+        <a class="btn btn-warning float-end" href="@Url.Action("Edit", new { id = Model.PersonId })">
+            <i class="fa fa-pen-square"></i>&nbsp;Editar
+        </a>
+    </h4>
+    <hr />
+    <!-- Form Title -->
+
+    <div class="form-horizontal">
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="row">
+            <div class="col-lg-8">
+                @Html.DisplayFor(x => x.IsActive)
+                <div class="row">
+                    @Html.DisplayFor(model => model.Name, "StringD")
+                </div>
+                <div class="row">
+                    <div class="col">
+                        @Html.DisplayFor(model => model.FirstName, "StringD")
+                    </div>
+                    <div class="col">
+                        @Html.DisplayFor(model => model.MiddleName, "StringD")
+                    </div>
+                    <div class="col">
+                        @Html.DisplayFor(model => model.ThirdName, "StringD")
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        @Html.DisplayFor(model => model.LastName, "StringD")
+                    </div>
+                    <div class="col">
+                        @Html.DisplayFor(model => model.MatriName, "StringD")
+                    </div>
+                    <div class="col">
+                        @Html.DisplayFor(model => model.MarriedName, "StringD")
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <strong> @Apphr.Resources.Strings.Birth</strong>
+                    <br />
+                    @if (Model.Birth.HasValue)
+                    {
+                        int months = DateTime.Now.Month - Model.Birth.Value.Month;
+                        int years = DateTime.Now.Year - Model.Birth.Value.Year;
+                        if (DateTime.Now.Day < Model.Birth.Value.Day)
+                        {
+                            months--;
+                        }
+                        if (months < 0)
+                        {
+                            years--;
+                            months += 12;
+                        }
+                        int days = (DateTime.Now - Model.Birth.Value.AddMonths((years * 12) + months)).Days;
+                        var _age = string.Format("{0} año{1}, {2} mes{3} y {4} día{5}",
+                                        years, (years == 1) ? "" : "s",
+                                        months, (months == 1) ? "" : "es",
+                                        days, (days == 1) ? "" : "s");
+
+                        @Model.Birth.Value.ToLongDateString()
+                        <br class="d-lg-none" />
+                        <small class="text-muted">@_age</small>
+                    }
+                </div>
+                <div class="mb-3">
+                    <dl>
+                        <dt>@Apphr.Resources.Strings.Gender</dt>
+                        <dd>
+                            @switch (Model.Gender)
+                            {
+                                case Apphr.Domain.Enums.Gender.Masculino:
+                                    <span class="fa fa-male"></span> <small class="text-muted">Masculino</small>
+                                    break;
+                                case Apphr.Domain.Enums.Gender.Femenino:
+                                    <span class="fa fa-female"></span> <small class="text-muted">Femenino</small>
+                                    break;
+                            }
+                        </dd>
+                    </dl>
+                </div>
+                <div class="mb-3">
+                    <dl>
+                        <dt>Estado Civil</dt>
+                        <dd>
+                            <small class="text-muted">@Model.EstadoCivil.GetDisplayName()</small>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card border-secondary">
+                    <div class="card-header bg-secondary text-light">
+                        Foto&nbsp;<i class="fa fa-image"></i>
+                    </div>
+                    <div class="card-body">
+                        <figure class="text-center figure d-block">
+                            <img src="@Url.Action("Image", new { id = Model.PersonId })" class="figure-img img-fluid" />
+                            <figcaption class="text-muted small figure-caption" title="Fecha Imagen">
+                                @(((DateTime?)(Model.ImageDate)).HasValue ? Model.ImageDate.Value.ToLongDateString() : "Sin Imagen")
+                            </figcaption>
+                        </figure>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        @*@Html.DisplayFor(model => model.Birth, new { htmlAttributes = new { @class = "form-control" } })*@
+        @*@Html.DisplayFor(model => model.Gender, new { htmlAttributes = new { @class = "form-control" } })*@
+        <!-- Botones Formulario -->
+        <div class="col-12 mt-1">
+            <div class="col-md-offset-2 col-md-10">
+                @*<input type="submit" value="Agregar" class="btn btn-sm btn-dark" />*@
+                @Html.ActionLink("Regresar", "Index", null, new { @class = "btn btn-outline-dark" })
+            </div>
+        </div>
+        <!-- Botones Formulario -->
+    </div>
+</div>

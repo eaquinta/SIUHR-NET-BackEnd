@@ -1,0 +1,71 @@
+﻿@model IEnumerable<Apphr.Domain.Entities.Facilitador>
+
+@{
+    ViewBag.Title = "Índice";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<div class="container-lg">
+
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area = "" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <span>Índice</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Encablezado -->
+    <h4 class="my-3">
+        @ViewBag.Title Facilitadores
+        <i class="fa fa-tags"></i>
+        <a class="btn btn-success float-end" href="@Url.Action("AsignarPersona")">
+            Asignar <i class="fa fa-plus"></i>
+        </a>
+    </h4>
+    <div class="clearfix"></div>
+    <!-- Encablezado -->
+    <!-- Table -->
+    <table class="table">
+        <tr class="table-dark">
+            <th style="width:80px;">Acciones</th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.Persona.FirstName)*@
+                Nombre
+            </th>
+        
+        </tr>
+
+        @if (Model.Any())
+        {
+            foreach (var item in Model)
+            {
+    <tr>
+        <!-- Acciones -->
+        <td>
+            <a class="btn btn-sm btn-info" href="@Url.Action("Details", new { id = item.FacilitadorId })"><i class="fa fa-eye" aria-hidden="true"></i></a>
+        </td>
+        <!-- Acciones -->
+        <td>
+            @Html.DisplayFor(modelItem => item.Persona.Name)
+        </td>
+        
+    </tr>
+            }
+        }
+            else
+            {
+                <tr>
+                    <td class="text-center" colspan="2">@Apphr.Resources.Strings.NoRegister</td>
+                </tr>
+            }
+
+    </table>
+</div>

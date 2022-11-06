@@ -1,0 +1,27 @@
+﻿@model DateTime?
+@{
+    var _attr = new Dictionary<string, object>();
+
+    _attr.Add("class", "form-control");
+    _attr.Add("type", "date");
+    _attr.Add("readonly", "readonly");
+    if (ViewData["min"] != null) { _attr.Add("min", ViewData["min"]); }
+    if (ViewData["max"] != null) { _attr.Add("max", ViewData["max"]); }
+}
+<div class="mb-2">
+    @if (ViewData["label"] != null)
+    {
+        @Html.LabelFor(x => x, (string)ViewData["label"], new { @class = "form-label", style = "font-weight:bold;" })
+    }
+    else
+    {
+        @Html.LabelFor(x => x, new { @class = "form-label", style = "font-weight:bold;" })
+    }
+    @if (ViewData["prependIcon"] != null)
+    {
+        <i class="ms-1 @ViewData["prependIcon"]"></i>
+    }
+    @Html.TextBox("", Model.HasValue ? Model.Value.ToString("yyyy-MM-dd") : null, _attr)
+    @*<input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">*@
+    @*<div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>*@
+</div>

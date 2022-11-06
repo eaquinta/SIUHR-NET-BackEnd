@@ -1,0 +1,291 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F70C41AB-7ACB-402C-BB49-828BFFF7B9DD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Apphr.Application</RootNamespace>
+    <AssemblyName>Apphr.Application</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoMapper, Version=10.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.10.1.1\lib\net461\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentValidation, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7de548da2fbae0f0, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentValidation.9.5.4\lib\net461\FluentValidation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.7\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AccessRules\DTOs\AccessRuleDTOBase.cs" />
+    <Compile Include="AccessRules\DTOs\AccessRuleDTOCreate.cs" />
+    <Compile Include="AccessRules\DTOs\AccessRuleDTOView.cs" />
+    <Compile Include="AccessRules\DTOs\AccessRuleDTOEdit.cs" />
+    <Compile Include="AccessRules\MapperProfiles\AccessRuleProfile.cs" />
+    <Compile Include="AjustesInventario\DTOs\AjusteInventarioDTOBase.cs" />
+    <Compile Include="AjustesInventario\DTOs\AjusteInventarioDTOCEdit.cs" />
+    <Compile Include="AjustesInventario\DTOs\AjusteInventarioDTOIxFilter.cs" />
+    <Compile Include="AjustesInventario\Mapper\AjusteInventarioProfile.cs" />
+    <Compile Include="AppAreas\DTOs\RootDTODashboard.cs" />
+    <Compile Include="AutoMapperConfig.cs" />
+    <Compile Include="Bodegas\DTOs\BodegaDTOACItem.cs" />
+    <Compile Include="Bodegas\DTOs\BodegaDTOBase.cs" />
+    <Compile Include="Bodegas\DTOs\BodegaDTOCreate.cs" />
+    <Compile Include="Bodegas\DTOs\BodegaDTODBF.cs" />
+    <Compile Include="Bodegas\DTOs\BodegaDTODelete.cs" />
+    <Compile Include="Bodegas\DTOs\BodegaDTODetails.cs" />
+    <Compile Include="Bodegas\DTOs\BodegaDTOEdit.cs" />
+    <Compile Include="Bodegas\DTOs\BodegaDTOIndex.cs" />
+    <Compile Include="Bodegas\DTOs\BodegaDTOIndexDBF.cs" />
+    <Compile Include="Bodegas\DTOs\BodegaDTOIxFilter.cs" />
+    <Compile Include="Bodegas\Mapper\BodegaProfiles.cs" />
+    <Compile Include="Common\AutocompleteItem.cs" />
+    <Compile Include="Common\BreadCrum.cs" />
+    <Compile Include="Common\Class1.cs" />
+    <Compile Include="Common\DTOs\ActionResultSingleDTOBase.cs" />
+    <Compile Include="Common\DTOs\AuditableEntityDTOBase.cs" />
+    <Compile Include="Common\DTOs\BaseDTODBF.cs" />
+    <Compile Include="Common\DTOs\DTOIxFilterBodMat.cs" />
+    <Compile Include="Common\DTOs\DTOJsIxFilter.cs" />
+    <Compile Include="Common\Models\Correlativo.cs" />
+    <Compile Include="Common\Models\FieldPermission.cs" />
+    <Compile Include="Common\Models\PrioridadTipo.cs" />
+    <Compile Include="Common\Models\SADCPaciente.cs" />
+    <Compile Include="Common\Models\ViewConfig.cs" />
+    <Compile Include="Common\DTOs\ActionResultListDTOBase.cs" />
+    <Compile Include="Common\IxDataTable.cs" />
+    <Compile Include="Common\IxFilter.cs" />
+    <Compile Include="Common\LinkInfo.cs" />
+    <Compile Include="Common\Models\ToastTemplate.cs" />
+    <Compile Include="Common\Validations\NumericLessThanAttribute.cs" />
+    <Compile Include="Controladores\DTOs\ControlladorDTOEdit.cs" />
+    <Compile Include="Controladores\DTOs\ControladorDTOBase.cs" />
+    <Compile Include="Controladores\MapperProfiles\ControladorProfile.cs" />
+    <Compile Include="ControlMaterialesSala\ControlMaterialSalaDTORpt.cs" />
+    <Compile Include="SolicitudMaterialesSala\DTOs\SolicitudMaterialSalaDTOCEdit.cs" />
+    <Compile Include="SolicitudMaterialesSala\DTOs\SolicitudMaterialSalaDTODetails.cs" />
+    <Compile Include="SolicitudMaterialesSala\DTOs\SolicitudMaterialSalaDTOIndex.cs" />
+    <Compile Include="SolicitudMaterialesSala\DTOs\SolicitudMaterialSalaDTOIxFilter.cs" />
+    <Compile Include="SolicitudMaterialesSala\DTOs\SolicitudMaterialSalaDTORpt.cs" />
+    <Compile Include="SolicitudMaterialesSala\Mapper\ControlMaterialSalaProfile.cs" />
+    <Compile Include="SolicitudMaterialesSala\DTOs\SolicitudMaterialSalaDTOBase.cs" />
+    <Compile Include="DespachosInventario\DTOs\DespachoInventarioDTOBase.cs" />
+    <Compile Include="DespachosInventario\DTOs\DespachoInventarioDTOCEdit.cs" />
+    <Compile Include="DespachosInventario\DTOs\DespachoInventarioDTOCreate.cs" />
+    <Compile Include="DespachosInventario\DTOs\DespachoInventarioDTODelete.cs" />
+    <Compile Include="DespachosInventario\DTOs\DespachoInventarioDTODetails.cs" />
+    <Compile Include="DespachosInventario\DTOs\DespachoInventarioDTOEditDF.cs" />
+    <Compile Include="DespachosInventario\DTOs\DespachoInventarioDTOIxRow.cs" />
+    <Compile Include="DespachosInventario\DTOs\DespachoInventarioDTOIxFilter.cs" />
+    <Compile Include="DespachosInventario\DTOs\DespachoInventarioDTOIndex.cs" />
+    <Compile Include="DespachosInventario\Mapper\DespachoInventarioProfile.cs" />
+    <Compile Include="Destinos\DTOs\DestinoDTOBase.cs" />
+    <Compile Include="Destinos\DTOs\DestinoDTOCreate.cs" />
+    <Compile Include="Destinos\DTOs\DestinoDTODBF.cs" />
+    <Compile Include="Destinos\DTOs\DestinoDTODelete.cs" />
+    <Compile Include="Destinos\DTOs\DestinoDTODetails.cs" />
+    <Compile Include="Destinos\DTOs\DestinoDTOEdit.cs" />
+    <Compile Include="Destinos\DTOs\DestinoDTOIndex.cs" />
+    <Compile Include="Destinos\DTOs\DestinoDTOIndexDBF.cs" />
+    <Compile Include="Destinos\DTOs\DestinoDTOIxFilter.cs" />
+    <Compile Include="Destinos\DTOs\DestinoDTOIxRow.cs" />
+    <Compile Include="Destinos\Mapper\DestinoProfile.cs" />
+    <Compile Include="EgresosInventario\DTOs\EgresoInventarioDTOBase.cs" />
+    <Compile Include="Encargados\DTOs\EncargadoDTOBase.cs" />
+    <Compile Include="Encargados\DTOs\EncargadoDTOCreate.cs" />
+    <Compile Include="Encargados\DTOs\EncargadoDTOEdit.cs" />
+    <Compile Include="Encargados\DTOs\EncargadoDTOView.cs" />
+    <Compile Include="Encargados\MapperProfiles\EncargadoProfile.cs" />
+    <Compile Include="ExistenciasBodega\DTOs\ExistenciaBodegaDTOBase.cs" />
+    <Compile Include="ExistenciasBodega\DTOs\ExistenciaBodegaDTOIndex.cs" />
+    <Compile Include="ExistenciasBodega\DTOs\ExistenciaBodegaDTOIxFilter.cs" />
+    <Compile Include="ExistenciasBodega\Mapper\ExistenciaBodegaProfile.cs" />
+    <Compile Include="Facilitadores\DTOs\FacilitadorDTOBase.cs" />
+    <Compile Include="Facilitadores\DTOs\FacilitadorDTOBuscarPersona.cs" />
+    <Compile Include="Facilitadores\DTOs\FacilitadorDTOCreate.cs" />
+    <Compile Include="Facilitadores\DTOs\FacilitadorDTODelete.cs" />
+    <Compile Include="Facilitadores\DTOs\FacilitadorDTOEdit.cs" />
+    <Compile Include="Facilitadores\DTOs\FacilitadorDTODetails.cs" />
+    <Compile Include="Facilitadores\MapperProfiles\FacilitadorProfile.cs" />
+    <Compile Include="IngresosInventario\DTOs\IngresoInventarioDTOBase.cs" />
+    <Compile Include="IngresosInventario\DTOs\IngresoInventarioDTOCEdit.cs" />
+    <Compile Include="IngresosInventario\DTOs\IngresoInventarioDTODetails.cs" />
+    <Compile Include="IngresosInventario\DTOs\IngresoInventarioDTOIndex.cs" />
+    <Compile Include="IngresosInventario\DTOs\IngresoInventarioDTOIxRow.cs" />
+    <Compile Include="IngresosInventario\Mapper\IngresoInventarioProfile.cs" />
+    <Compile Include="Kardex\DTOs\KardexDTOBase.cs" />
+    <Compile Include="Kardex\DTOs\KardexDTOCierre.cs" />
+    <Compile Include="Kardex\DTOs\KardexDTOIxFilter.cs" />
+    <Compile Include="Kardex\DTOs\KardexDTOResumenMovimiento.cs" />
+    <Compile Include="Kardex\DTOs\KardexDTOrptKardex.cs" />
+    <Compile Include="Kardex\DTOs\KardexDTOSaldo.cs" />
+    <Compile Include="Kardex\DTOs\KardexDTOKardexMaterial.cs" />
+    <Compile Include="Kardex\Mapper\KardexProfile.cs" />
+    <Compile Include="Materiales\DTOs\MaterialDTOBase.cs" />
+    <Compile Include="Materiales\DTOs\MaterialDTOBaseExt.cs" />
+    <Compile Include="Materiales\DTOs\MaterialDTOCreate.cs" />
+    <Compile Include="Materiales\DTOs\MaterialDTODBF.cs" />
+    <Compile Include="Materiales\DTOs\MaterialDTODelete.cs" />
+    <Compile Include="Materiales\DTOs\MaterialDTODetails.cs" />
+    <Compile Include="Materiales\DTOs\MaterialDTOEdit.cs" />
+    <Compile Include="Materiales\DTOs\MaterialDTOIndex.cs" />
+    <Compile Include="Materiales\DTOs\MaterialDTOIndexDBF.cs" />
+    <Compile Include="Materiales\DTOs\MaterialDTOIxFilter.cs" />
+    <Compile Include="Materiales\DTOs\MaterialDTOIxRow.cs" />
+    <Compile Include="Materiales\Mapper\MaterialProfile.cs" />
+    <Compile Include="Medicos\DTOs\MedicoDTOBase.cs" />
+    <Compile Include="OrdenesCompra\DTOs\OrdenCompraDetalleDTOBaseDBF.cs" />
+    <Compile Include="OrdenesCompra\DTOs\OrdenCompraDetalleDTODetailsDBF.cs" />
+    <Compile Include="OrdenesCompra\DTOs\OrdenCompraDTOBaseDBF.cs" />
+    <Compile Include="OrdenesCompra\DTOs\OrdenCompraDTODetailsDBF.cs" />
+    <Compile Include="OrdenesCompra\DTOs\OrdenCompraDTOIxFilter.cs" />
+    <Compile Include="PacienteEventos\DTOs\PacienteEventoDTODetail.cs" />
+    <Compile Include="PacienteEventos\DTOs\PacienteEventoDTOBase.cs" />
+    <Compile Include="PacienteEventos\DTOs\PacienteEventoDTOCreate.cs" />
+    <Compile Include="PacienteEventos\DTOs\PacienteEventoDTODiagnostico.cs" />
+    <Compile Include="PacienteEventos\DTOs\PacienteEventoDTOEdit.cs" />
+    <Compile Include="PacienteEventos\DTOs\PacienteEventoDTOEgreso.cs" />
+    <Compile Include="PacienteEventos\DTOs\PacienteEventoDTOIndex.cs" />
+    <Compile Include="PacienteEventos\DTOs\PacienteEventoDTOIxFilter.cs" />
+    <Compile Include="PacienteEventos\DTOs\PacienteEventoDTOTraslado.cs" />
+    <Compile Include="PacienteEventos\MapperProfiles\PacienteEventoProfiles.cs" />
+    <Compile Include="Pacientes\DTOs\PacienteDTOBase.cs" />
+    <Compile Include="Pacientes\Profiles\PacienteProfile.cs" />
+    <Compile Include="Personas\Commands\PersonaValidator.cs" />
+    <Compile Include="Personas\DTOs\PersonaDTOBase.cs" />
+    <Compile Include="Personas\DTOs\PersonaDTOCreate.cs" />
+    <Compile Include="Personas\DTOs\PersonaDTOCreateUser.cs" />
+    <Compile Include="Personas\DTOs\PersonaDTOEdit.cs" />
+    <Compile Include="Personas\DTOs\PersonaDTOEmailConfirm.cs" />
+    <Compile Include="Personas\DTOs\PersonaDTOFiltro.cs" />
+    <Compile Include="Personas\DTOs\PersonaDTOView.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Proveedores\Commands\ProveedorValidator.cs" />
+    <Compile Include="Proveedores\DTOs\ProveedorDTOBase.cs" />
+    <Compile Include="Proveedores\DTOs\ProveedorDTOCreate.cs" />
+    <Compile Include="Proveedores\DTOs\ProveedorDTODetails.cs" />
+    <Compile Include="Proveedores\DTOs\ProveedorDTOEdit.cs" />
+    <Compile Include="Proveedores\DTOs\ProveedorDTOIndex.cs" />
+    <Compile Include="Proveedores\DTOs\ProveedorDTOIndexDBF.cs" />
+    <Compile Include="Proveedores\DTOs\ProveedorDTOIxFilter.cs" />
+    <Compile Include="Proveedores\DTOs\ProveedorDTOReport.cs" />
+    <Compile Include="Personas\MapperProfiles\PersonaProfile.cs" />
+    <Compile Include="Proveedores\DTOs\ProveedorDTOACItem.cs" />
+    <Compile Include="Proveedores\MapperProfiles\ProveedorProfile.cs" />
+    <Compile Include="RegistrosMedicos\DTOs\RegistroMedicoDTOBase.cs" />
+    <Compile Include="RegistrosMedicos\DTOs\RegistroMedicoDTOCreate.cs" />
+    <Compile Include="RegistrosMedicos\DTOs\RegistroMedicoDTOEdit.cs" />
+    <Compile Include="RegistrosMedicos\DTOs\RegistroMedicoDTOView.cs" />
+    <Compile Include="RegistrosMedicos\MapperProfiles\RegistroMedicoProfile.cs" />
+    <Compile Include="Roles\DTOs\AppRoleDTOBase.cs" />
+    <Compile Include="Roles\DTOs\AppRoleDTOCreate.cs" />
+    <Compile Include="Roles\DTOs\AppRoleDTODetails.cs" />
+    <Compile Include="Roles\DTOs\AppRoleDTOEdit.cs" />
+    <Compile Include="Roles\MapperProfiles\AppRoleMapperProfile.cs" />
+    <Compile Include="Servicios\DTOs\ServicioDTOBase.cs" />
+    <Compile Include="Servicios\DTOs\ServicioDTOCreate.cs" />
+    <Compile Include="Servicios\DTOs\ServicioDTOEdit.cs" />
+    <Compile Include="Servicios\DTOs\ServicioDTOIndex.cs" />
+    <Compile Include="Servicios\DTOs\ServicioDTODetails.cs" />
+    <Compile Include="Servicios\MapperProfiles\ServicioProfiles.cs" />
+    <Compile Include="SolicitudesDespachos\DTOs\SolicitudDespachoDetalleDTOBaseDBF.cs" />
+    <Compile Include="SolicitudesDespachos\DTOs\SolicitudDespachoDTOBaseDBF.cs" />
+    <Compile Include="SolicitudesDespachos\DTOs\SolicitudDespachoDTODetailsDBF.cs" />
+    <Compile Include="SolicitudesDespachos\DTOs\SolicitudDespachoDTOBase.cs" />
+    <Compile Include="SolicitudesDespachos\DTOs\SolicitudDespachoDTODetails.cs" />
+    <Compile Include="SolicitudesDespachos\DTOs\SolicitudDespachoDTOCEdit.cs" />
+    <Compile Include="SolicitudesDespachos\DTOs\SolicitudDespachoDTOIndex.cs" />
+    <Compile Include="SolicitudesDespachos\DTOs\SolicitudDespachoDTOIxFilter.cs" />
+    <Compile Include="SolicitudesDespachos\DTOs\SolicitudDespachoDTORpt.cs" />
+    <Compile Include="SolicitudesDespachos\Mapper\SolicitudDespachoProfile.cs" />
+    <Compile Include="SolicitudesDespachos\DTOs\SolicitudDespachoDTOCEditMS.cs" />
+    <Compile Include="SolicitudesPedido\DTOs\SolicitudPedidoDTOBase.cs" />
+    <Compile Include="SolicitudesPedido\DTOs\SolicitudPedidoDTOCEdit.cs" />
+    <Compile Include="SolicitudesPedido\DTOs\SolicitudPedidoDTODetailsDBF.cs" />
+    <Compile Include="SolicitudesPedido\DTOs\SolicitudPedidoDTOIndex.cs" />
+    <Compile Include="SolicitudesPedido\DTOs\SolicitudPedidoDTOIndexDBF.cs" />
+    <Compile Include="SolicitudesPedido\DTOs\SolicitudPedidoDTORpt.cs" />
+    <Compile Include="SolicitudesPedido\Mapper\SolicitudPedidoProfile.cs" />
+    <Compile Include="Usuarios\DTOs\UsuarioDTOAsignar.cs" />
+    <Compile Include="Usuarios\DTOs\UsuarioDTOBase.cs" />
+    <Compile Include="Usuarios\DTOs\UsuarioDTOCreate.cs" />
+    <Compile Include="Usuarios\DTOs\UsuarioDTODetails.cs" />
+    <Compile Include="Usuarios\DTOs\UsuarioDTOEdit.cs" />
+    <Compile Include="Usuarios\DTOs\UsuarioDTOIndex.cs" />
+    <Compile Include="Usuarios\DTOs\UsuarioDTOIxFilter.cs" />
+    <Compile Include="Usuarios\DTOs\UsuarioDTOIxRow.cs" />
+    <Compile Include="Usuarios\DTOs\UsuarioDTOSetPassword.cs" />
+    <Compile Include="Usuarios\MapperProfiles\UsuarioProfiles.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Apphr.Domain\Apphr.Domain.csproj">
+      <Project>{81985283-AADE-4333-82E7-2B9CF26E6142}</Project>
+      <Name>Apphr.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Apphr.Resources\Apphr.Resources.csproj">
+      <Project>{0FB413A6-3705-4257-AF21-A5F526F10A60}</Project>
+      <Name>Apphr.Resources</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

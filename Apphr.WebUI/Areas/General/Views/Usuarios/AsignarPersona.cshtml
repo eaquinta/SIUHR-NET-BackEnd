@@ -1,0 +1,96 @@
+﻿@model Apphr.Application.Usuarios.DTOs.UsuarioDTOAsignar
+@{
+    ViewBag.Title = "Asignar";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area = "" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index")" style="text-decoration:none">
+                    <span>Índice</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <span>Asignar</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <h4>
+        Asignar Facilitador
+        <a class="btn btn-success float-end" href="@Url.Action("Create")">
+            Adicionar <i class="fa fa-plus"></i>
+        </a>
+    </h4>
+    <div class="clearfix"></div>
+    <!-- Filter -->
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="card mb-3 mt-3">
+            <div class="card-header">
+                <a class="text-decoration-none" data-bs-toggle="collapse" href="#collapseFilter1" role="button" aria-expanded="false" aria-controls="collapseFilter1">
+                    Buscar Persona Filtro <i class="fa fa-filter"></i>
+                </a>
+            </div>
+            <div class="collapse show" id="collapseFilter1">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">@Html.EditorFor(x => x.Filtro.FirstName)</div>
+                        <div class="col-md-4">@Html.EditorFor(x => x.Filtro.MiddleName)</div>
+                        <div class="col-md-4">@Html.EditorFor(x => x.Filtro.ThirdName)</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">@Html.EditorFor(x => x.Filtro.LastName)</div>
+                        <div class="col-md-4">@Html.EditorFor(x => x.Filtro.MatriName)</div>
+                        <div class="col-md-4">@Html.EditorFor(x => x.Filtro.MarriedName)</div>
+                    </div>
+                    @*@Html.EditorFor(x => x.F.ServicioId, new { optionsList = ViewBag.ServicioId, noOptionList = "Todas" })*@
+                    <div class="form-group">
+                        <div class="float-end mb-3">
+                            <button type="submit" class="btn btn-info"><i class="fa fa-filter"></i> Aplicar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <!-- Filter -->
+    <!-- Table -->
+    <div class="table-responsive">
+        <table id="PacienteEventosList" class="table table-hover table-bordered">
+            <tr class="table-dark">
+                <th style="width:80px;">Acción</th>
+                <th>Nombre</th>
+            </tr>
+            @if (Model.Lista.Any())
+            {
+                foreach (var item in Model.Lista)
+                {
+                    <tr>
+                        <td>
+                            <a class="btn btn-sm btn-primary" href="@Url.Action("Asignar", new { id = item.PersonId })">Asignar</a>
+                        </td>
+                        <td>@item.Name</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td class="text-center" colspan="2">@Apphr.Resources.Strings.NoRegister</td>
+                </tr>
+            }
+        </table>
+    </div>
+    <!-- Table -->
+</div>

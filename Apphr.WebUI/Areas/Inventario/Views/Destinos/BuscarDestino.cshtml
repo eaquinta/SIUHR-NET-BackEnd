@@ -1,0 +1,54 @@
+﻿@model IEnumerable<Apphr.Application.Destinos.DTOs.DestinoDTOBase>
+<div class="row gx-1">
+    <div class="col-auto">
+        @Html.TextBox("Search_Data", ViewBag.FilterValue as string, new { @placeholder = "Buscar", @class = "inputbox" })
+    </div>
+    <div class="col-auto">
+        <input id="modalBtnBuscarDestinos" class="btn btn-sm btn-outline-dark" type="button" value="Buscar" />
+    </div>
+</div>
+<table class="table">
+    <tr>
+        <th></th>
+        <th>
+            @Html.DisplayNameFor(model => model.Codigo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Descripcion)
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+<tr>
+    <td>
+        <a href="#" class="btn btn-sm btn-outline-primary" onclick="@ViewBag.llamar" data-id="@item.DestinoId" data-codigo="@item.Codigo" data-descripcion="@item.Descripcion"><i class="fas fa-check"></i></a>
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Codigo)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Descripcion)
+    </td>
+
+</tr>
+    }
+
+</table>
+<script>
+    $(function () {
+        $('#modalBtnBuscarDestinos').click(function () {
+            var url = '';
+            $.ajax({
+                url: '@Url.Action("BuscarDestino", "Destinos")',
+                type: 'GET',
+                data: { Search_Data: $("#Search_Data").val(), llamar: "@ViewBag.llamar" },
+                success: function (data) {
+                    $('#popup').html(data);
+                },
+                beforeSend: function () { $('#popup').html(""); $('#loading').show(); },
+                complete: function () { $('#loading').hide(); }
+            });
+        });
+    });
+</script>

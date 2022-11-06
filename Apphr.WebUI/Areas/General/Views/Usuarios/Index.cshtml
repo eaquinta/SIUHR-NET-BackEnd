@@ -1,0 +1,103 @@
+﻿@model  Apphr.Application.Usuarios.DTOs.UsuarioDTOIndex
+
+@{
+    ViewBag.Title = "Índice";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<div class="container-lg">
+    <!-- Encablezado -->
+    <h4 class="my-3">
+        @ViewBag.Title Usuarios <i class="far fa-list-alt"></i>
+        <a class="btn btn-success float-end" href="@Url.Action("Create")">
+            Adicionar <i class="fa fa-plus"></i>
+        </a>
+    </h4>
+    <div class="clearfix"></div>
+    <!-- Encablezado -->
+    <!-- Filtro -->
+    @using (Html.BeginForm())
+    {
+        <div class="card mb-3">
+            <div class="card-header">
+                <a class="text-decoration-none" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                    Filtro <i class="fa fa-filter"></i>
+                </a>
+            </div>
+            @*<div id="collapse1" class="panel-collapse collapse">*@
+            <div class="collapse show" id="collapseExample">
+                <div class="card-body">
+                    @Html.EditorFor(x => x.F.Buscar, "StringP")
+                    <div class="form-group">
+                        <div class="float-end mb-3">
+                            <button type="submit" class="btn btn-info"><i class="fa fa-filter"></i> Aplicar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <!-- Filtro -->
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered">
+            <tr class="table-dark">
+                <th style="width:80px;">Acción</th>
+                <th>
+                    @*@Html.DisplayNameFor(model => model.UserName)*@
+                    Usuario
+                </th>
+                <th>
+                    @*@Html.DisplayNameFor(model => model.Name)*@
+                    Nombre
+                </th>
+                <th>
+                    @*@Html.DisplayNameFor(model => model.RoleNames)*@
+                    Roles
+                </th>
+            </tr>
+
+            @if (Model.Result.Any())
+            {
+                foreach (var item in Model.Result)
+                {
+                    <tr>
+                        <!-- Acciones -->
+                        <td>
+                            @*<a class="btn btn-sm btn-info" href="@Url.Action("Details", new { id = item.Id })"><i class="fa fa-eye" aria-hidden="true"></i></a>*@
+                            <div class="dropdown d-inline-block">
+                                <button class="btn btn-sm btn-primary" type="button" id="ddBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-bars"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="ddBtn">
+                                    <li><a class="dropdown-item" href="@Url.Action("Details", new { id = item.Id })"><i class="fa fa-eye"></i> Ver</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("SetPassword", new { id = item.Id })"><i class="fas fa-key"></i> Establecer contraseña</a></li>
+                                    @*<li><a class="dropdown-item" href="@Url.Action("Egreso", new { id = item.PacienteEventoId })"><i class="fas fa-walking"></i> Egreso</a></li>
+                                        <li><a class="dropdown-item" href="@Url.Action("Diagnostico", new { id = item.PacienteEventoId })"><i class="fas fa-stethoscope"></i> Diagnóstico</a></li>*@
+                                </ul>
+                            </div>
+                        </td>
+                        <!-- Acciones -->
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UserName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.RoleNames)
+                        </td>
+
+                    </tr>
+                }
+            }
+            else
+            {
+                <!--Sin registros-->
+                <tr>
+                    <td class="text-center" colspan="3">@Apphr.Resources.Strings.NoRegister</td>
+                </tr>
+                <!--Sin registros-->
+            }
+        </table>
+    </div>
+</div>

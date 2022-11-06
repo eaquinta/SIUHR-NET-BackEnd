@@ -1,0 +1,63 @@
+﻿@model Apphr.Application.Materiales.DTOs.MaterialDTOEdit
+@{
+    ViewBag.Title = "Editar";
+    ViewBag.Entidad = "Material";
+    ViewBag.Icon = "<i class=\"fas fa-box\"></i>";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+    var IdKey = new { id = Model.MaterialId };
+}
+
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area ="" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index")" style="text-decoration:none">
+                    <span>Índice</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <span>Ver</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Form Title -->
+    <h4 class="mb-0">
+        @ViewBag.Title @ViewBag.Entidad @Html.Raw(ViewBag.Icon)
+        @*<a class="btn btn-warning float-end" href="@Url.Action("Edit", new { id = Model.BodegaId })">
+                <i class="fa fa-pen-square"></i>&nbsp;Editar
+            </a>*@
+    </h4>
+    <hr />
+    <!-- Form Title -->
+    <!-- Formulario -->
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(x => x.MaterialId)
+        @Html.EditorFor(x => x.Codigo)
+        @Html.EditorFor(x => x.Descripcion)
+        @Html.EditorFor(x => x.Precio)
+        @Html.EditorFor(x => x.Minimo)
+
+
+        <!-- Botones formulario -->
+        <div class="col-md-12 mt-3">
+            <button type="submit" class="btn btn-warning"><i class="fas fa-edit"></i> Actualizar</button>
+            <a class="btn btn-outline-dark" href="@Url.Action("Details", IdKey)">Regresar</a>
+            <div class="float-end">
+                <a class="btn btn-outline-danger" href="@Url.Action("Delete", IdKey)"><i class="fas fa-trash"></i>&nbsp;Eliminar</a>
+            </div>
+        </div>
+        <!-- Botones formulario -->
+    }
+    <!-- Formulario -->
+</div>

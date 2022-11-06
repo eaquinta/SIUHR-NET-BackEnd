@@ -1,0 +1,70 @@
+﻿@model IEnumerable<Apphr.Domain.Entities.PacienteEventoHistorial>
+
+@{
+    ViewBag.Title = "Índice";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr class="table-dark">
+        <th>
+            @Html.DisplayNameFor(model => model.Servicio.Nombre)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PacienteEventoId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Fecha)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Diagnostico)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProcedimientosRealizados)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProcedimientosPorRealizar)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EstadoObservacion)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Servicio.Nombre)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PacienteEventoId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Fecha)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Diagnostico)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ProcedimientosRealizados)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ProcedimientosPorRealizar)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EstadoObservacion)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.PacienteEventoHistoryId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.PacienteEventoHistoryId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.PacienteEventoHistoryId })
+        </td>
+    </tr>
+}
+
+</table>

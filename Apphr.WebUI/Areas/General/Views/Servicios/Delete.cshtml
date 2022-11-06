@@ -1,0 +1,67 @@
+﻿@model Apphr.Domain.Entities.Servicio
+
+@{
+    ViewBag.Title = "Eliminar";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area = "" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index")" style="text-decoration:none">
+                    <span>Índice</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("View", new { id = Model.ServicioId})" style="text-decoration:none">
+                    <span>Ver</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Edit", new { id = Model.ServicioId})" style="text-decoration:none">
+                    <span>Editar</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <span>Eliminar</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Form Title -->
+    <h4 class="mb-0">
+        Servicio
+        <a class="btn btn-outline-dark float-end" href="@Url.Action("Edit",new { id = Model.ServicioId })">Regresar</a>        
+    </h4>
+    <hr />
+    <!-- Form Title -->
+    <h3>¿ Elimiar este registro ?</h3>
+    <div>
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </dt>
+            <dd>
+                @Model.Nombre
+            </dd>
+        </dl>
+        <!-- Delete Button -->
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="alert alert-danger mb-5">
+                <i class="fa fa-exclamation-triangle"></i> ¿Confirma que quiere eliminar este registro permanentemente?
+                <button type="submit" class="btn btn-danger btn-sm float-end" data-aos="fade" data-aos-delay="3000"><i class="fas fa-trash"></i> Eliminar</button>
+            </div>
+        }
+        <!-- Delete Button -->
+    </div>
+</div>

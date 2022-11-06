@@ -1,0 +1,128 @@
+﻿@model Apphr.Application.Proveedores.DTOs.ProveedorDTOCreate
+
+@{
+    ViewBag.Title = "Crear";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area = "Inventario" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index")" style="text-decoration:none">
+                    <span>Índice</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <span>Crear</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Form Title -->
+    <h4>
+        @ViewBag.Title Proveedor
+    </h4>
+    <hr />
+    <!-- Form Title -->
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.ProveedorId)
+
+        <div class="row g-2">
+            @*<h4 class="mb-0">Proveedores</h4>
+            <hr />*@
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.EditorFor(x => x.IsActive)
+            @Html.EditorFor(x => x.Nit)
+            @Html.EditorFor(x => x.Descripcion)
+            @Html.EditorFor(x => x.Direccion)
+            @Html.EditorFor(x => x.Contacto)
+            @Html.EditorFor(x => x.Telefono)
+
+
+
+
+            <div class="col-md-6">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                @*@Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "form-label" })*@
+                @*<div class="col">
+
+                        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                    </div>*@
+            </div>
+
+            <div class="col-md-6">
+                @Html.EditorFor(model => model.DiasCredito, new { htmlAttributes = new { @class = "form-control" } })
+                @*@Html.LabelFor(model => model.DiasCredito, htmlAttributes: new { @class = "form-label" })*@
+                <!--<div class="col">
+                -->
+                @*@Html.ValidationMessageFor(model => model.DiasCredito, "", new { @class = "text-danger" })*@
+                <!--</div>-->
+            </div>
+
+            <div class="col-md-6">
+                @*@Html.LabelFor(model => model.Banco1, htmlAttributes: new { @class = "form-label" })*@
+                <div class="col">
+                    @Html.EditorFor(model => model.Banco1, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Banco1, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                @*@Html.LabelFor(model => model.Cuenta1, htmlAttributes: new { @class = "form-label" })*@
+                <div class="col">
+                    @Html.EditorFor(model => model.Cuenta1, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Cuenta1, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                @*@Html.LabelFor(model => model.Banco2, htmlAttributes: new { @class = "form-label" })*@
+                <div class="col">
+                    @Html.EditorFor(model => model.Banco2, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Banco2, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-6">
+                @*@Html.LabelFor(model => model.Cuenta2, htmlAttributes: new { @class = "form-label" })*@
+                <div class="col">
+                    @Html.EditorFor(model => model.Cuenta2, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Cuenta2, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                @*@Html.LabelFor(model => model.Banco3, htmlAttributes: new { @class = "form-label" })*@
+                <div class="col">
+                    @Html.EditorFor(model => model.Banco3, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Banco3, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                @*@Html.LabelFor(model => model.Cuenta3, htmlAttributes: new { @class = "form-label" })*@
+                <div class="col">
+                    @Html.EditorFor(model => model.Cuenta3, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Cuenta3, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="col-md-offset-2 col-md-10">
+                    @*<input type="submit" value="" class="btn btn-success" />*@
+                    <button type="submit" class="btn btn-success">Agregar <i class="fa fa-plus"></i></button>
+                    @Html.ActionLink("Regresar", "Index", null, new { @class = "btn btn-outline-dark" })
+                </div>
+            </div>
+        </div>
+    }
+</div>

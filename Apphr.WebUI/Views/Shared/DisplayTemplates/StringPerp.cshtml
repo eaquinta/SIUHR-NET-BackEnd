@@ -1,0 +1,19 @@
+﻿@model string
+<div class="mb-2">
+    @if (ViewData["label"] != null)
+    {
+        @Html.LabelFor(x => x, (string)ViewData["label"], new { @class = "form-label" })
+    }
+    else
+    {
+        @Html.LabelFor(x => x, new { @class = "form-label" })
+    }
+    @if (ViewData["prependIcon"] != null)
+    {
+        <i class="ms-1 @ViewData["prependIcon"]"></i>
+    }
+    @*<input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">*@
+    @Html.TextBoxFor(x => x, new { @class = "form-control" + (ViewData["class"] != null ? " " + ViewData["class"] : ""), disabled = "disabled" })
+    @*<div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>*@
+</div>
+@Html.ValidationMessageFor(x => x, null, new { @class = "text-danger" })

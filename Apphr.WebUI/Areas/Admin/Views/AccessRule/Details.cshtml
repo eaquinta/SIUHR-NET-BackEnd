@@ -1,0 +1,156 @@
+﻿@model Apphr.Application.AccessRules.DTOs.AccessRuleDTOView
+@using Apphr.Domain.Enums
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+    var _levelOnePermits = new List<Permit> { Permit.View, Permit.Edit, Permit.ViewAll, Permit.Assign, Permit.Delete };
+    var _levelTwoPermits = new List<Permit> { Permit.ManageDataOwners, Permit.ManageRules, Permit.Cancel, Permit.Close };
+}
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area ="" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index")" style="text-decoration:none">
+                    <span>Índice</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <span>Ver</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Form Title -->
+    <h4 class="mb-0">
+        Regla de Acceso
+        <a class="btn btn-warning float-end" href="@Url.Action("Edit", new { id = Model.AccessRuleId })">
+            <i class="fa fa-pen-square"></i>&nbsp;Editar
+        </a>
+    </h4>
+    <hr />
+    <!-- Form Title -->
+
+
+    <div>
+
+        @Html.DisplayFor(model => model.Name,"StringD")
+        @Html.DisplayFor(model => model.Description, "StringD")
+
+        <div class="card mb-3">
+            <div class="card-header py-1">
+                Roles <small class="text-muted">(@Model.SelectedRoles.Count())</small>
+            </div>
+            <div class="card-body p-1">
+                <ul class="list-group">
+                    @foreach (var _item in Model.Roles) {
+                        <li class="list-group-item d-lg-flex text-center justify-content-between align-items-center p-1" data-toggle="">
+                            @_item.Role.Name
+                        </li>
+                    }
+                </ul>
+
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header py-1">
+                Permisos
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    @if (Model.SelectedPermits == null || Model.SelectedPermits.Count == 0)
+                    {
+                        <div class="">No tiene permisos asigandos</div>
+                    }
+                    else
+                    {
+                    <div class="col-12 col-md-8">
+                        @if (Model.SelectedPermits != null && Model.SelectedPermits.Any(x => _levelOnePermits.Contains(x)))
+                        {
+                        <div class="list-group">
+                            @if (Model.SelectedPermits.Contains(Permit.View))
+                            {
+                                <div class="list-group-item list-group-item-success">
+                                    <i class="fa fa-eye"></i> Ver
+                                </div>
+                            }
+                            @if (Model.SelectedPermits.Contains(Permit.Edit))
+                            {
+                                <div class="list-group-item list-group-item-warning">
+                                    <i class="fa fa-edit"></i> Editar
+                                </div>
+                            }
+                            @if (Model.SelectedPermits.Contains(Permit.ViewAll))
+                            {
+                                <div class="list-group-item list-group-item-info">
+                                    <i class="fa fa-list-alt"></i> Ver Todos
+                                </div>
+                            }
+                            @if (Model.SelectedPermits.Contains(Permit.Assign))
+                            {
+                                <div class="list-group-item list-group-item-secondary">
+                                    <i class="fa fa-clipboard-check"></i> Asignar
+                                </div>
+                            }
+                            @if (Model.SelectedPermits.Contains(Permit.Delete))
+                            {
+                                <div class="list-group-item list-group-item-danger">
+                                    <i class="fa fa-trash-alt"></i> Eliminar
+                                </div>
+                            }
+
+                        </div>
+                        }
+                    </div>
+                    <div class="col-12 col-md-4">
+                        @if (Model.SelectedPermits != null && Model.SelectedPermits.Any(x => _levelTwoPermits.Contains(x)))
+                        {
+                        <div class="list-group">
+                            @if (Model.SelectedPermits.Contains(Permit.ManageDataOwners))
+                            {
+                                <div class="list-group-item list-group-item-primary">
+                                    <i class="fa fa-user-lock"></i> Propietarios de Datos
+                                </div>
+                            }
+                            @if (Model.SelectedPermits.Contains(Permit.ManageRules))
+                            {
+                                <div class="list-group-item list-group-item-dark">
+                                    <i class="fa fa-key"></i> Reglas de Acceso
+                                </div>
+                            }
+                            @if (Model.SelectedPermits.Contains(Permit.Cancel))
+                            {
+                                <div class="list-group-item list-group-item-danger">
+                                    <i class="fa fa-times"></i> Cancelar
+                                </div>
+                            }
+                            @if (Model.SelectedPermits.Contains(Permit.Close))
+                            {
+                                <div class="list-group-item list-group-item-dark">
+                                    <i class="fa fa-window-close"></i> Cerrar
+                                </div>
+                            }
+                        </div>
+                        }
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Botones Formulario -->
+    <div class="col-12 mt-1">
+        <div class="col-md-offset-2 col-md-10">
+            @Html.ActionLink("Regresar", "Index", null, new { @class = "btn btn-outline-dark" })
+        </div>
+    </div>
+    <!-- Botones Formulario -->
+
+</div>

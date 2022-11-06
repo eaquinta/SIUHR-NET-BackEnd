@@ -1,0 +1,152 @@
+﻿@model Apphr.Application.AjustesInventario.DTOs.AjusteInventarioDTOCEdit
+@using Newtonsoft.Json
+@{
+    ViewBag.Title = "Crear";
+    ViewBag.Entidad = "Ajuste Inventario";
+    ViewBag.Icon = ""; //"<i class=\"fas fa-map-marker-alt\"></i>";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area = "Inventario" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index")" style="text-decoration:none">
+                    <span>Índice</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <span>Crear</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Form Title -->
+    <h4>
+        @ViewBag.Title @ViewBag.Entidad @Html.Raw(ViewBag.Icon)
+        <a class="btn btn-outline-dark float-end btnReturn" href="">Regresar</a>
+    </h4>
+    <hr />
+    <!-- Form Title -->
+    <!-- Formulario -->
+
+    @using (Ajax.BeginForm("JsSaveMaster", "SolicitudesPedido", new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnBegin = "master.saveBegin",
+        OnSuccess = "master.saveSuccess",
+        OnFailure = "master.saveFailure"
+    }, new { id = "master-form" }))
+    {
+        @Html.AntiForgeryToken()
+        @*@Html.HiddenFor(x => x.BodegaId)*@
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="card border border-dark mb-2">
+            <div class="card-header background-inventory">
+                Generales
+                <a class="" data-bs-toggle="collapse" href="#collapseFilter" role="button" aria-expanded="true" aria-controls="collapseFilter">
+                    <i class="fa fa-chevron-up fa-pull-right" style="margin-top: 5px;"></i>
+                </a>
+            </div>
+            <div class="collapse show" id="collapseFilter">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">@Html.EditorFor(x => x.AjusteInventarioId)</div>
+                        <div class="col-6">@Html.EditorFor(x => x.Fecha)</div>
+                        <div class="col-6">@Html.EditorFor(x => x.DocumentoReferencia)</div>
+                        <div class="col-6">@Html.EditorFor(x => x.FechaDocumentoReferencia)</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <button id="btnSaveMaster" type="submit" class="btn btn-success float-end">Guardar <i class="far fa-save"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <!-- Botones Formulario Detalle -->
+            <div class="row mt-2">
+                <div class="col-12">
+                    <button type="button" class="btn btn-success onUpd" data-bs-toggle="modal" onclick="child.rowCreate();" data-bs-target="#child-modal"> Adicionar Material <i class="fa fa-plus"></i></button>
+                    <button type="button" class="btn btn-outline-dark ms-2 float-end onUpd" onclick="master.refreshGrid();"><i class="fas fa-sync"></i> Refrescar</button>
+                </div>
+            </div>
+            <!-- Botones Formulario Detalle -->
+        }
+
+    <div id="Grid1" class="table-responsive mt-2" style="border-radius: 5px;"></div>
+
+
+    <!-- Botones Formulario -->
+    <div class="col-md-12 mt-2 onUpd">
+        <a class="btn btn-outline-dark btnReturn" href="">Regresar</a>
+        <div class="float-end">
+            <a class="btn btn-outline-danger btn-eliminar" href="#"><i class="fas fa-trash"></i>&nbsp;Eliminar</a>
+        </div>
+    </div>
+    <!-- Botones formulario -->
+    <!-- Formulario Child -->
+    @using (Ajax.BeginForm("JsSaveChild", "AjustesInventario", new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnBegin = "child.saveBegin",
+        OnSuccess = "child.saveSuccess",
+        OnFailure = "child.saveFailure"
+    }, new { id = "form-child" }))
+    {
+        <div class="modal fade" id="child-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 id="myModalLabel" class="modal-title">Agregar Material</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="formLinea">
+                        @Html.Partial("_CEditChild", Model.Child)
+                    </div>
+                    <div class="modal-footer">
+                        @*<input type="reset" value="Limpiar" class="btn btn-warning" />*@
+                        @*<button type="button" class="btn btn-warning" data-bs-dismiss="modal">
+                                Cerrar
+                            </button>*@
+                        <input type="submit" id="btnSaveDTmodal" class="btn btn-primary" value="Guardar" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <!-- Formulario Child -->
+</div>
+
+@section scripts{
+    <script>
+        let urls = @Html.Raw(JsonConvert.SerializeObject(new
+              {
+                  Details = Url.Action("Details"),
+                  CEdit = Url.Action("CEdit"),
+                  Index = Url.Action("Index"),
+                  Grid = Url.Action("JsGrid"),
+                  GetChild = Url.Action("JsGetChild"),
+                  DeleteMaster = Url.Action("JsDeleteMaster"),
+                  DeleteChild = Url.Action("JsDeleteChild"),
+                  FindMateriales = Url.Action("JsGetMaterialesByFilter", "Materiales"),
+                  FindBodegas = Url.Action("JsGetBodegasByFilter","Bodegas"),
+                  FindProveedor = Url.Action("JsGetProveedoresByFilter", "Proveedores"),
+                  GetMatByCod = Url.Action("JsGetMaterialByCodigo","Materiales"),
+                  GetBodega = Url.Action("JsGetBodegaByNombre", "Bodegas"),
+                  GetProveedor = Url.Action("JsGetProveedorByNit","Proveedores"),
+
+              }));
+        let id1 = '@Model.AjusteInventarioId';
+    </script>
+    <script src="~/Content/apphr/AjusteInventario/CEdit.js"></script>
+}

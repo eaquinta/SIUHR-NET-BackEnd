@@ -1,0 +1,104 @@
+﻿@model Apphr.Application.AppAreas.DTOs.RootDTODashboard
+@{
+    ViewBag.Title = "Inicio Admisión";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+<style>
+    .btn-sq-lg {
+        width: 150px !important;
+        height: 150px !important;
+    }
+</style>
+<div class="container-lg pt-3">
+    <div class="container-fluid">
+        <h4>Accesos</h4>
+        <div class="row mb-3">
+            <div class="col-2">
+                <a href="@Url.Action("Index","PacienteEventos", new { Area = "Admision" })" class="btn btn-sq-lg btn-primary">
+                    <i class="fa fa-users fa-5x"></i><br />
+                    Admisión<br>Pacientes
+                </a>
+            </div>
+
+        </div>
+        <h4 class="page-title">Estadísticas de Pacientes</h4><h5>@Model.FechaInicial.ToString("d") - @Model.FechaFinal.ToString("d")</h5>
+        <div class="row">
+            <div class="col-lg-3 col-md-4  mb-3">
+                <div class="card card-stats card-warning">
+                    <div class="card-body text-white" style="text-shadow: 1px 1px 3px rgb(0 0 0 / 50%);">
+                        <div class="row">
+                            <div class="col-5">
+                                <div class="icon-big text-center">
+                                    <i class="la la-users"></i>
+                                </div>
+                            </div>
+                            <div class="col-7 d-flex align-items-center">
+                                <div class="numbers">
+                                    <p class="card-category">Activos Hoy</p>
+                                    <h4 class="card-title">@Model.Activos</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4  mb-3">
+                <div class="card card-stats card-success" style="background-color: #fbd43b;">
+                    <div class="card-body text-white" style="text-shadow: 1px 1px 3px rgb(0 0 0 / 80%);">
+                        <div class="row">
+                            <div class="col-5">
+                                <div class="icon-big text-center">
+                                    <i class="las la-user-injured"></i>
+                                </div>
+                            </div>
+                            <div class="col-7 d-flex align-items-center">
+                                <div class="numbers">
+                                    <p class="card-category">Ingresos</p>
+                                    <h4 class="card-title">@Model.Ingresos</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4  mb-3">
+                <div class="card card-stats card-danger" style="background-color: #65a630; ">
+                    <div class="card-body text-white" style="text-shadow: 1px 1px 3px rgb(0 0 0 / 50%);">
+                        <div class="row">
+                            <div class="col-5">
+                                <div class="icon-big text-center">
+                                    <i class="las la-walking"></i>
+                                </div>
+                            </div>
+                            <div class="col-7 d-flex align-items-center">
+                                <div class="numbers">
+                                    <p class="card-category">Egresos</p>
+                                    <h4 class="card-title">@Model.Egresos</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-4  mb-3">
+                <div class="card card-stats card-primary" style="background-color:#50bab2;">
+                    <div class="card-body text-white" style="text-shadow: 1px 1px 3px rgb(0 0 0 / 50%);">
+                        <div class="row">
+                            <div class="col-5">
+                                <div class="icon-big text-center">
+                                    <i class="las la-book-medical"></i>
+                                </div>
+                            </div>
+                            <div class="col-7 d-flex align-items-center">
+                                <div class="numbers">
+                                    <p class="card-category">Total Sistema</p>
+                                    <h4 class="card-title">@Model.Total</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

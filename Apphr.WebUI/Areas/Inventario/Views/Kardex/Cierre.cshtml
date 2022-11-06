@@ -1,0 +1,152 @@
+﻿@model Apphr.Application.Kardex.DTOs.KardexDTOCierre
+@using Newtonsoft.Json
+@{
+    ViewBag.Title = "Cierre";
+    ViewBag.Entidad = "Kardex";
+    ViewBag.Icon = "<i class=\"fas fa-cog\"></i>";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+    // var IdKey = new { id = Model.DestinoId };
+}
+<div class="container-lg">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area = "Inventario" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            @*<li class="breadcrumb-item aos-init" data-aos="fade-left">
+                    <a class="" href="@Url.Action("Index")" style="text-decoration:none">
+                        <span>Indice</span>
+                    </a>
+                </li>*@
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <span>Cierre</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <h4 class="my-3">
+        @ViewBag.Title @ViewBag.Entidad @Html.Raw(ViewBag.Icon)
+        @*<a class="btn btn-success ms-3 float-end" href="@Url.Action("Create")">
+                Adicionar <i class="fa fa-plus"></i>
+            </a>
+            <a class="btn btn-default float-end" href="@Url.Action("IndexDBF")">
+                SIAHR <i class="fas fa-link"></i>
+            </a>*@
+    </h4>
+    <div class="clearfix"></div>
+    <!-- Encablezado -->
+    <!-- Formulario -->
+    @using (Ajax.BeginForm("JsCierre", "Kardex", new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnBegin = "master.begin",
+        OnSuccess = "master.success",
+        OnFailure = "master.failure"
+    }, new { id = "form-master" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.BodegaId)
+        <div class="card">
+            <div class="card-header">
+                Cierre e Impreison de Kardex
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">@Html.EditorFor(x => x.BodegaNombre)</div>
+                    <div class="col-md-8">@Html.EditorFor(x => x.BodegaDescripcion)</div>
+                </div>
+                <div class="form-group">
+                    <div class="float-end">
+                        <button id="btnMaster" type="submit" class="btn btn-primary"><i class="fas fa-cog"></i> Procesar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <!-- Formulario -->
+</div>
+
+@section scripts{
+    <script>
+         let urls = @Html.Raw(JsonConvert.SerializeObject(new
+               {
+                   FindBodegas = Url.Action("JsGetBodegasByFilter", "Bodegas"),
+                   GetBodega = Url.Action("JsGetBodegaByNombre", "Bodegas"),
+               }));
+    </script>
+    <script>
+        var master = {}
+        master.form = $('#form-master');
+        master.btn = $('#btnMaster');
+        master.init = () => {
+            $('#BodegaDescripcion').attr('readonly', 'readonly');
+        };
+        master.begin = () => {
+            master.btn.prop('disabled', true);
+        };
+        master.end = () => {
+            master.btn.prop('disabled', false);
+        };
+        master.failure = () => {
+            jshelper.failure();
+            master.end();
+        };
+        master.success = (response) => {            
+            jshelper.showAlert(response.success, response.message);
+            master.end();
+        };
+
+        $(document).ready(() => {
+            master.init();
+            // Autocomplete
+            $("#BodegaNombre").autocomplete({
+                maxShowItems: 5,
+                source: function (request, response) {
+                    $.ajax({
+                        url: urls.FindBodegas,
+                        dataType: "json",
+                        data: "val=" + request.term,
+                        success: function (resp) {
+                            response($.map(resp.data, function (item) {
+                                //console.log(item);
+                                return {
+                                    label: item.Text,
+                                    value: item.Value,
+                                    desc: item.Text
+                                };
+                            }));
+                        }
+                    });
+                }
+            }).data("ui-autocomplete")._renderItem = jshelper.ACRenderItem;
+
+            // Blur
+            $('#BodegaNombre').on('blur', function () {
+                $.ajax({
+                    type: "GET",
+                    url: urls.GetBodega,
+                    data: { nombre: $("#BodegaNombre").val() },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        $('#BodegaId').val('');
+                        $('#BodegaDescripcion').val('');
+                        //console.log(response);
+                        if (response.success) {
+                            $('#BodegaId').val(response.data.BodegaId);
+                            $('#BodegaDescripcion').val(response.data.Descripcion);
+                            $('#MaterialCodigo').focus();
+                        }
+                    },
+                    failure: function (response) {
+                        console.log(response);
+                        jshelper.failure();
+                    }
+                });
+            });
+        });
+    </script>
+}

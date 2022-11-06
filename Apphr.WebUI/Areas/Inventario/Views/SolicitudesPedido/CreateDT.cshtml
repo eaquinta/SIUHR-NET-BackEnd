@@ -1,0 +1,236 @@
+﻿@model Apphr.Application.SolicitudesPedido.DTOs.SolicitudPedidoDTOBaseDT
+@{
+    ViewBag.Title = "Crear";
+    ViewBag.Entidad = "Solicitud Pedido Detalle";
+    ViewBag.Icon = "<i class=\"far fa-plus-square\"></i>";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+    //var _ListTipo = (SelectListItem)ViewBag.ListTipo;
+}
+
+
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area = "Inventario" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index")" style="text-decoration:none">
+                    <span>Índice</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <span>Crear</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Form Title -->
+    <h4>
+        @ViewBag.Title @ViewBag.Entidad @Html.Raw(ViewBag.Icon)
+        <button type="button" class="btn btn-success ms-2 float-end" data-bs-toggle="modal" data-bs-target="#myModal"> Adicionar <i class="fa fa-plus"></i></button>
+        <button class="btn btn-outline-dark ms-2 float-end" onclick="refreshGrid();"> Actualizar <i class="fas fa-sync"></i></button>
+    </h4>
+    <hr />
+    <!-- Form Title -->
+    <!-- Formulario Detalle -->
+    <div id="Grid1" class="table-responsive"></div>
+    <!-- Formulario Detalle -->
+</div>
+
+@using (Ajax.BeginForm("SaveDetalle", "SolicitudesPedido", new AjaxOptions
+{
+    HttpMethod = "POST",
+    UpdateTargetId = "formLinea",
+    OnSuccess = "OnSuccess",
+}))
+{
+    <div>
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 id="myModalLabel" class="modal-title">Agregar Material</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="formLinea">
+                        @Html.Partial("CreateLine")
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-primary" value="Enviar" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Modal -->
+<div class="modal fade" id="addModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar Material</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body ">
+                <div id="loading" style="display:none">
+                    <p style="text-align:center">
+                        <img src="~/Content/imgs/ajax-loader.gif" />
+                    </p>
+                </div>
+                <div id="popup">
+                </div>
+            </div>
+        </div>
+        <!-- Modal content-->
+    </div>
+</div>
+<!-- Modal -->
+
+<div class="modal fade" id="editDTModal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="EditDTModal" aria-hidden="true">
+    <div id="editDTContainer">
+    </div>
+</div>
+@section Scripts{
+    <script src="~/Content/jquery.unobtrusive-ajax/jquery.unobtrusive-ajax.min.js"></script>
+
+    <script>
+    
+    $(document).ready(function () {       
+        $('#MaterialId').select2({
+            theme: "bootstrap-5",
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            //placeholder: $(this).data('placeholder'),
+            dropdownParent: $('#myModal'),
+            language: "es",
+            ajax: {
+                //url: '@Url.Action("GetMateriales","Materiales")',
+                url: '@Url.Action("JsGetMaterialesByFilter", "Materiales")',
+                dataType: 'json',
+                data: function (params) {
+                    var queryParameters = {
+                        id: params.term
+                    }
+                    return queryParameters;
+                },
+                processResults: function (data) {
+                    return {
+                        results: $.map(data.data, function (item) {
+                            return {
+                                text: item.text.trim(),
+                                id: item.id
+                            }
+                        })
+                    };
+                }
+                // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+            },
+        });
+    });
+    </script>
+
+    @*Editar detalle*@
+    <script>
+        function rowEdit(obj) {
+            var el = $(obj);
+            var id = el.data("model-id");
+            $.get('@Url.Action("EditDT")?id='+id, function (data) {
+                $('#editDTContainer').html(data);
+                $('#editDTModal').modal('show');
+            });
+        };
+    </script>
+
+
+    <script type="text/javascript">
+        function OnSuccess(data) {
+            //alert('HTTP Status Code: ' + data.param1 + "  " + data.param2);
+            refreshGrid();
+            $('#myModal').delay(15000).modal('hide');
+        }
+        function OnFailure(data) {
+            alert('failure');
+            alert('HTTP Status Code: ' + data.param1 + '  Error Message: ' + data.param2);
+        }
+        function rowDeleteConfirm(obj) {
+            Swal.fire({
+                title: '¿ Confirmación de eliminación ?',
+                text: "Esta acción es irreversible!",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Si',
+                cancelButtonText: 'No'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    rowDelete(obj);
+                    //Swal.fire(
+                    //    'Deleted!',
+                    //    'Your file has been deleted.',
+                    //    'success'
+                    //)
+                }
+            })
+        }
+        function rowDelete(obj) {
+            var el = $(obj);
+            var id = el.data("model-id");
+            $.ajax({
+                url: '@Url.Action("DeleteDT","SolicitudesPedido")',
+                type: 'get',
+                data: { id: id },
+                success: function (data) {
+                    refreshGrid();
+                },
+                //beforeSend: function () { $('#popup').html(""); $('#loading').show(); },
+                //complete: function () { $('#loading').hide(); }
+            });
+        }
+    </script>
+    <script>
+        var modalId = 'addModal';
+
+        function refreshGrid() {
+            var url = '@Url.Action("GetSolicitudPedidoDT", "SolicitudesPedido")';
+                //$('.modal-title').text("Buscar Departamento/Sección");
+            $.ajax({
+                url: url,
+                type: 'get',
+                //data: { llamar: "findDepto(this);" },
+                success: function (data) {
+                    $('#Grid1').html(data);
+                },
+                beforeSend: function () { $('#popup').html(""); $('#loading').show(); },
+                complete: function () { $('#loading').hide(); }
+            });
+           // $('#' + modalId).modal('show');
+        }
+        $(function () {
+            refreshGrid();
+            // Buscar departamento
+            $('#findDepartamento').click(function () {
+                var url = '@Url.Action("BuscarDestino", "Destinos")';
+                $('.modal-title').text("Buscar Departamento/Sección");
+                $.ajax({
+                    url: url,
+                    type: 'get',
+                    data: { llamar: "findDepto(this);"  },
+                    success: function (data) {
+                        $('#popup').html(data);
+                    },
+                    beforeSend: function () { $('#popup').html(""); $('#loading').show(); },
+                    complete: function () { $('#loading').hide(); }
+                });
+                $('#findModal').modal('show');
+            });
+            // Buscar departamento
+        });
+    </script>
+}

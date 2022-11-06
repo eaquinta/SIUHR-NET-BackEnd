@@ -1,0 +1,17 @@
+﻿@model string
+<div class="mb-2">
+    @if (ViewData["label"] != null)
+    {
+        @Html.LabelFor(x => x, (string)ViewData["label"], new { @class = "form-label", style = "font-weight:bold;" })
+    }
+    else
+    {
+        @Html.LabelFor(x => x, new { @class = "form-label", style = "font-weight:bold;" })
+    }
+    @if (ViewData["prependIcon"] != null)
+    {
+        <i class="ms-1 @ViewData["prependIcon"]"></i>
+    }
+    @Html.TextBoxFor(x => x, new { @class = "form-control" + (ViewData["class"] != null ? " " + ViewData["class"] : "") })
+    @Html.ValidationMessageFor(x => x, null, new { @class = "text-danger" })
+</div>

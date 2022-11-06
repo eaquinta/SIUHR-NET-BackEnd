@@ -1,0 +1,63 @@
+﻿@model Apphr.Application.Servicios.DTOs.ServicioDTOIndex
+
+@{
+    ViewBag.Title = "Índice";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<div class="container-lg">
+    <!-- Encablezado -->
+    <h4 class="my-3">
+        @ViewBag.Title Servicios
+        <i class="far fa-list-alt"></i>
+        <a class="btn btn-success float-end" href="@Url.Action("Create")">
+            Adicionar <i class="fa fa-plus"></i>
+        </a>
+    </h4>
+    <div class="clearfix"></div>
+    <!-- Encablezado -->
+    <!-- Table -->
+    <table class="table">
+        <tr class="table-dark">
+            <!-- Acciones -->
+            <th style="width: 80px;">
+                Acciones
+            </th>
+            <!-- Acciones -->
+            <th>Nombre</th>
+            <th>Area</th>
+        </tr>
+
+        @if(Model.Result.Any()){
+            foreach (var item in Model.Result)
+        {
+            <tr>
+                <!-- Acciones -->
+                <td>
+                    <a class="btn btn-sm btn-info" href="@Url.Action("Details", new { id = item.ServicioId })"><i class="fa fa-eye" aria-hidden="true"></i></a>
+                </td>
+                <!-- Acciones -->
+                <td>
+                    @item.Nombre
+                </td>
+                <td>
+                    @item.Area
+                </td>
+            </tr>
+        }
+        }
+        else
+        {
+        <tr>
+            <td class="text-center" colspan="3">@Apphr.Resources.Strings.NoRegister</td>
+        </tr>
+        }
+    </table>
+    <!-- Table -->
+</div>
+
+@section Scripts
+{
+    @Html.Partial("_ToastrPartial", Model?.C.ToastTemplates)
+}
+

@@ -1,0 +1,68 @@
+﻿@model Apphr.Domain.Entities.Servicio
+
+@{
+    ViewBag.Title = "Crear";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area = "" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index")" style="text-decoration:none">
+                    <span>Índice</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <span>Crear</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Form Title -->
+    <h4>
+        Servicio
+    </h4>
+    <hr />
+    <!-- Form Title -->
+
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+
+            @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control" } })
+
+
+            <div class="form-group mb-3">
+                @Html.LabelFor(model => model.Area, htmlAttributes: new { @class = "control-label" })
+                <div class="">
+                    @Html.EnumDropDownListFor(model => model.Area, htmlAttributes: new { @class = "form-select" })
+                    @Html.ValidationMessageFor(model => model.Area, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <!-- Botones Formulario -->
+            <div class="col-12 mt-1">
+                <div class="col-md-offset-2 col-md-10">
+                    <button type="submit" class="btn btn-success">Agregar <i class="fa fa-plus"></i></button>
+                    @Html.ActionLink("Regresar", "Index", null, new { @class = "btn btn-outline-dark" })
+                </div>
+            </div>
+            <!-- Botones Formulario -->
+        </div>
+    }
+
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

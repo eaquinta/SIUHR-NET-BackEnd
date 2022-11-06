@@ -1,0 +1,122 @@
+﻿@*@model Apphr.Domain.Entities.PacienteEvento*@
+@model Apphr.Application.PacienteEventos.DTOs.PacienteEventoDTOCreate
+@using Apphr.Domain.Enums
+@{
+    ViewBag.Title = "Crear";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+    Dictionary<string, Permit> _FieldPermission = null; // new Dictionary<string, Permit>{ { "Telefono", Permit.Edit } };
+}
+
+<div class="container-lg">
+
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area = "" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index")" style="text-decoration:none">
+                    <span>Índice</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <span>Crear</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Form Title -->
+    <h4>
+        @ViewBag.Title Ingreso Paciente
+    </h4>
+    <hr />
+    <!-- Form Title -->
+    <!-- Formulario -->
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+        @Html.HiddenFor(x => x.FacilitadorId)
+        @Html.HiddenFor(x => x.FechaIngreso)
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card  mb-3">
+                    <div class="card-header text-white" style="background-color: #7fabff;">
+                        <i class="fa fa-user" aria-hidden="true"></i> Datos Personales
+                    </div>
+                    <div class="card-body">
+                        @Html.EditorFor(model => model.NombrePaciente, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.EditorFor(model => model.Edad, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.EditorFor(model => model.NombreFamiliar, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.EditorFor(model => model.TieneTarjeta)
+
+                        @if (_FieldPermission == null || _FieldPermission["Telefono"] == Permit.Edit)
+                        {
+                            @Html.EditorFor(model => model.Telefono, new { htmlAttributes = new { @class = "form-control" } })
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <div class="card-header text-white" style="background-color: #7fabff;">
+                        Datos Del Servicio
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group mb-3">
+                            @Html.LabelFor(model => model.ServicioId, "Servicio", htmlAttributes: new { @class = "form-label", style = "font-weight:bold;" })
+                            <div class="col-12">
+                                @Html.DropDownList("ServicioId", null, htmlAttributes: new { @class = "form-select select2find" })
+                                @Html.ValidationMessageFor(model => model.ServicioId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        @Html.EditorFor(model => model.Cama, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.DisplayFor(model => model.FechaIngreso, "DateTimeD")
+                        @Html.EditorFor(model => model.Registro, new { htmlAttributes = new { @class = "form-control" } })
+                        @*<div class="row">
+            <div class="col">
+                @Html.DisplayFor(model => model.FechaIngreso, "DateD", new { label = "Fecha Ingreso" })
+            </div>
+            <div class="col">
+                @Html.DisplayFor(model => model.FechaEgreso, "DateD", new { label = "Fecha Egreso" })
+            </div>
+        </div>*@
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card mb-3">
+                    <div class="card-header text-white" style="background-color: #7fabff;">
+                        Información Médica
+                    </div>
+                    <div class="card-body">
+                        @Html.EditorFor(model => model.Sintomas, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.EditorFor(model => model.Procedencia, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.EditorFor(model => model.Observaciones, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+            </div>
+        </div>
+        @Html.DisplayFor(x => x.NombreFacilitador, "StringD")
+
+        <!-- Botones Formulario -->
+        <div class="col-12 mb-3">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="submit" class="btn btn-success">Agregar <i class="fa fa-plus"></i></button>
+                @Html.ActionLink("Regresar", "Index", null, new { @class = "btn btn-outline-dark" })
+            </div>
+        </div>
+        <!-- Botones Formulario -->
+
+    }
+    <!-- Formulario -->
+
+</div>
+@section Scripts {    
+    <script></script>
+}

@@ -1,0 +1,56 @@
+﻿@model IEnumerable<Apphr.Application.IngresosInventario.DTOs.IngresoInventarioDetalleDTOBase>
+
+<div class="card border border-dark">
+    <div class="card-header background-inventory" >
+        Detalle
+    </div>
+    <div class="card-body">
+        <table class="mb-0 table table-striped table-hover nowrap" width="100%">
+            <thead>
+                <tr>
+                    <th style="width:75px;">Acciones</th>
+                    <th>Lin</th>
+                    <th>Material</th>
+                    <th>Bodega</th>
+                    <th>Cantidad</th>
+                    <th>Valor</th>
+                    <th>Fecha Vencimiento</th>
+                </tr>
+            </thead>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-center">
+                            <div class="dropdown d-inline-block">
+                                <button class="btn btn-primary btn-sm" type="button" id="ddBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="ddBtn">
+                                    <li><a class="dropdown-item" data-model-id="@item.IngresoInventarioDetalleId" onclick="child.rowEdit(this);"><i class="far fa-edit"></i> Editar</a></li>
+                                    <li><a class="dropdown-item" data-model-id="@item.IngresoInventarioDetalleId" onclick="child.rowDelete(this);"><i class="fas fa-trash-alt"></i> Eliminar</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                        <td class="text-center">@item.Linea</td>
+                        <td>[@item.Material.Codigo] @item.Material.Descripcion</td>
+                        <td>@item.Bodega.Nombre</td>
+                        <td>@item.Cantidad</td>
+                        <td>@item.Precio</td>
+                        <td>@(item.FechaVencimiento?.ToString("d"))</td>
+                    </tr>
+                }
+
+            }
+            else
+            {
+                <!--Sin registros-->
+                <tr>
+                    <td class="text-center" colspan="6">@Apphr.Resources.Strings.NoRegister</td>
+                </tr>
+                <!--Sin registros-->
+            }
+        </table>
+    </div>
+</div>

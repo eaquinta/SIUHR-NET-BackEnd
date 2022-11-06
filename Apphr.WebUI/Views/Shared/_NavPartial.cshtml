@@ -1,0 +1,57 @@
+﻿<nav class="navbar navbar-expand-lg navbar-dark bg-dark autohide">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="@Url.Action("Index", "Home", new { Area = ""})">HR</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav me-auto">
+                @*<li class="nav-item">
+            <a class="nav-link" href="@Url.Action("Index","PacienteEventos", new { Area = "Admision" })">Pacientes Admisión</a>
+        </li>*@
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Admisión
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <li>@*<h6 class="dropdown-header">Dropdown header</h6>*@</li>
+                        <li><a class="dropdown-item" href="@Url.Action("Index","PacienteEventos", new { Area = "Admision" })"><i class="fa fa-users"></i>&nbsp;Admisión Pacientes</a></li>
+                        <li><a class="dropdown-item" href="@Url.Action("Index","Facilitadores", new { Area = "Admision" })"><i class="fa fa-address-book"></i>&nbsp;Facilitadores</a></li>
+                        @*<li><a class="dropdown-item" href="#">menu</a></li>*@
+                    </ul>
+                </li>
+                @if (User.IsInRole("SysAdmin"))
+                {
+
+                }
+                @Html.Partial("_NavPartialInventario")
+                @Html.Partial("_NavPartialMedica")
+                
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Generales
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <li><a class="dropdown-item" href="@Url.Action("Index","People", new { Area = "General" })"><i class="fa fa-users"></i>&nbsp;Personas</a></li>
+                        <li><a class="dropdown-item" href="@Url.Action("Index","Servicios", new { Area = "General" })"><i class="fas fa-hospital-user"></i> Servicios</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="#">Avanzado <i class="icon-arrow"></i> </a>
+                            <ul class="submenu dropdown-menu">
+                                <li><a class="dropdown-item" href="@Url.Action("Index","Usuarios", new { Area = "General" })"><i class="fas fa-user"></i> <strong>Usuarios</strong></a></li>
+                                <li><a class="dropdown-item" href="@Url.Action("Index","AppRole", new { Area = "Admin" })"><i class="fa fa-user-shield"></i> <strong>Roles</strong></a></li>
+                                <li><a class="dropdown-item" href="@Url.Action("Index","AccessRule", new { Area = "Admin" })"><i class="fa fa-key"></i> <strong>Reglas de Acceso</strong></a></li>
+                                <li><a class="dropdown-item" href="@Url.Action("Index","Controladores", new { Area = "Admin" })"><strong><i class="fas fa-hammer"></i> Controladores</strong></a></li>
+                            </ul>
+                        </li>
+
+                        @*<li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="@Url.Action("Index","Materiales")">Materiales</a></li>*@
+                    </ul>
+                </li>
+            </ul>
+            @Html.Partial("_LoginPartial")
+        </div>
+    </div>
+</nav>

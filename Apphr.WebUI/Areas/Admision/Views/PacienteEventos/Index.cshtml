@@ -1,0 +1,194 @@
+﻿@model Apphr.Application.PacienteEventos.DTOs.PacienteEventoDTOIndex
+
+@{
+    ViewBag.Title = "Índice";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+    var _Message = "xxxx";
+    // if (Model.F.Activo == null) { Model.F.Activo = false; }
+}
+
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area = "" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <span>Índice</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Encablezado -->
+    <h4 class="my-3">
+        @ViewBag.Title Ingreso Pacientes
+        <i class="fa fa-tags"></i>
+        <a class="btn btn-success float-end" href="@Url.Action("Create")">
+            Adicionar <i class="fa fa-plus"></i>
+        </a>
+    </h4>
+    <hr />
+    <div class="clearfix"></div>
+    <!-- Encablezado -->
+    <!-- Filter -->
+    @using (Html.BeginForm())
+    {
+        <div class="card mb-3">
+            <div class="card-header">
+                Filtro
+                <a class="" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="ture" aria-controls="collapseExample">
+                    @*<i class="fa fa-filter"></i>*@<i class="fa fa-chevron-up fa-pull-right" style="margin-top: 5px;"></i>
+                </a>
+            </div>
+            @*<div id="collapse1" class="panel-collapse collapse">*@
+            <div class="collapse show" id="collapseExample">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">@Html.EditorFor(x => x.F.Nombre)</div>
+                        <div class="col-md-6">@Html.EditorFor(x => x.F.Apellido)</div>
+                        <div class="col-md-6">@Html.EditorFor(x => x.F.ServicioId, new { optionsList = ViewBag.ServicioId, noOptionList = "Todos", @class = "select2find" })</div>
+                        <div class="col-md-6">@Html.EditorFor(x => x.F.Activo, new { optionsList = ViewBag.Activo })</div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="float-end mb-3">
+                            <button type="submit" class="btn btn-info"><i class="fa fa-filter"></i> Aplicar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <!-- Filter -->
+    <style>
+        .b5ricon {
+            position: relative;
+            top: 1px;
+            display: inline-block;
+            font-family: 'Glyphicons Halflings' !important;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .b5rtable-toggle {
+            margin-right: 8px;
+            opacity: .3;
+        }
+
+        .b5ricon:after, .b5ricon:before {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        .b5ricon-plus:before {
+            content: "\2b";
+        }
+
+        .b5ricon-minus:before {
+            content: "\2212";
+        }
+    </style>
+    <!-- Table -->
+    <div class="table-responsive">
+        <table id="PacienteEventosList" class="table table-hover table-bordered">
+            <tr class="table-dark">
+                <th>Menu</th>
+                <th>Servicio</th>
+                <th>Cama</th>
+                <th>Nombre de Paciente</th>
+                <th>Nombre Familiar</th>
+                <th>Fecha Ingreso</th>
+                <th>Fecha de Egreso</th>
+                <th>Registo</th>
+                <th>Sintomas/Motivo</th>
+                <th>Diagnóstico Médico</th>
+                <th>Teléfono</th>
+            </tr>
+            @if (Model.Result.Any())
+            {
+                foreach (var item in Model.Result)
+                {
+                    <tr>
+                        <!-- Acciones -->
+                        <td>
+                            @*<span class="b5rtable-toggle b5ricon b5ricon-plus"></span>*@
+                            <div class="dropdown d-inline-block">
+                                <button class="btn btn-primary" type="button" id="ddBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @*<i class="fas fa-bars"></i>*@
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="ddBtn">
+                                    <li><a class="dropdown-item" href="@Url.Action("Details", new { id = item.PacienteEventoId })"><i class="fa fa-eye"></i> Ver</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("Traslado", new { id = item.PacienteEventoId })"><i class="fas fa-exchange-alt"></i> Traslado</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("Egreso", new { id = item.PacienteEventoId })"><i class="fas fa-walking"></i> Egreso</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("Diagnostico", new { id = item.PacienteEventoId })"><i class="fas fa-stethoscope" style="width:1rem;"></i> Diagnóstico</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                        <!-- Acciones -->
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Servicio.Nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Cama)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelitem => item.NombrePaciente)
+                        </td>
+                        <td>
+                            @item.NombreFamiliar
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FechaIngreso)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FechaEgreso)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Registro)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Sintomas)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Diagnostico)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Telefono)
+                        </td>
+                    </tr>
+                }
+
+            }
+            else
+            {
+                <tr class="no-register">
+                    <td class="text-center" colspan="11">
+                        @Apphr.Resources.Strings.NoRegister
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+    <!-- Table -->
+</div>
+
+@section Scripts
+{
+    <script src="~/Content/bootstrap-responsive-1.0/bootstrap5.responsive.js"></script>
+    @Html.Partial("_ToastrPartial", Model?.C?.ToastTemplates)
+    <script>
+        $(document).ready(function () {
+            $('#PacienteEventosList').STRB5();
+        });
+    </script>
+}

@@ -1,0 +1,38 @@
+﻿@{
+    ViewBag.Title = "Índice";
+    ViewBag.Entidad = "Traslados Inventario";
+    ViewBag.Icon = ""; //"<i class=\"fas fa-boxes\"></i>";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+@Html.Partial("AtWork")
+
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area = "Inventario" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <span>Índice</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Encablezado -->
+    <h4 class="my-3">
+        @ViewBag.Title @ViewBag.Entidad @Html.Raw(ViewBag.Icon)
+        <a class="btn btn-success ms-3 float-end" href="@Url.Action("Create")">
+            Adicionar <i class="fa fa-plus"></i>
+        </a>
+        <a class="btn btn-default float-end" href="@Url.Action("IndexDBF")">
+            SIAHR <i class="fas fa-link"></i>
+        </a>
+    </h4>
+    <div class="clearfix"></div>
+    <!-- Encablezado -->
+</div>

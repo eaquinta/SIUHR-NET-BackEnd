@@ -1,0 +1,16 @@
+﻿@model Apphr.Application.SolicitudesDespachos.DTOs.SolicitudDespachoChildDTOCEdit
+@{
+    ViewBag.MaterialId = new List<SelectListItem>();
+}
+@Html.AntiForgeryToken()
+
+@Html.HiddenFor(x => x.SolicitudDespachoId)
+@Html.HiddenFor(x => x.SolicitudDespachoDTId)
+@Html.HiddenFor(x => x.MaterialId)
+<div class="row">
+    <div class="col-md-4">@Html.EditorFor(x => x.MaterialCodigo)</div>
+    <div class="col-md-8">@Html.EditorFor(x => x.MaterialNombre)</div>
+    <div class="col-md-6">@Html.EditorFor(x => x.MaterialPrecio)</div>
+    <div class="col-md-6">@Html.EditorFor(x => x.UnidadMedida)</div>
+    <div class="col-md-4">@Html.EditorFor(x => x.Cantidad)</div>
+</div>

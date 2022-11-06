@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewBag.Title = "No Autorizado";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<div class="container-lg">
+
+    <h2 class="text-danger">Sin Autorización <i class="fas fa-user-lock"></i></h2>
+    <div class="alert alert-danger" role="alert">
+        Upps, lo sentimos no posee privilegios suficientes para ver este contenido.
+    </div>
+    <a class="btn btn-warning float-end" href="@Request.QueryString["returnUrl"].ToString()">
+        Reintentar <i class="fas fa-sync"></i>
+    </a>
+</div>

@@ -1,0 +1,250 @@
+﻿
+@model Apphr.Application.PacienteEventos.DTOs.PacienteEventoDTODetail
+
+@{
+    ViewBag.Title = "Detalle";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+<style>
+    .form-control:disabled, .form-control[readonly] {
+        background-color: white;
+        opacity: 1;
+    }
+
+    .timeline {
+        position: relative;
+    }
+
+        .timeline:before {
+            top: 0;
+            bottom: 0;
+            position: absolute;
+            content: " ";
+            width: 3px;
+            background-color: #7fabff;
+            left: 13px;
+            /*margin-left: 9px;*/
+        }
+        .tlEvent {
+            margin-left: 30px;
+        }
+        .tlEvent:before {
+            content: ' ';
+            background: white;
+            display: inline-block;
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid #22c0e8;
+            top: 10px;
+            left: -26px;
+            width: 20px;
+            height: 20px;
+            z-index: 400;
+        }
+</style>
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area ="" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index")" style="text-decoration:none">
+                    <span>Índice</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <span>Ver</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Form Title -->
+    <h4 class="mb-0">
+        @ViewBag.Title Ingreso Paciente
+        <a class="btn btn-warning float-end" href="@Url.Action("Edit", new { id = Model.PacienteEventoId })">
+            <i class="fa fa-pen-square"></i>&nbsp;Editar
+        </a>
+    </h4>
+    <hr />
+    <!-- Form Title -->
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card  mb-3">
+                <div class="card-header text-white" style="background-color: #7fabff; text-shadow: 1px 1px 3px rgb(0 0 0 / 50%);">
+                    <i class="fa fa-user" aria-hidden="true"></i> Datos Personales
+                </div>
+                <div class="card-body">
+                    @Html.DisplayFor(model => model.NombrePaciente, "StringD", new { label = "Nombre del Paciente" })
+                    @Html.DisplayFor(model => model.Edad, "Int32D")
+                    @Html.DisplayFor(model => model.NombreFamiliar, "StringD", new { label = "Nombre del Familiar" })
+                    @Html.DisplayFor(model => model.TieneTarjeta)
+                    @Html.DisplayFor(model => model.Telefono, "StringD", new { label = "Teléfono" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header text-white" style="background-color: #7fabff; text-shadow: 1px 1px 3px rgb(0 0 0 / 50%);">
+                    Datos Del Servicio
+                </div>
+                <div class="card-body">
+                    @Html.DisplayFor(model => model.Servicio.Nombre, "StringD", new { label = "Servicio" })
+                    @Html.DisplayFor(model => model.Cama, "Int32D", new { label = "Cama" })
+                    <div class="row">
+                        <div class="col">
+                            @Html.DisplayFor(model => model.FechaIngreso, "DateD", new { label = "Fecha Ingreso" })
+                        </div>
+                        <div class="col">
+                            @Html.DisplayFor(model => model.FechaEgreso, "DateD", new { label = "Fecha Egreso" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="card mb-3">
+                <div class="card-header text-white" style="background-color: #7fabff; text-shadow: 1px 1px 3px rgb(0 0 0 / 50%);">
+                    Estado Médico
+                </div>
+                <div class="card-body">
+                    @Html.DisplayFor(model => model.Registro, "StringD")
+                    @Html.DisplayFor(model => model.Sintomas, "StringD")
+                    @Html.DisplayFor(model => model.Diagnostico, "StringD")
+                    @Html.DisplayFor(model => model.Observaciones, "StringD")
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detalle Paciente -->
+    <h3>Detalles del Servicio</h3>
+    <hr />
+    <div class="timeline">
+        @foreach (var item in Model.Historial)
+        {
+            switch (item.Tipo)
+            {
+                case Apphr.Domain.Enums.PacienteEventoTipo.Ingreso:
+                    <div class="card mb-2 tlEvent">
+                        <div class="card-header text-white" style="background-color: #fbd43b; text-shadow: 1px 1px 3px rgb(0 0 0 / 80%);">
+                            <div class="row">
+                                <div class="col-md-6"><strong><i class="fas fa-wheelchair"></i> Ingreso</strong></div>
+                                <div class="col-md-6 text-md-end">@item.Fecha.ToString("dddd, dd MMMM yyyy hh:mm tt")</div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            @*@Html.DisplayFor(modelItem => item.ServicioOrigen.Nombre, "TextAreaD", new { label = "Servicio Origen" })*@
+                            @*@Html.DisplayFor(modelItem => item.ServicioDestino.Nombre, "TextAreaD", new { label = "Servicio Destino" })*@
+                            @Html.DisplayFor(modelItem => item.EstadoObservacion, "TextAreaD", new { label = "Motivo de ingreso" })
+                            @*@Html.DisplayFor(modelItem => item.Usuario.Email, "StringD", new { label = "Usuario" })*@                            
+                            @Html.DisplayFor(modelItem => item.Usuario.Persona.Name, "StringD", new { label = "Usuario" })                            
+                        </div>
+
+                    </div>
+                    break;
+                case Apphr.Domain.Enums.PacienteEventoTipo.Traslado:
+                    <div class="card mb-2" style="margin-left: 25px;">
+                        <div class="card-header text-white" style="background-color: #ff8264; text-shadow: 1px 1px 3px rgb(0 0 0 / 50%);">
+                            <div class="row">
+                                <div class="col-md-6"><strong><i class="fas fa-exchange-alt"></i> Traslado</strong></div>
+                                <div class="col-md-6 text-md-end">@item.Fecha.ToString("dddd, dd MMMM yyyy hh:mm tt")</div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">@Html.DisplayFor(modelItem => item.ServicioOrigen.Nombre, "StringD", new { label = "Servicio Origen" })</div>
+                                <div class="col">@Html.DisplayFor(modelItem => item.CamaOrigen, "Int32D", new { label = "Cama Origen" })</div>
+                            </div>
+                            <div class="row">
+                                <div class="col">@Html.DisplayFor(modelItem => item.ServicioDestino.Nombre, "StringD", new { label = "Servicio Destino" })</div>
+                                <div class="col">@Html.DisplayFor(modelItem => item.CamaDestino, "Int32D", new { label = "Cama Destino" })</div>
+                            </div>
+                            @Html.DisplayFor(modelItem => item.EstadoObservacion, "TextAreaD", new { label = "Motivo de traslado" })
+                            @Html.DisplayFor(modelItem => item.Usuario.Email, "StringD", new { label = "Usuario" })
+                        </div>
+
+                    </div>
+                    break;
+                case Apphr.Domain.Enums.PacienteEventoTipo.Egreso:
+                    <div class="card mb-2 tlEvent" style="margin-left: 25px;">
+                        <div class="card-header text-white" style="background-color: #65a630; text-shadow: 1px 1px 3px rgb(0 0 0 / 50%);">
+                            <div class="row">
+                                <div class="col-md-6"><strong><i class="fas fa-walking"></i> Egreso</strong></div>
+                                <div class="col-md-6 text-md-end">@item.Fecha.ToString("dddd, dd MMMM yyyy hh:mm tt")</div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            @Html.DisplayFor(modelItem => item.EstadoObservacion, "TextAreaD", new { label = "Motivo de egreso" })
+                            @Html.DisplayFor(modelItem => item.Usuario.Email, "StringD", new { label = "Usuario" })
+                        </div>
+
+                    </div>
+                    break;
+                case Apphr.Domain.Enums.PacienteEventoTipo.Actualizacion:
+                    <div class="card mb-2" style="margin-left: 25px;">
+                        <div class="card-header text-white" style="background-color: #9c64e4; text-shadow: 1px 1px 3px rgb(0 0 0 / 50%);">
+                            <div class="row">
+                                <div class="col-md-6"><strong><i class="fa fa-stethoscope" aria-hidden="true"></i> Diagnostico</strong></div>
+                                <div class="col-md-6 text-md-end">@item.Fecha.ToString("dddd, dd MMMM yyyy hh:mm tt")</div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            @Html.DisplayFor(modelItem => item.EstadoObservacion, "TextAreaD", new { label = "Procedimientos Realizados" })
+                            @Html.DisplayFor(modelItem => item.Usuario.Email, "StringD", new { label = "Usuario" })
+                        </div>
+                    </div>
+                    break;
+                default:
+                    <div class="card mb-2" style="margin-left: 25px;">
+                        <div class="card-header text-white" style="background-color: #9c64e4; text-shadow: 1px 1px 3px rgb(0 0 0 / 50%);">
+                            <div class="row">
+                                <div class="col-md-6"><strong><i class="fa fa-stethoscope" aria-hidden="true"></i> Verificación</strong></div>
+                                <div class="col-md-6 text-md-end">@item.Fecha.ToString("dddd, dd MMMM yyyy hh:mm tt")</div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            @Html.DisplayFor(modelItem => item.EstadoObservacion, "TextAreaD", new { label = "Estado/Observacion/Diagnostico" })
+                            @*@Html.DisplayFor(modelItem => item.ProcedimientosPorRealizar, "TextAreaD", new { label = "Procedimientos por Realizar" })*@
+                        </div>
+                    </div>
+                    break;
+            }
+
+        }
+    </div>
+
+    <!-- Detalle Paciente -->
+    <!-- Botones Formulario -->
+    <div class="col-12 mb-3">
+        <div class="col-md-offset-2 col-md-10">
+            @Html.ActionLink("Regresar", "Index", null, new { @class = "btn btn-outline-dark" })
+        </div>
+    </div>
+    <!-- Botones Formulario -->
+
+</div>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            //$('textarea').autosize();
+            $("textarea.auto-height").each(function (index) {
+                //console.log(index + ": " + $(this).text());
+                this.style.height = "5px";
+                this.style.height = (this.scrollHeight) + 5 + "px";
+
+            });
+        });
+    </script>
+
+    @Html.Partial("_ToastrPartial", ViewData["Toast"])
+
+
+}

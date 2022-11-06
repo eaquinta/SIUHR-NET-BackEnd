@@ -1,0 +1,28 @@
+﻿@model object
+
+@{
+    var _optionList = (IEnumerable<SelectListItem>)ViewData["optionsList"];
+}
+<div class="input-group mb-2">
+    <span class="input-group-text" id="name-addon"
+          data-aos="@(ViewData["aos"] != null ? ViewData["aos"] : "slide-left")"
+          data-aos-easing="@(ViewData["aos_easing"] != null ? ViewData["aos_easing"] : "ease-out-cubic")"
+          data-aos-delay="@(ViewData["aos_delay"] != null ? ViewData["aos_delay"] : null)"
+          data-aos-duration="@(ViewData["aos_duration"] != null ? ViewData["aos_duration"] : null)"
+          data-aos-anchor-placement="top-bottom">
+        @if (ViewData["label"] != null)
+        {
+            @Html.LabelFor(x => x, ((string)ViewData["label"]), new { @class = "mb-0" })
+        }
+        else
+        {
+            @Html.LabelFor(x => x, new { @class = "mb-0" })
+        }
+        @if (ViewData["prependIcon"] != null)
+        {
+            <i class="ms-1 fa fa-@ViewData["prependIcon"]"></i>
+        }
+    </span>
+    @Html.DropDownListFor(x => x, _optionList, new { @class = "form-control" })
+    @Html.ValidationMessageFor(x => x, null, new { @class = "text-danger" })
+</div>

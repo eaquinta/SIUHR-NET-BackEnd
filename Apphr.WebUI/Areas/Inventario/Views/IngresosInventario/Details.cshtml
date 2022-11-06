@@ -1,0 +1,105 @@
+﻿@model Apphr.Application.IngresosInventario.DTOs.IngresoInventarioDTODetails
+@{
+    ViewBag.Title = "Ver";
+    ViewBag.Entidad = "Ingreso Inventario";
+    ViewBag.Icon = "<i class=\"far fa-eye\"></i>";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+    var IdKey = new { id = Model.IngresoInventarioId };
+}
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area = "Inventario" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index")" style="text-decoration:none">
+                    <span>Indice</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <span>Ver</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Form Title -->
+    <h4 class="mb-0">
+        @ViewBag.Title @ViewBag.Entidad @Html.Raw(ViewBag.Icon)
+        <a class="btn btn-warning float-end" href="@Url.Action("CEdit", IdKey)">
+            <i class="fa fa-pen-square"></i>&nbsp;Editar
+        </a>
+    </h4>
+    <hr />
+    <!-- Form Title -->
+    <!-- Form -->
+    <div class="card border border-dark mb-2">
+        <div class="card-header background-inventory">
+            Datos Generales
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-6">@Html.DisplayFor(x => x.IngresoInventarioId, "StringD")</div>
+                <div class="col-6">@Html.DisplayFor(x => x.Fecha, "DateD")</div>
+                <div class="col-6">@Html.DisplayFor(x => x.DocumentoReferencia, "StringD")</div>
+                <div class="col-6">@Html.DisplayFor(x => x.FechaDocumentoReferencia, "DateD")</div>
+            </div>
+        </div>
+    </div>
+    <!-- Form -->
+    <!-- Table -->
+    <div class="card border border-dark">
+        <div class="card-header" style="background-color: #b5d6d6;">
+            <strong>Detalle</strong>
+        </div>
+        <div class="card-body">
+            <table class="mb-0 table table-striped table-hover nowrap" width="100%">
+                <thead>
+                    <tr>
+                        <th>Lin</th>
+                        <th>Material</th>
+                        <th>Bodega</th>
+                        <th>Cantidad</th>
+                        <th>Valor</th>
+                        <th>Fecha Vencimiento</th>
+                    </tr>
+                </thead>
+                @if (Model.Detalle != null && Model.Detalle.Any())
+                {
+                    foreach (var item in Model.Detalle)
+                    {
+                        <tr>
+                            <td class="text-center">@item.Linea</td>
+                            <td>[@item.Material.Codigo] @item.Material.Descripcion</td>
+                            <td>@item.Bodega.Nombre</td>
+                            <td>@item.Cantidad</td>
+                            <td>@item.Precio</td>
+                            <td>@(item.FechaVencimiento?.ToString("d"))</td>
+                        </tr>
+                    }
+
+                }
+                else
+                {
+                    <!--Sin registros-->
+                    <tr>
+                        <td class="text-center" colspan="6">@Apphr.Resources.Strings.NoRegister</td>
+                    </tr>
+                    <!--Sin registros-->
+                }
+            </table>
+        </div>
+    </div>
+    <!-- Table -->
+    <!-- Botones Formulario -->
+    <div class="col-12 mt-1">
+        <div class="col-md-offset-2 col-md-10">
+            @Html.ActionLink("Regresar", "Index", null, new { @class = "btn btn-outline-dark" })
+        </div>
+    </div>
+    <!-- Botones Formulario -->
+</div>

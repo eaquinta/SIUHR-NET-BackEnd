@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Apphr.Domain.Entities.Encargado>
+
+@{
+    ViewBag.Title = "Encargados";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<div class="container-lg">
+    <!-- Encablezado -->
+    <h4 class="my-3">
+        @ViewBag.Title
+        <i class="fa fa-tags"></i>
+        <a class="btn btn-success float-end" href="@Url.Action("Create")">
+            Adicionar <i class="fa fa-plus"></i>
+        </a>
+    </h4>
+    <div class="clearfix"></div>
+    <!-- Encablezado -->
+
+    
+    <table class="table">
+        <tr class="table-dark">
+            <th style="width: 80px;">
+                Acciones
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+    <tr>
+        <td>
+            <a class="btn btn-sm btn-info" href="@Url.Action("View", new { id = item.EncargadoId })"><i class="fa fa-eye" aria-hidden="true"></i></a>
+        </td>
+        <td>
+            @item.Nombre
+        </td>        
+    </tr>
+        }
+
+    </table>
+</div>

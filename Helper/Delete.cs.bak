@@ -1,0 +1,27 @@
+ [AppAuthorization(Permit.Delete)]
+public async Task<ActionResult> Delete(int? id) //GET
+{
+	if (id == null)
+	{
+		return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+	}
+	var reg = await db.Bodegas.FindAsync(id);
+	if (reg == null)
+	{
+		return HttpNotFound();
+	}
+
+	var dto = mapper.Map<BodegaDTODetails>(reg);
+	return View(dto);
+}
+
+[HttpPost, ValidateAntiForgeryToken, ActionName("Delete")]        
+public async Task<ActionResult> DeleteConfirmed(int id) // POST
+{
+	var reg = await db.Bodegas.FindAsync(id);
+	db.Bodegas.Remove(reg);
+	await db.SaveChangesAsync();
+	return RedirectToAction("Index", new { Toast = "success.delete" });
+}
+
+

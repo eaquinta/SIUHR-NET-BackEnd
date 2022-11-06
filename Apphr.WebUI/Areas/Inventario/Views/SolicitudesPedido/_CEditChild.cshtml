@@ -1,0 +1,34 @@
+﻿@model Apphr.Application.SolicitudesPedido.DTOs.SolicitudPedidoDTDTOCEdit
+@{
+    ViewBag.MaterialId = new List<SelectListItem>();
+}
+@Html.AntiForgeryToken()
+
+<span class="alert-danger">
+    @Html.ValidationSummary()
+</span>
+
+@Html.HiddenFor(x => x.SolicitudId)
+@Html.HiddenFor(x => x.SolicitudPedidoDTId)
+<div class="row">
+    <div class="col-md-4">        
+        @Html.HiddenFor(x => x.MaterialId)
+        @Html.EditorFor(x => x.MaterialCodigo)
+    </div>
+    <div class="col-md-8">@Html.EditorFor(x => x.MaterialNombre)</div>
+</div>
+<div class="row">
+    <div class="col-md-6">@Html.EditorFor(x => x.MaterialPrecio)</div>    
+    <div class="col-md-6">@Html.EditorFor(x => x.UnidadMedida)</div>    
+</div>
+<div class="row">
+    <div class="col-md-4">
+        @Html.EditorFor(x => x.Cantidad)
+    </div>
+    <div class="col-md-4">
+        @Html.EditorFor(x => x.Precio)
+    </div>
+    <div class="col-md-4">
+        @Html.EditorFor(x => x.Valor)
+    </div>
+</div>

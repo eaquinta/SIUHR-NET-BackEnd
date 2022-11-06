@@ -1,0 +1,168 @@
+﻿@model Apphr.Application.SolicitudesPedido.DTOs.SolicitudPedidoDTOCEdit
+@{
+    ViewBag.Title = ViewBag.mode == "INS" ? "Crear" : "Modificar ";
+    ViewBag.Entidad = "Solicitud Pedido";
+    ViewBag.Icon = "<i class=\"far fa-plus-square\"></i>";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+    var IdKey = new { id = Model.SolicitudPedidoId };
+    //ViewBag.DepartamentoNombre = Model.Departamento.Descripcion;
+    //ViewBag.SeccionNombre = Model.Seccion.Descripcion;
+    //var _ListTipo = (SelectListItem)ViewBag.ListTipo;
+}
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area = "Inventario" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index")" style="text-decoration:none">
+                    <span>Índice</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <span>Crear</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Form Title -->
+    <h4>
+        @ViewBag.Title @ViewBag.Entidad @Html.Raw(ViewBag.Icon)
+        <a class="btn btn-outline-dark btnReturn float-end" href="">Regresar</a>
+    </h4>
+    <hr />
+    <div class="clearfix"></div>
+    <!-- Form Title -->
+    <!-- Formulario -->
+    @using (Ajax.BeginForm("JsSaveMaster", "SolicitudesPedido", new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnBegin = "master.saveBegin",
+        OnSuccess = "master.saveSuccess",
+        OnFailure = "master.saveFailure"
+    }, new { id = "master-form" }))
+    {
+        @Html.AntiForgeryToken()
+        @*@Html.HiddenFor(x => x.mode, new { value = "INS" })*@
+        @Html.HiddenFor(x => x.year)
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="row">
+            <div class="col-md-6">
+                @Html.LabelFor(x => x.SolicitudPedidoId, htmlAttributes: new { @class = "form-label", style = "font-weight:bold;" })
+                <div class="input-group onIns">
+                    <span class="input-group-text" id="basic-addon1">@Model.year-</span>
+                    @Html.TextBoxFor(x => x.serie, new { @class = "form-control" })
+                </div>
+                @Html.TextBoxFor(x => x.SolicitudPedidoId, new { @class = "form-control onUpd" })
+                @Html.ValidationMessageFor(x => x.serie, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-6">@Html.EditorFor(x => x.Correlativo)</div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">@Html.EditorFor(x => x.Fecha)</div>
+            <div class="col-md-6">
+                @Html.LabelFor(model => model.Tipo, htmlAttributes: new { @class = "form-label", style = "font-weight:bold;" })
+                <div class="col">
+                    @Html.DropDownListFor(model => model.Tipo, (IEnumerable<SelectListItem>)ViewBag.ListTipo, new { @class = "form-control form-select" })
+                    @Html.ValidationMessageFor(model => model.Tipo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                @Html.HiddenFor(x => x.DepartamentoId)
+                @Html.EditorFor(x => x.DepartamentoCodigo)
+            </div>
+            <div class="col-md-8">@Html.Editor("DepartamentoNombre", new { label = "Departamento Nombre" })</div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                @Html.HiddenFor(x => x.SeccionId)
+                @Html.EditorFor(x => x.SeccionCodigo)
+            </div>
+            <div class="col-md-8">@Html.Editor("SeccionNombre", new { label = "Seccion Nombre" })</div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">@Html.EditorFor(x => x.Elaboro)</div>
+            <div class="col-md-6">@Html.EditorFor(x => x.Solicito)</div>
+            <div class="col-md-6">@Html.EditorFor(x => x.JefeDepartamento)</div>
+            <div class="col-md-6">@Html.EditorFor(x => x.Gerente)</div>
+            <div class="col-md-6">@Html.EditorFor(x => x.Director)</div>
+            <div class="col-md-6">@Html.EditorFor(x => x.Observaciones)</div>
+        </div>
+
+        <!-- Botones Formulario -->
+        <div class="col-12 mt-1">
+            <div class="col-md-offset-2">
+                <button type="button" id="btnSaveMaster" class="btn btn-success">Guardar</button>
+                <button type="button" class="btn btn-success ms-2 float-end onUpd" data-bs-toggle="modal" onclick="child.rowCreate();" data-bs-target="#child-modal"> Adicionar Material <i class="fa fa-plus"></i></button>
+                <button type="button" class="btn btn-outline-dark ms-2 float-end onUpd" onclick="refreshGrid();"><i class="fas fa-sync"></i></button>
+            </div>
+        </div>
+        <!-- Botones Formulario -->
+    }
+    <!-- Formulario -->
+    <!-- Formulario Detalle -->
+    <div id="Grid1" class="table-responsive mt-2"></div>
+    <!-- Botones formulario -->
+    <div class="col-md-12 mt-2 onUpd">
+        <a class="btn btn-outline-dark btnReturn" href="">Regresar</a>
+        <div class="float-end">
+            <a class="btn btn-outline-danger btn-eliminar" href="#"><i class="fas fa-trash"></i>&nbsp;Eliminar</a>
+        </div>
+    </div>
+    <!-- Botones formulario -->
+    <!-- Formulario Child -->
+    @using (Ajax.BeginForm("JsSaveChild", "SolicitudesPedido", new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnBegin = "child.saveBegin",
+        OnSuccess = "child.saveSuccess",
+        OnFailure = "child.saveFailure"
+    }))
+    {
+        <div class="modal fade" id="child-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 id="myModalLabel" class="modal-title">Agregar Material</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="formLinea">
+                        @Html.Partial("_CEditChild", Model.Child)
+                    </div>
+                    <div class="modal-footer">
+                        @*<input type="reset" value="Limpiar" class="btn btn-warning" />*@
+                        <button type="button" class="btn btn-warning" data-bs-dismiss="modal">
+                            Cerrar
+                        </button>
+                        <input type="submit" id="btnSaveDTmodal" class="btn btn-primary" value="Guardar" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <!-- Formulario Child -->
+</div>
+@section Scripts{
+    <script>
+        var urlDetails = '@Url.Action("Details")';
+        var urlCEdit = '@Url.Action("CEdit")';
+        var urlIndex = '@Url.Action("Index")';        
+        var urlGetDestinoName = '@Url.Action("JsGetDestinoByCodigo", "Destinos")';
+        var urlGrid = '@Url.Action("JsGrid")';
+        var urlGetChild = '@Url.Action("JsGetChild")';
+        var urlDeleteMaster = '@Url.Action("JsDeleteMaster")';
+        var urlDeleteChild = '@Url.Action("JsDeleteChild")';
+        var urlFindMateriales = '@Url.Action("JsGetMaterialesByFilter", "Materiales")';
+        var urlFindDestinos = '@Url.Action("JsGetDestinosByFilter","Destinos")'
+        var urlGetMatByCod = '@Url.Action("JsGetMaterialByCodigo","Materiales")';
+        var id1 = '@Model.SolicitudPedidoId';
+    </script>
+    <script src="~/Content/apphr/SolicitudPedido/CEdit.js"></script>
+}

@@ -1,0 +1,18 @@
+﻿@model bool
+<div class="form-check form-switch mb-2">
+    @Html.CheckBoxFor(x => x, new { @class = "form-check-input", type = "checkbox", role = "switch" })
+    @if (ViewData["label"] != null)
+    {
+        @Html.LabelFor(x => x, (string)ViewData["label"], new { @class = "form-check-label", style = "font-weight:bold;" })
+    }
+    else
+    {
+        @Html.LabelFor(x => x, new { @class = "form-check-label", style = "font-weight:bold;" })
+    }
+</div>
+@Html.ValidationMessageFor(x => x, null, new { @class = "text-danger" })
+
+@*<div class="form-check form-switch">
+    <input class="form-check-input" type="checkbox" name="IsActive" role="switch" value="true" id="IsActive" @(Model.IsActive ? "checked" : null)>
+    <label class="form-check-label" for="IsActive"> Registro habilitado</label>
+</div>*@

@@ -1,0 +1,10 @@
+﻿@model Apphr.Application.Personas.DTOs.PersonaDTOCreateUser
+<h4>Crear cuenta</h4>
+<hr />
+@using (Html.BeginForm("AsignarUsuario", "People", FormMethod.Post, new { id = "AsignUser" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.PersonaId)
+    @Html.EditorFor(x => x.Email)
+    <button type="submit" class="btn btn-warning">Crear</button>
+}

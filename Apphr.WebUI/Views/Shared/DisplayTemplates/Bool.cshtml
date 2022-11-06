@@ -1,0 +1,12 @@
+﻿@model bool
+<div class="form-check form-switch">
+    @Html.CheckBoxFor(x => x, new { @class = "form-check-input", disabled = "disabled", type = "checkbox", role = "switch" })
+    @if (ViewData["label"] != null)
+    {
+        @Html.LabelForModel((string)ViewData["label"], new { @class = "form-check-label" })
+    }
+    else
+    {
+        @Html.LabelForModel(new { @class = "form-check-label" })
+    }
+</div>

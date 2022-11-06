@@ -1,0 +1,54 @@
+﻿@model IEnumerable<Apphr.Application.SolicitudMaterialesSala.DTOs.SolicitudMaterialSalaDetalleDTOBase>
+
+
+<div class="card border border-dark">
+    <div class="card-header background-inventory">
+        Detalle
+    </div>
+    <div class="card-body">
+        <table class="mb-0 table table-striped table-hover nowrap" width="100%">
+            <thead>
+                <tr>
+                    <th style="width:75px;">Acciones</th>
+                    <th>Material</th>
+                    <th>Cantidad</th>
+                    <th>Proveedor</th>
+                    <th>Intercambio</th>
+                </tr>
+            </thead>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-center">
+                            <div class="dropdown d-inline-block">
+                                <button class="btn btn-primary" type="button" id="ddBtn" data-bs-toggle="dropdown" aria-expanded="false">                                    
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="ddBtn">
+                                    <li><a class="dropdown-item" data-model-id="@item.SolicitudMaterialSalaDetalleId" onclick="child.rowEdit(this);"><i class="far fa-edit"></i> Editar</a></li>
+                                    <li><a class="dropdown-item" data-model-id="@item.SolicitudMaterialSalaDetalleId" onclick="child.rowDelete(this);"><i class="fas fa-trash-alt"></i> Eliminar</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                        <td>[@item.Material.Codigo] @item.Material.Descripcion</td>
+                        <td>@item.Cantidad</td>
+                        <td>@(item.Proveedor != null ? item.Proveedor.Descripcion : "")</td>
+                        <td>@(item.Intercambio?"Sí":"")</td>
+                    </tr>
+                }
+
+            }
+            else
+            {
+                <!--Sin registros-->
+                <tr>
+                    <td class="text-center" colspan="5">@Apphr.Resources.Strings.NoRegister</td>
+                </tr>
+                <!--Sin registros-->
+            }
+
+        </table>
+    </div>
+</div>

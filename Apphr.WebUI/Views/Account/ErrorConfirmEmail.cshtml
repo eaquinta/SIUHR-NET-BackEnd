@@ -1,0 +1,15 @@
+﻿
+@{
+    ViewBag.Title = "Error en confirmación de correo electrónico";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-lg">
+    @Html.Partial("_DefaultHeader")
+    <h3>@ViewBag.Title</h3>
+
+    <div class="alert alert-danger" role="alert">
+        <i class="fas fa-exclamation-circle"></i> Este link de confirmación ya fue utilizado o es invalido
+    </div>
+    <a class="btn btn-primary" href="@Url.Action("Index","Home",new { Area = "" })">ir a página Inicial</a>
+</div>

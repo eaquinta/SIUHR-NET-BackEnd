@@ -1,0 +1,40 @@
+﻿@model Apphr.Application.Proveedores.DTOs.ProveedorDTODetails
+@Html.DisplayFor(x => x.IsActive)
+@Html.DisplayFor(model => model.Nit, "StringD")
+@Html.DisplayFor(model => model.Descripcion, "StringD")
+@Html.DisplayFor(model => model.Direccion, "StringD")
+@Html.DisplayFor(model => model.Contacto, "StringD")
+@Html.DisplayFor(model => model.Telefono,"StringD")
+<div class="row">
+    <div class="col-sm-6">
+        @Html.DisplayFor(x => x.Email, "StringD")
+    </div>
+
+    <div class="col-sm-6">
+        @Html.DisplayFor(x => x.DiasCredito, "Int32D")
+    </div>
+
+    <div class="col-sm-6">
+        @Html.DisplayFor(x => x.Banco1, "StringD")
+    </div>
+
+    <div class="col-md-6">
+        @Html.DisplayFor(x => x.Cuenta1, "StringD")
+    </div>
+
+    <div class="col-sm-6">
+        @Html.DisplayFor(x => x.Banco2, "StringD")
+    </div>
+
+    <div class="col-md-6">
+        @Html.DisplayFor(x => x.Cuenta2, "StringD")
+    </div>
+
+    <div class="col-sm-6">
+        @Html.DisplayFor(x => x.Banco3, "StringD")
+    </div>
+
+    <div class="col-md-6">
+        @Html.DisplayFor(x => x.Cuenta3, "StringD")
+    </div>
+</div>

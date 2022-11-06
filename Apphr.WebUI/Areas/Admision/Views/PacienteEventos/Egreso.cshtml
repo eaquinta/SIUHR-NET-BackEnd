@@ -1,0 +1,76 @@
+﻿@model Apphr.Application.PacienteEventos.DTOs.PacienteEventoDTOEgreso
+
+@{
+    ViewBag.Title = "Egreso";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area ="" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index")" style="text-decoration:none">
+                    <span>Índice</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <span>Egreso</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Formulario -->
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.Paciente.PacienteEventoId)
+        @Html.HiddenFor(model => model.Paciente.ServicioId)
+        @Html.HiddenFor(model => model.Fecha)
+
+        <div class="card  mb-3">
+            <div class="card-header text-white" style="background-color: #7fabff;">
+                <i class="fa fa-user" aria-hidden="true"></i> Datos Personales
+            </div>
+            <div class="card-body">
+                @*<h5 class="card-title">Special title treatment</h5>
+                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>*@
+                @*<a href="#" class="btn btn-primary">Go somewhere</a>*@
+                @Html.DisplayFor(model => model.Paciente.NombrePaciente, "StringD", new { label = "Nombre del Paciente" })
+
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-header text-white" style="background-color: #65a630; ">
+                <i class="fas fa-walking"></i> Egreso
+            </div>
+            <div class="card-body">
+                @*<div class="form-group mb-3">
+                        @Html.LabelFor(model => model.ServicioId, "ServicioId", htmlAttributes: new { @class = "control-label" })
+
+                        <div class="col">
+                            @Html.DropDownList("ServicioId", null, htmlAttributes: new { @class = "form-select" })
+                            @Html.ValidationMessageFor(model => model.ServicioId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>*@
+                @Html.EditorFor(model => model.Motivo, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.DisplayFor(model => model.Fecha, "DateTimeD")
+            </div>
+        </div>
+        <!-- Botones Formulario -->
+        <div class="col-12 mt-1">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="submit" class="btn btn-success">Agregar <i class="fa fa-plus"></i></button>
+                @Html.ActionLink("Regresar", "Index", null, new { @class = "btn btn-outline-dark" })
+            </div>
+        </div>
+        <!-- Botones Formulario -->
+    }
+    <!-- Formulario -->
+</div>

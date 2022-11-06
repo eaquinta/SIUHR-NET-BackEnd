@@ -1,0 +1,31 @@
+﻿@model DateTime?
+@{
+    var _attr = new Dictionary<string, object>();
+
+    _attr.Add("class", "form-control");
+    _attr.Add("type", "date");
+    _attr.Add("readonly", "readonly");
+    if (ViewData["min"] != null) { _attr.Add("min", ViewData["min"]); }
+    if (ViewData["max"] != null) { _attr.Add("max", ViewData["max"]); }
+}
+<div class="input-group @(ViewData["groupSize"] != null ? string.Format("input-group-{0}", ViewData["groupSize"]) : null) mb-2">
+    <div class="input-group-prepend">
+        <span class="input-group-text"
+              data-aos="slide-left" data-aos-easing="ease-out-cubic">
+            @if (ViewData["label"] != null)
+            {
+                @Html.LabelFor(x => x, ((string)ViewData["label"]), new { @class = "mb-0" })
+            }
+            else
+            {
+                @Html.LabelFor(x => x, new { @class = "mb-0" })
+            }
+            @if (ViewData["prependIcon"] != null)
+            {
+                <i class="ms-1 fa fa-@ViewData["prependIcon"]"></i>
+            }
+        </span>
+    </div>
+    @Html.TextBox("", Model.HasValue ? Model.Value.ToString("yyyy-MM-dd") : null, _attr)
+</div>
+@Html.ValidationMessageFor(x => x, null, new { @class = "text-danger" })

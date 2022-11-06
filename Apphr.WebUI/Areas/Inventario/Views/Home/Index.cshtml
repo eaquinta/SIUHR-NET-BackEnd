@@ -1,0 +1,78 @@
+﻿
+@{
+    ViewBag.Title = "Inicio Inventarios";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<div class="container-lg pt-3">
+    <div class="container-fluid">
+        <h4>Accesos</h4>
+        <div class="row row-cols-xs-1 row-cols-md-2 row-cols-lg-3 mb-3">
+            <div class="col mb-3">
+                <div class="card border-primary aos-init mb-3" data-aos="zoom-in" data-aos-anchor="#rec0-menu-header-smc">
+                    <div class="card-header bg-primary" id="headingBlog">
+                        <h3 class="mb-0 text-white">
+                            Solicitudes <i class="fas fa-pull-right fa-hand-holding"></i>
+                        </h3>
+                    </div>
+                    <div id="collapseBlog" aria-labelledby="headingBlog">
+                        <div class="list-group list-group-flush">
+                            <a class="list-group-item list-group-item-action" href="@Url.Action("Index", "SolicitudesDespacho", new { Area = "Inventario" })"><i class="fas fa-hand-holding"></i> Solicitud Despacho</a>
+                            <a class="list-group-item list-group-item-action" href="@Url.Action("Index", "SolicitudMaterialesSala", new { Area = "Inventario" })"><i class="fas fa-hand-holding"></i> Solicitud Materiales Sala</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card border-primary aos-init" data-aos="zoom-in" data-aos-anchor="#rec0-menu-header-smc">
+                    <div class="card-header bg-primary" id="headingBlog">
+                        <h3 class="mb-0 text-white">
+                            Procesar Documentos <i class="fas fa-pull-right fa-cogs"></i>
+                        </h3>
+                    </div>
+                    <div id="collapseBlog" aria-labelledby="headingBlog">
+                        <div class="list-group list-group-flush">
+                            <a class="list-group-item list-group-item-action" href="@Url.Action("Index","IngresosInventario", new { Area = "Inventario" })"><i class="fas fa-cogs"></i> Operar Ingresos</a>
+                            <a class="list-group-item list-group-item-action" href="@Url.Action("Index","DespachosInventario", new { Area = "Inventario" })"><i class="fas fa-cogs"></i> Operar Despachos</a>
+                            <a class="list-group-item list-group-item-action" href="@Url.Action("Index","AjustesInventario", new { Area = "Inventario" })"><i class="fas fa-cogs"></i> Operar Ajustes</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col mb-3">
+                <div class="card border-info aos-init" data-aos="zoom-in" data-aos-delay="100" data-aos-anchor="#rec0-menu-header-smc">
+                    <div class="card-header bg-info" id="headingImage">
+                        <h3 class="mb-0">
+                            Consultas<i class="fa fa-pull-right fa-eye"></i>
+                        </h3>
+                    </div>
+                    <div id="collapseImage" aria-labelledby="headingImage">
+                        <div class="list-group list-group-flush">
+                            <a class="list-group-item list-group-item-action" href="@Url.Action("Index", "Existencias", new { Area = "Inventario" })"><i class="fa fa-list"></i> Existencias</a>
+                            <a class="list-group-item list-group-item-action" href="@Url.Action("Index", "Kardex", new { Area = "Inventario" })"><i class="fa fa-list"></i> Kardex</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col mb-3">
+                <div class="card border-secondary aos-init" data-aos="zoom-in" data-aos-delay="200" data-aos-anchor="#rec0-menu-header-smc">
+                    <div class="card-header bg-secondary" id="headingAdvertising">
+                        <h3 class="mb-0">
+                            Consultas SIAHR<i class="fa fa-pull-right fa-eye"></i>
+                        </h3>
+                    </div>
+                    <div id="collapseAdvertising" aria-labelledby="headingAdvertising">
+                        <div class="list-group list-group-flush">                        
+                            <a class="list-group-item list-group-item-action" href="@Url.Action("IndexDBF","SolicitudesPedido", new { Area = "Inventario" })"><i class="fa fa-eye"></i> Solicitudes de Pedido</a>
+                            <a class="list-group-item list-group-item-action" href="@Url.Action("IndexDBF","SolicitudesDespacho", new { Area = "Inventario" })"><i class="fa fa-eye"></i> Solicitudes de Despacho</a>
+                            <a class="list-group-item list-group-item-action" href="@Url.Action("IndexDBF","OrdenesCompra", new { Area = "Inventario" })"><i class="fa fa-eye"></i> Ordenes de Compra</a>
+                            <a class="list-group-item list-group-item-action" href="@Url.Action("IndexDBF","Materiales", new { Area = "Inventario" })"><i class="fa fa-eye"></i> Materiales</a>
+                            <a class="list-group-item list-group-item-action" href="@Url.Action("IndexDBF","Proveedores", new { Area = "Inventario" })"><i class="fa fa-eye"></i> Proveedores</a>
+                            <a class="list-group-item list-group-item-action" href="@Url.Action("IndexDBF","Bodegas", new { Area = "Inventario" })"><i class="fa fa-eye"></i> Bodegas</a>
+                            <a class="list-group-item list-group-item-action" href="@Url.Action("IndexDBF","Destinos", new { Area = "Inventario" })"><i class="fa fa-eye"></i> Departamentos/Destinos</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>       
+    </div>
+</div>
+

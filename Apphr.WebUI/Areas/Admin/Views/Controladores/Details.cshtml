@@ -1,0 +1,83 @@
+﻿@model Apphr.Domain.Entities.Controlador
+
+@{
+    ViewBag.Title = "Detalles";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area ="" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index")" style="text-decoration:none">
+                    <span>Índice</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <span>Ver</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Form Title -->
+    <h4 class="mb-0">
+        Regla de Acceso
+        <a class="btn btn-warning float-end" href="@Url.Action("Edit", new { id = Model.AccionId })">
+            <i class="fa fa-pen-square"></i>&nbsp;Editar
+        </a>
+    </h4>
+    <hr />
+    <!-- Form Title -->
+    <div>
+        @Html.DisplayFor(model => model.Area, "StringD")
+        @Html.DisplayFor(model => model.Controller, "StringD")
+        @Html.DisplayFor(model => model.Detalle, "StringD")
+        <!--<dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Area)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Area)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Controller)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Controller)
+            </dd>-->
+
+            @*<dt>
+                @Html.DisplayNameFor(model => model.Action)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Action)
+            </dd>*@
+            <!--<dt>
+                @Html.DisplayNameFor(model => model.Detalle)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Detalle)
+            </dd>
+
+        </dl>-->
+    </div>
+    <!-- Botones Formulario -->
+    <div class="col-12 mt-1">
+        <div class="col-md-offset-2 col-md-10">
+            @Html.ActionLink("Regresar", "Index", null, new { @class = "btn btn-outline-dark" })
+        </div>
+    </div>
+    <!-- Botones Formulario -->
+</div>

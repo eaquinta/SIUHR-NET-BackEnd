@@ -1,0 +1,24 @@
+﻿@model bool
+@{
+    Layout = "~/Views/Shared/EditorTemplates/_TemplateBase.cshtml";
+}
+@section label {
+    @if (ViewData["label"] != null)
+    {
+        @Html.LabelFor(x => x, (string)ViewData["label"], new { @class = "form-label", style = "font-weight:bold;" })
+    }
+    else
+    {
+        @Html.LabelFor(x => x, new { @class = "form-label", style = "font-weight:bold;" })
+    }
+    @if (ViewData["prependIcon"] != null)
+    {
+        <i class="ms-1 @ViewData["prependIcon"]"></i>
+    }
+}
+@section  value {
+    <div class="form-check form-switch">
+        @Html.CheckBoxFor(x => x)
+    </div>
+    @Html.ValidationMessageFor(x => x, null, new { @class = "text-danger" })
+}

@@ -1,0 +1,91 @@
+﻿@model Apphr.Application.Usuarios.DTOs.UsuarioDTOEdit
+@{
+    ViewBag.Title = "Editar";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+    var _RoleList = (IEnumerable<SelectListItem>)ViewData["RoleList"];
+}
+
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area = "" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index")" style="text-decoration:none">
+                    <span>Índice</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Details", new { id = Model.Id})" style="text-decoration:none">
+                    <span>Ver</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <span>Editar</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Form Title -->
+    <h4>
+        Editar Usuario
+        <a class="btn btn-success float-end" href="@Url.Action("Create", new { id = Model.Id })">
+            Adicionar <i class="fa fa-pen-square"></i>
+        </a>
+    </h4>
+    <hr />
+    <!-- Form Title -->
+
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.Id)
+        @Html.DisplayFor(model => model.UserName, "StringD")
+        @*<div class="row">
+            <div class="col-md-4">@Html.EditorFor(model => model.Persona.FirstName, new { htmlAttributes = new { @class = "form-control" } })</div>
+            <div class="col-md-4">@Html.EditorFor(model => model.Persona.MiddleName, new { htmlAttributes = new { @class = "form-control" } })</div>
+            <div class="col-md-4">@Html.EditorFor(model => model.Persona.ThirdName, new { htmlAttributes = new { @class = "form-control" } })</div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">@Html.EditorFor(model => model.Persona.LastName, new { htmlAttributes = new { @class = "form-control" } })</div>
+            <div class="col-md-4">@Html.EditorFor(model => model.Persona.MatriName, new { htmlAttributes = new { @class = "form-control" } })</div>
+            <div class="col-md-4">@Html.EditorFor(model => model.Persona.MarriedName, new { htmlAttributes = new { @class = "form-control" } })</div>
+        </div>*@
+        <div class="input-group mb-3">
+            <div class="input-group-text" data-aos="slide-left" data-aos-easing="ease-out-cubic" data-aos-delay="" data-aos-duration="" data-aos-anchor-placement="top-bottom">
+                Roles <i class="ms-1 fas fa-user-shield"></i>
+            </div>
+            @Html.ListBoxFor(x => x.SelectedRoles, _RoleList, new { @class = "form-select" })
+        </div>
+        <!-- Botones formulario -->
+        <div class="col-md-12">
+            <button type="submit" class="btn btn-warning"><i class="fas fa-edit"></i> Actualizar</button>
+            <a class="btn btn-outline-dark" href="@Url.Action("Details",new { id = Model.Id })">Regresar</a>
+            <div class="float-end">
+                <a class="btn btn-outline-danger" href="@Url.Action("Delete", new { id = Model.Id})"><i class="fas fa-trash"></i>&nbsp;Eliminar</a>
+            </div>
+        </div>
+        <!-- Botones formulario -->
+    }
+
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+            $('#SelectedRoles').select2({
+                theme: "bootstrap-5",
+                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+                placeholder: $(this).data('placeholder'),
+                closeOnSelect: false,
+                allowClear: true,
+            });
+        });
+    </script>
+}

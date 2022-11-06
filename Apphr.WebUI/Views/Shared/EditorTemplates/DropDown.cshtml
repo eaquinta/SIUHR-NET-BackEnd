@@ -1,0 +1,26 @@
+﻿@model object
+
+@{
+    var _optionList = (IEnumerable<SelectListItem>)ViewData["optionsList"];
+    var _noOptionList = (string)ViewData["noOptionList"];
+    var _class = ViewData["class"] != null ? " " + ViewData["class"] : "";
+}
+<div class="@(ViewData["groupSize"] != null ? string.Format("input-group-{0}", ViewData["groupSize"]) : null) mb-2">
+    @if (ViewData["label"] != null)
+    {
+        @Html.LabelFor(x => x, ((string)ViewData["label"]), new { @class = "mb-0", style = "font-weight:bold;" })
+    }
+    else
+    {
+        @Html.LabelFor(x => x, new { @class = "form-label", style = "font-weight:bold;" })
+    }
+    @if (ViewData["noOptionList"] != null)
+    { 
+        @Html.DropDownListFor(x => x, _optionList, _noOptionList, new { @class = "form-select" + _class })
+    }
+    else
+    { 
+        @Html.DropDownListFor(x => x, _optionList, new { @class = "form-select" + _class })
+    }
+</div>
+@Html.ValidationMessageFor(x => x, null, new { @class = "text-danger" })

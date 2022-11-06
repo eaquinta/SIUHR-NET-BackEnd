@@ -1,0 +1,130 @@
+﻿@model Apphr.Domain.Entities.PacienteEvento
+
+@{
+    ViewBag.Title = "Eliminar";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>PacienteEvento</h4>
+    <hr />
+    <dl class="dl-horizontal">        
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RegistroMedico.CreatedBy)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RegistroMedico.CreatedBy)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Servicio.Nombre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Servicio.Nombre)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NombrePaciente)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NombrePaciente)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NombreFamiliar)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NombreFamiliar)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FechaIngreso)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FechaIngreso)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FechaEgreso)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FechaEgreso)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Cama)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Cama)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Registro)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Registro)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Diagnostico)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Diagnostico)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Sintomas)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Sintomas)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Telefono)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Telefono)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TieneTarjeta)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TieneTarjeta)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Observaciones)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Observaciones)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+
+    <div class="form-actions no-color">
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+    }
+</div>

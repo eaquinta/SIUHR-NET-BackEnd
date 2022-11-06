@@ -1,0 +1,55 @@
+﻿<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Inventario
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+        @*<li>
+            <a class="dropdown-item" href="#"><i class="far fa-list-alt"></i>&nbsp;Controles<i class="icon-arrow"></i> </a>
+            <ul class="submenu dropdown-menu">
+                <li><a class="dropdown-item" href="@Url.Action("Index","SolicitudMaterialesSala", new { Area = "Inventario" })"><i class="fas fa-file-invoice"></i>&nbsp;Control de Materiales Sala</a></li>
+            </ul>
+        </li>*@
+        <li>
+            <a class="dropdown-item" href="#"><i class="fas fa-cart-plus"></i>&nbsp;Solicitudes<i class="icon-arrow"></i> </a>
+            <ul class="submenu dropdown-menu">
+                <li><a class="dropdown-item" href="@Url.Action("Index","SolicitudesPedido", new { Area = "Inventario" })"><i class="fas fa-file-invoice"></i>&nbsp;Solicitud Pedidos</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("Index","SolicitudesDespacho", new { Area = "Inventario" })"><i class="fas fa-file-invoice"></i>&nbsp;Solicitud Despachos</a></li>                
+                <li><a class="dropdown-item" href="@Url.Action("Index","SolicitudMaterialesSala", new { Area = "Inventario" })"><i class="fas fa-file-invoice"></i>&nbsp;Solicitud Material Sala</a></li>                
+            </ul>
+        </li>
+        <li>
+            <a class="dropdown-item" href="#"><i class="fas fa-cogs"></i>&nbsp;Procesar Documentos<i class="icon-arrow"></i> </a>
+            <ul class="submenu dropdown-menu">
+                <li><a class="dropdown-item" href="@Url.Action("Index","IngresosInventario", new { Area = "Inventario" })"><i class="fas fa-cog"></i>&nbsp;Operar Ingresos</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("Index","DespachosInventario", new { Area = "Inventario" })"><i class="fas fa-cog"></i>&nbsp;Operar Despachos</a></li>
+                @*<li><a class="dropdown-item" href="@Url.Action("Index","TrasladosInventario", new { Area = "Inventario" })"><i class="fas fa-cog"></i>&nbsp;Operar Trasaldos</a></li>*@
+                <li><a class="dropdown-item" href="@Url.Action("Index","AjustesInventario", new { Area = "Inventario" })"><i class="fas fa-cog"></i>&nbsp;Operar Ajustes</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("Cierre","Kardex", new { Area = "Inventario" })"><i class="fas fa-cog"></i>&nbsp;Operar Cierre Kardex</a></li>
+            </ul>
+        </li>
+
+        <li>
+            <a class="dropdown-item" href="#"><i class="far fa-eye"></i>&nbsp;Consultas SIAHR<i class="icon-arrow"></i> </a>
+            <ul class="submenu dropdown-menu">
+                <li><a class="dropdown-item" href="@Url.Action("IndexDBF","SolicitudesPedido", new { Area = "Inventario" })"><i class="far fa-eye"></i>&nbsp;Solicitudes de Pedido</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("IndexDBF","SolicitudesDespacho", new { Area = "Inventario" })"><i class="far fa-eye"></i>&nbsp;Solicitudes de Despacho</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("IndexDBF","OrdenesCompra", new { Area = "Inventario" })"><i class="far fa-eye"></i>&nbsp;Ordenes de Compra</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("IndexDBF","Materiales", new { Area = "Inventario" })"><i class="far fa-eye"></i>&nbsp;Materiales</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("IndexDBF","Proveedores", new { Area = "Inventario" })"><i class="far fa-eye"></i>&nbsp;Proveedores</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("IndexDBF","Bodegas", new { Area = "Inventario" })"><i class="far fa-eye"></i>&nbsp;Bodegas</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("IndexDBF","Destinos", new { Area = "Inventario" })"><i class="far fa-eye"></i>&nbsp;Departamentos/Destinos</a></li>
+            </ul>
+        </li>
+        <li><a class="dropdown-item" href="@Url.Action("Index","Kardex", new { Area = "Inventario" })"><i class="fas fa-clipboard-list"></i> Kardex</a></li>
+        <li><a class="dropdown-item" href="@Url.Action("Index","Existencias", new { Area = "Inventario" })"><i class="fas fa-clipboard-list"></i> Existencias</a></li>
+        <li>
+            <a class="dropdown-item" href="#"><i class="fas fa-wrench"></i>&nbsp;Catálogos<i class="icon-arrow"></i> </a>
+            <ul class="submenu dropdown-menu">
+                <li><a class="dropdown-item" href="@Url.Action("Index","Destinos", new { Area = "Inventario" })"><i class="fas fa-map-marker-alt"></i> Departamentos/Destinos</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("Index","Bodegas", new { Area = "Inventario" })"><i class="fas fa-warehouse"></i> Bodegas</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("Index","Proveedores", new { Area = "Inventario" })"><i class="fas fa-users"></i> Proveedores</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("Index","Materiales", new { Area = "Inventario" })"><i class="fas fa-boxes"></i> Materiales</a></li>
+            </ul>
+        </li>
+    </ul>
+</li>

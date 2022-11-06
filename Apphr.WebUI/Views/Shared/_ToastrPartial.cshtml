@@ -1,0 +1,48 @@
+﻿@*toastr.info("Are you the 6 fingered man?");
+    toastr.success("Inconceivable!");
+    toastr.warning("Have fun storming the castle!");
+    toastr.error("This is an error!");*@
+
+
+
+@model IEnumerable<Apphr.Application.Common.Models.ToastTemplate>
+@if (Model != null)
+{
+<script>
+    $(document).ready(function () {
+        //toastr.options.progressBar = true;
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+
+        @foreach (var _template in Model)
+        {
+
+            if (!string.IsNullOrEmpty(_template.Title))
+            {
+                @*@:toastr.success('@Html.Raw(_template.Message)', '@Html.Raw(_template.Title)');*@
+                @:toastr["@_template.Type"]("@Html.Raw(_template.Message)", "@Html.Raw(_template.Title)");
+            }
+            else
+            {
+                @:toastr["@_template.Type"]("@Html.Raw(_template.Message)");
+                @*@:toastr.success('@Html.Raw(_template.Message)');*@
+            }
+        }
+    });
+</script>
+}

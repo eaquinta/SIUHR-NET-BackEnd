@@ -1,0 +1,7 @@
+﻿@using Newtonsoft.Json
+<script>
+        let appMessages = @Html.Raw(JsonConvert.SerializeObject(new
+                      {
+                          failure = Apphr.Resources.Msg.failure
+                      }))
+</script>

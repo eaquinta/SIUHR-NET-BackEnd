@@ -1,0 +1,80 @@
+﻿@model Apphr.Application.Bodegas.DTOs.BodegaDTOEdit
+@{
+    ViewBag.Title = "Editar";
+    ViewBag.Entidad = "Bodega";
+    ViewBag.Icon = "<i class=\"fas fa-box\"></i>";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area ="" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index")" style="text-decoration:none">
+                    <span>Índice</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <span>Ver</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Form Title -->
+    <h4 class="mb-0">
+        @ViewBag.Title @ViewBag.Entidad @Html.Raw(ViewBag.Icon)
+        @*<a class="btn btn-warning float-end" href="@Url.Action("Edit", new { id = Model.BodegaId })">
+                <i class="fa fa-pen-square"></i>&nbsp;Editar
+            </a>*@
+    </h4>
+    <hr />
+    <!-- Form Title -->
+    <!-- Formulario -->
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.BodegaId)
+        @Html.EditorFor(x => x.Nombre)
+        @Html.EditorFor(x => x.Descripcion)
+
+
+        <!-- Botones formulario -->
+        <div class="col-md-12 mt-3">
+            <button type="submit" class="btn btn-warning"><i class="fas fa-edit"></i> Actualizar</button>
+            <a class="btn btn-outline-dark" href="@Url.Action("Details",new { id = Model.BodegaId })">Regresar</a>
+            <div class="float-end">
+                <a class="btn btn-outline-danger btn-eliminar" href="#"><i class="fas fa-trash"></i>&nbsp;Eliminar</a>
+            </div>
+        </div>
+        <!-- Botones formulario -->
+    }
+    <!-- Formulario -->
+</div>
+@section scripts {
+    <script>
+
+        var urlIndex = '@Url.Action("Index")';
+        var urlDelete = '@Url.Action("JsDelete")';
+        var dataDelete = { id: $('#BodegaId').val() };
+
+        $(function () {
+            $('.btn-eliminar').click(function (event) {
+                event.preventDefault();
+                jshelper.deleteConfirm(function () {
+                    jshelper.deleteAjax(
+                        urlDelete,
+                        dataDelete,
+                        function () { jshelper.deleteRedirect(urlIndex); }
+                    );
+                });
+            });
+        });
+    </script>
+}

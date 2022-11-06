@@ -1,0 +1,59 @@
+﻿@model Apphr.Application.Proveedores.DTOs.ProveedorDTODetails
+
+@{
+    ViewBag.Title = "Ver";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+    var IdKey = new { id = Model.ProveedorId };
+}
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <a class="" href="@Url.Action("Administrativo","Home")" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index")" style="text-decoration:none">
+                    <span>Índice Proveedores</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <span>Ver</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Form Title -->
+    <h4 class="mb-0">
+        @ViewBag.Title @ViewBag.Entidad @Html.Raw(ViewBag.Icon)
+        <a class="btn btn-warning float-end" href="@Url.Action("Edit", IdKey)">
+            <i class="fa fa-pen-square"></i>&nbsp;Editar
+        </a>
+    </h4>
+    <hr />
+    <!-- Form Title -->
+    <!-- Form -->
+    @Html.Partial("_DFields", Model)
+    <!-- Form -->
+
+    <div class="row">
+        <div class="col-12">
+            Creado el: @Model.CreatedDate por @Model.CreatedBy
+        </div>
+    </div>
+    <!-- Botones Formulario -->
+    <div class="col-12 mt-1">
+        <div class="col-md-offset-2 col-md-10">
+            @Html.ActionLink("Regresar", "Index", null, new { @class = "btn btn-outline-dark" })
+        </div>
+    </div>
+    <!-- Botones Formulario -->
+
+</div>
+@section Scripts
+{
+    }
+

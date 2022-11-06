@@ -1,0 +1,22 @@
+﻿@model string
+
+
+<div class="input-group mb-2">
+    <span class="input-group-text">
+        @if (ViewData["label"] != null)
+        {
+            @Html.LabelFor(x => x, (string)ViewData["label"])
+        }
+        else
+        {
+            @Html.LabelFor(x => x)
+        }
+        @if (ViewData["prependIcon"] != null)
+        {
+            <i class="ms-1 @ViewData["prependIcon"]"></i>
+        }
+    </span>
+    @Html.TextBoxFor(x => x, new { @class = "form-control" + (ViewData["class"] != null ? " " + ViewData["class"] : ""), disabled = "disabled" })
+    @Html.ValidationMessageFor(x => x, null, new { @class = "text-danger" })
+</div>
+
