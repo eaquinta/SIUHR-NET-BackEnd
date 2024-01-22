@@ -1,5 +1,6 @@
-﻿using Apphr.Application.DespachosInventario.DTOs;
-using Apphr.Domain.Entities;
+﻿using Apphr.Application.Common.DTOs;
+using Apphr.Application.DespachosInventario.DTOs;
+using Apphr.WebUI.Models.Entities;
 using Apphr.Domain.Enums;
 using Apphr.WebUI.Common;
 using Apphr.WebUI.Controllers;
@@ -36,7 +37,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 			DespachoInventarioRep = new DespachoInventarioRepository(db);
         }
 
-		[AppAuthorization(Permit.View)]
+		[Can("despacho_inventario.ver")]
 		public ActionResult Index( DespachoInventarioDTOIndex dto, int? page) //GET
 		{
 			IQueryable<DespachoInventario> regs;
@@ -73,7 +74,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 			return View(dto);
 		}
 
-		[AppAuthorization(Permit.Edit)]
+		[Can("despacho_inventario.editar")]
 		public async Task<ActionResult> CEdit(string id)  //GET
 		{
 			var dto = new DespachoInventarioDTOCEdit();
@@ -111,7 +112,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 			return View(dto);
 		}
 		
-		[AppAuthorization(Permit.View)]
+		[Can("despacho_inventario.ver")]
 		public async Task<ActionResult> Details(string id)
 		{
 			if (string.IsNullOrEmpty(id))
@@ -142,8 +143,8 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<JsonResult> JsSaveMaster(DespachoInventarioDTOCEdit dto)
 		{
-            Permit[] permisosRequeridos = { Permit.Edit };
-            bool hasPermit = Utilidades.hasPermit(permisosRequeridos, ControllerContext, userName);
+            string[] permisosRequeridos = { "despacho_inventario.editar" };
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
             if (!hasPermit)
             {
                 return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
@@ -171,14 +172,14 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Json(new { success = false, message = Resources.Msg.failure, messageEx = ex.Message, messageInner = ex.InnerException }, JsonRequestBehavior.DenyGet);
+				return Json(new { success = false, message = Resources.Msg.failure, messageEx = ex.Message, messageInner = ex.InnerException.InnerException.Message }, JsonRequestBehavior.DenyGet);
 			}
 		}
         [ValidateAntiForgeryToken]
         public async Task<JsonResult> JsSaveChild(DespachoInventarioDetalleDTOCEdit dto)
         {
-            Permit[] permisosRequeridos = { Permit.Edit };
-            bool hasPermit = Utilidades.hasPermit(permisosRequeridos, ControllerContext, userName);
+            string[] permisosRequeridos = { "despacho_inventario.editar" };
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
             if (!hasPermit)
             {
                 return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
@@ -287,15 +288,15 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = Resources.Msg.failure, messageEx = ex.Message, messageInner = ex.InnerException });
+                return Json(new { success = false, message = Resources.Msg.failure, messageEx = ex.Message, messageInner = ex.InnerException.InnerException.Message });
             }
         }
 
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> JsDeleteMaster(string id) // POST
 		{
-            Permit[] permisosRequeridos = { Permit.Delete };
-            bool hasPermit = Utilidades.hasPermit(permisosRequeridos, ControllerContext, userName);
+            string[] permisosRequeridos = { "despacho_inventario.eliminar" };
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
             if (!hasPermit)
             {
                 return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
@@ -307,7 +308,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Json(new { success = false, message = Resources.Msg.failure, exMessage = ex.Message, exInner = ex.InnerException }, JsonRequestBehavior.DenyGet);
+				return Json(new { success = false, message = Resources.Msg.failure, exMessage = ex.Message, exInner = ex.InnerException.InnerException.Message }, JsonRequestBehavior.DenyGet);
 			}
 		}
 
@@ -315,8 +316,8 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> JsDeleteChild(int? id)
 		{
-            Permit[] permisosRequeridos = { Permit.Delete };
-            bool hasPermit = Utilidades.hasPermit(permisosRequeridos, ControllerContext, userName);
+            string[] permisosRequeridos = { "despacho_inventario.eliminar" };
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
             if (!hasPermit)
             {
                 return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
@@ -344,7 +345,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Json(new { success = false, message = Resources.Msg.failure, exMessage = ex.Message, exInner = ex.InnerException }, JsonRequestBehavior.DenyGet);
+				return Json(new { success = false, message = Resources.Msg.failure, exMessage = ex.Message, exInner = ex.InnerException.InnerException.Message }, JsonRequestBehavior.DenyGet);
 			}
 		}
 
@@ -383,7 +384,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 				// Special Map
 				dto.MaterialCodigo = reg.Material.Codigo;
 				dto.MaterialNombre = reg.Material.Descripcion;
-				dto.MaterialPrecio = reg.Material.Precio ?? 0;
+				dto.MaterialPrecio = reg.Material.Precio; // ?? 0;
 				dto.ProveedorNit = reg.Proveedor?.Nit ?? "";
 				dto.ProveedorNombre = reg.Proveedor?.Descripcion ?? "";
 				dto.PacienteRM =  reg.Paciente?.RefPac_NumHCAntiguo.ToString();
@@ -395,7 +396,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Json(new { success = false, message = Apphr.Resources.Msg.failure, exmessage = ex.Message, exinner = ex.InnerException }, JsonRequestBehavior.AllowGet);
+				return Json(new { success = false, message = Apphr.Resources.Msg.failure, exmessage = ex.Message, exinner = ex.InnerException.InnerException.Message }, JsonRequestBehavior.AllowGet);
 			}
 
 		}
@@ -464,7 +465,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 						MaterialUM = mat.UnidadMedida,
 						MaterialPrecio = mat.Precio,
 						MaterialExistencia = exi,
-						MaterialMinimo = mat.Minimo,
+						MaterialMinimo = mat.Minimo??0,
 						MaterialSolicitado = sol,
 						PacienteId = pac?.PacienteId??0,
 						PacienteRM = pac?.RefPac_NumHCAntiguo??0,
@@ -476,19 +477,19 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Json(new { success = false, message = Apphr.Resources.Msg.failure, exmessage = ex.Message, exinner = ex.InnerException }, JsonRequestBehavior.AllowGet);
+				return Json(new { success = false, message = Apphr.Resources.Msg.failure, exmessage = ex.Message, exinner = ex.InnerException.InnerException.Message }, JsonRequestBehavior.AllowGet);
 			}
 		}
 
 		public JsonResult JsGetMaterialesInSDByFilter(string filter, string document)
 		{
-			var result = new List<MaterialDTOSelectItem>();
+			var result = new List<DTOAutocompleteItem>();
 			if (!string.IsNullOrEmpty(filter))
 			{
 				result = (from sd in db.SolicitudesDespachoDetalle
 						  join mt in db.Materiales on sd.MaterialId equals mt.MaterialId
 						  where sd.SolicitudDespachoId.Equals(document) || mt.Codigo.Contains(filter) || mt.Descripcion.Contains(filter)
-						  select new MaterialDTOSelectItem()
+						  select new DTOAutocompleteItem()
 						  {
 							  id = mt.Codigo,
 							  text = mt.Descripcion
@@ -499,13 +500,13 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 
 		public JsonResult JsGetMaterialesInSMByFilter(string filter, string document)
 		{
-			var result = new List<MaterialDTOSelectItem>();
+			var result = new List<DTOAutocompleteItem>();
 			if (!string.IsNullOrEmpty(filter))
 			{
 				result = (from sd in db.SolicitudMaterialesSalaDetalle
 						  join mt in db.Materiales on sd.MaterialId equals mt.MaterialId
 						  where sd.SolicitudMaterialSalaId.Equals(document) || mt.Codigo.Contains(filter) || mt.Descripcion.Contains(filter)
-						  select new MaterialDTOSelectItem()
+						  select new DTOAutocompleteItem()
 						  {
 							  id = mt.Codigo,
 							  text = mt.Descripcion

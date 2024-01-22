@@ -43,7 +43,7 @@
     }, new { id = "form-filter" }))
     {
         @Html.AntiForgeryToken()
-        @Html.HiddenFor(x => x.page)
+        @Html.HiddenFor(x => x.Page)
         <div class="card border border-dark mb-3">
             <div class="card-header background-inventory">
                 Filtro
@@ -100,7 +100,7 @@
                     event.preventDefault();
                     //console.log('detenido');
                     //console.log($(this).attr('href'));
-                    $('#page').val($(this).attr('href'));
+                    $('#Page').val($(this).attr('href'));
                     filter.btn.trigger('click');
                 }
             });

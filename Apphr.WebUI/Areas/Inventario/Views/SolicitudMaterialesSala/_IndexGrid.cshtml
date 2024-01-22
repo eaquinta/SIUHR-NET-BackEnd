@@ -4,6 +4,7 @@
     <table class="table table-hover table-bordered">
         <tr class="table-dark">
             <th style="width:65px;">Acción</th>
+            <th>Solicitud Material No.</th>
             <th>Hoja de Control</th>
             <th>Fecha</th>
             <th>Registro Médico</th>
@@ -15,6 +16,7 @@
             {
                 <tr>
                     <td class="text-center"><a href="@Url.Action("Details",new { Area = "Inventario", id = item.SolicitudMaterialSalaId })"><i class="far fa-eye"></i></a> </td>
+                    <td>@Html.DisplayFor(modelItem => item.SolicitudMaterialSalaId)</td>
                     <td>@Html.DisplayFor(modelItem => item.HojaControlSala)</td>
                     <td>@Html.DisplayFor(modelItem => item.Fecha)</td>
                     <td>@Html.DisplayFor(modelItem => item.PacienteRM)</td>
@@ -26,7 +28,7 @@
         {
             <!--Sin registros-->
             <tr>
-                <td class="text-center" colspan="5">@Apphr.Resources.Strings.NoRegister</td>
+                <td class="text-center" colspan="6">@Apphr.Resources.Strings.NoRegister</td>
             </tr>
             <!--Sin registros-->
         }

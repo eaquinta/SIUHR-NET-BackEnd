@@ -1,0 +1,27 @@
+﻿@model Apphr.Application.ControlAbastecimiento.DTOs.ControlAbastecimientoDTOExistenciaInicial
+
+@using (Ajax.BeginForm("JsUpdateInicial", "ControlAbastecimiento", new AjaxOptions
+{
+    HttpMethod = "POST",
+    OnBegin = "childInicial.begin",
+    OnSuccess = "childInicial.success",
+    OnFailure = "childInicial.failure"
+},
+new { id = "childInicial-form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.DestinoId)
+    @Html.HiddenFor(x => x.MaterialId)
+    <div class="row">
+        <div class="col-4">
+            @Html.DisplayFor(x => x.MaterialCodigo, "StringD")
+        </div>
+        <div class="col-8">
+            @Html.DisplayFor(x => x.MaterialDescripcion, "StringD")
+        </div>
+    </div>
+
+    @Html.EditorFor(x => x.Inicial)
+    <input type="submit" id="btnSaveChildInicial" class="btn btn-primary float-end" value="Guardar" />
+
+}

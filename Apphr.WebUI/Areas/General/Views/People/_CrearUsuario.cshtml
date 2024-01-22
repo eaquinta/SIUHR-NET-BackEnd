@@ -1,10 +1,20 @@
 ﻿@model Apphr.Application.Personas.DTOs.PersonaDTOCreateUser
-<h4>Crear cuenta</h4>
-<hr />
-@using (Html.BeginForm("AsignarUsuario", "People", FormMethod.Post, new { id = "AsignUser" }))
+
+@using (Ajax.BeginForm("AsignarUsuario", "People", new AjaxOptions
+{
+    HttpMethod = "POST",
+    OnBegin = "modal3.begin",
+    OnSuccess = "modal3.success",
+    OnFailure = "modal3.failure"
+}, new { id = "modal3-form" })) // new { enctype = "multipart/form-data" }
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(x => x.PersonaId)
-    @Html.EditorFor(x => x.Email)
-    <button type="submit" class="btn btn-warning">Crear</button>
+    
+<div class="row">
+    <div class="col-12">@Html.EditorFor(x => x.Email)</div>
+    <hr class="mb-3 mt-3" />
+    <div class="col-12"><button id="modal3-btn-save" type="submit" class="btn btn-warning float-end">Asignar</button></div>
+</div>
+    
 }

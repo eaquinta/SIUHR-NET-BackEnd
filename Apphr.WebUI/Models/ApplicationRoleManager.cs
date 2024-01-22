@@ -1,4 +1,4 @@
-﻿using Apphr.Domain.Entities;
+﻿using Apphr.WebUI.Models.Entities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;

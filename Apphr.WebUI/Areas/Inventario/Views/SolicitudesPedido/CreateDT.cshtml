@@ -1,4 +1,4 @@
-﻿@model Apphr.Application.SolicitudesPedido.DTOs.SolicitudPedidoDTOBaseDT
+﻿@model Apphr.Application.SolicitudesPedido.DTOs.SolicitudPedidoDetalleDTOBase
 @{
     ViewBag.Title = "Crear";
     ViewBag.Entidad = "Solicitud Pedido Detalle";
@@ -45,7 +45,7 @@
 @using (Ajax.BeginForm("SaveDetalle", "SolicitudesPedido", new AjaxOptions
 {
     HttpMethod = "POST",
-    UpdateTargetId = "formLinea",
+    UpdateTargetId = "form-body-child",
     OnSuccess = "OnSuccess",
 }))
 {
@@ -57,7 +57,7 @@
                         <h5 id="myModalLabel" class="modal-title">Agregar Material</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body" id="formLinea">
+                    <div class="modal-body" id="form-body-child">
                         @Html.Partial("CreateLine")
                     </div>
                     <div class="modal-footer">
@@ -111,7 +111,7 @@
             language: "es",
             ajax: {
                 //url: '@Url.Action("GetMateriales","Materiales")',
-                url: '@Url.Action("JsGetMaterialesByFilter", "Materiales")',
+                url: '@Url.Action("JsGetByFilter", "Materiales")',
                 dataType: 'json',
                 data: function (params) {
                     var queryParameters = {

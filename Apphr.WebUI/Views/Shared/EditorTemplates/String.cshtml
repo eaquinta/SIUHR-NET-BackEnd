@@ -1,17 +1,21 @@
-﻿@model string
+﻿@model string  
 <div class="mb-2">
     @if (ViewData["label"] != null)
     {
-        @Html.LabelFor(x => x, (string)ViewData["label"], new { @class = "form-label", style = "font-weight:bold;" })
+        @Html.LabelFor(x => x, (string)ViewData["label"], new { @class = "form-label" + (ViewData["classLabel"] != null ? " " + ViewData["classLabel"] : ""), style = "font-weight:bold;" })
     }
     else
     {
-        @Html.LabelFor(x => x, new { @class = "form-label", style = "font-weight:bold;" })
+        @Html.LabelFor(x => x, new { @class = "form-label" + (ViewData["classLabel"] != null ? " " + ViewData["classLabel"] : ""), style = "font-weight:bold;" })
     }
     @if (ViewData["prependIcon"] != null)
     {
         <i class="ms-1 @ViewData["prependIcon"]"></i>
     }
-    @Html.TextBoxFor(x => x, new { @class = "form-control" + (ViewData["class"] != null ? " " + ViewData["class"] : "") })
+    @Html.TextBoxFor(x => x, new { 
+        @class = "form-control" + (ViewData["class"] != null ? " " + ViewData["class"] : ""),
+        placeholder = (ViewData["placeholder"] != null ? (string)ViewData["placeholder"] : ""),
+        oninput = (ViewData["oninput"] != null ? (string)ViewData["oninput"] : ""),
+        style = (ViewData["style"] != null ? (string)ViewData["style"] : "") })
     @Html.ValidationMessageFor(x => x, null, new { @class = "text-danger" })
 </div>

@@ -1,0 +1,310 @@
+﻿@model Apphr.Application.Movimientos.DTOs.MovimientoDTOIxFilter
+@using PagedList.Mvc
+@using Newtonsoft.Json
+
+@{
+    ViewBag.Title = "Índice Movimientos SIAHR";
+    ViewBag.Icon = "<i class=\"far fa-list-alt\"></i>";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+    var _yearList = (IEnumerable<SelectListItem>)ViewData["yearList"];
+}
+
+<style>
+    .select2-container {
+        width: 100% !important;
+    }
+</style>
+
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+
+@Html.Partial("_PartialAdvSiahr")
+
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area = "Inventario" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <span>Índice</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Encablezado -->
+    <h4 class="my-3">
+        @ViewBag.Title @Html.Raw(ViewBag.Icon)
+        @*<a class="btn btn-success ms-3 float-end" href="@Url.Action("Create")">
+                Adicionar <i class="fa fa-plus"></i>
+            </a>
+            <a class="btn btn-default float-end" href="@Url.Action("Index")">
+                SIAHR <i class="fas fa-link"></i>
+            </a>*@
+    </h4>
+    <div class="clearfix"></div>
+    <!-- Encablezado -->
+    <!-- Filtro -->    
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.Page)
+        <div class="card border border-dark mb-3">
+            <div class="card-header background-siahr">
+                Filtro
+                <a class="@*collapsed*@" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true" aria-controls="collapseExample">
+                    <i class="fa fa-chevron-up fa-pull-right" style="margin-top: 5px;"></i>
+                </a>
+            </div>
+            <div class="collapse show" id="collapseExample">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">@Html.EditorFor(x => x.DFec)</div>
+                        <div class="col-md-6">@Html.EditorFor(x => x.AFec)</div>
+                        <div class="col-md-6">@Html.EditorFor(x => x.CodigoMaterial, new { optionsList = ViewBag.CodigoMaterial })</div>
+                        <div class="col-md-6">@Html.EditorFor(x => x.CodigoBodega, new { optionsList = ViewBag.CodigoBodega })</div>
+                    </div>
+                    <div class="row mb-3 mt-2">
+                        <div class="col-md-6">@Html.EditorFor(x => x.Year, "DropDownP", new { @class = "text-center", optionsList = _yearList, label = "Periodo (Año)" })</div>
+                        <div class="col-md-6"><button id="btnFilter" @*type="submit"*@ class="btn btn-info float-end"><i class="fa fa-filter"></i> Aplicar</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- Filtro -->
+    <!-- Tabla -->
+    <!--<div id="Grid1"></div>-->
+    <!-- Tabla -->
+    <!-- TablaDt-->
+    <table id="table-1" class="table table-striped table-bordered display responsive nowrap" width="100%">
+        <thead class="table-dark">
+            <tr>
+                <th></th>
+                <th>Sec.</th>
+                @*<th style="width:65px;">Acción</th>*@
+                <th>Bodega</th>
+                <th>Cod. Material</th>
+                <th>Vence</th>
+                <th>Tipo</th>
+                <th>Doc.</th>
+                <th>Fecha</th>
+                <th>Unidad</th>
+                <th>Observación</th>
+                <th class="text-end">Cantidad</th>
+                <th class="text-end">Costo</th>
+                <th class="text-end">Valor</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <!-- TablaDt -->
+</div>
+
+@section css
+{
+
+    <!-- Jquery Datatables -->
+    <link href="~/Content/jquery-datatable-1.12.1/dataTables.bootstrap5.min.css" rel="stylesheet" />
+    <link href="~/Content/jquery-datatable-1.12.1/responsive.bootstrap5.min.css" rel="stylesheet" />
+    <!--Jquery.UI 1.13.1-->
+    <link href="~/Content/jquery-ui-1.13.1/jquery-ui.min.css" rel="stylesheet" />
+
+}
+
+@section scripts{
+    <!--Jquery UI -->
+    <script src="~/Content/jquery-ui-1.13.1/jquery-ui.min.js"></script>
+    <!-- Jquery Datatables -->
+    <script src="~/Content/jquery-datatable-1.12.1/jquery.dataTables.min.js"></script>
+    <script src="~/Content/jquery-datatable-1.12.1/dataTables.responsive.min.js"></script>
+    <script src="~/Content/jquery-datatable-1.12.1/dataTables.bootstrap5.min.js"></script>
+    <script src="~/Content/jquery-datatable-1.12.1/datetime.js"></script>
+    <!--notify-->
+    <script src="~/Content/notify/notify.min.js"></script>
+
+    <script>
+        $(document).ready(() => {
+
+            // Bind Functions
+            // === Alert Slide
+            $('#siahr-bsalert').delay(5000).slideUp(500, function () {
+                $(this).remove();
+            });
+            // === Datatable
+            dataTable = $('#table-1').DataTable({
+                lengthMenu: [
+                    [10, 25, 50, 100, 500],
+                    [10, 25, 50, 100, 500]
+                ],
+                responsive: {
+                    details: {
+                        type: 'column'
+                    }
+                },
+                pagingType: 'full_numbers',
+                processing: true,
+                serverSide: true,
+                language: { url: '/Content/jquery-datatable-1.12.1/es-ES.json' },
+                ajax: {
+                    "data": function (d) {
+                        d.anio = $('#Year').val();
+                        d.DFec = $('#DFec').val();
+                        d.AFec = $('#AFec').val();
+                        d.CodigoMaterial = $('#CodigoMaterial').val();
+                        d.CodigoBodega = $('#CodigoBodega').val();
+                    },
+                    "url": '@Url.Action("JsGetDataTableDBF")',
+                    "type": "POST",
+                    "datatype": "json",
+                    //"timeout": 15000,
+                    error: function () { //xhr, textStatus, error) {
+                        //if (textStatus === 'timeout') {
+                        //    //alert('The server took too long to send the data.');
+                        //    jshelper.error('El Servidor esta tomando demasiado tiempo en responder');
+                        //}
+                        //else {
+                        jshelper.error('@Apphr.Resources.Msg.failure');
+                        //}
+                        //dataTable.fnProcessingIndicator(false);
+                        //
+                    }
+                },
+                "pageLength": 10,
+                "dom": "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                    "<'row'<'col-sm-12'tr>>" +
+                    "<'row'<'col-12'p><'col-12'i>>",
+                "filter": true,
+                "responsivePriority": 1,
+                "data": null,
+                order: [[1, 'asc']],
+                columnDefs: [
+                    {
+                        className: 'dtr-control',
+                        orderable: false,
+                        targets: 0
+                    },
+                    {
+                        targets: [-1, -2, -3],
+                        className: 'dt-body-right'
+                    }
+                ],
+                columns: [
+                    { /*"data": null,*/ "searchable": false, render: function () { return ''; } },
+                    //{
+                    //    "className":"details-control",
+                    //    "data": null, orderable: false, searchable: false, className: 'text-center', width:"65px",
+                    //    "render": function (data, type, row ) {
+                    //                //console.log(row.Name);
+                    //                return `<div class="dropdown d-inline-block">
+                    //                            <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    //                                <i class="fas fa-ellipsis-v"></i>
+                    //                            </button>
+                    //                            <ul class="dropdown-menu">
+                    //                                <li><a class="dropdown-item" data-model-id="` + row.PersonId + `" onclick="entity.view(this);"><i class="far fa-eye"></i> Ver</a></li>
+                    //                                <li><a class="dropdown-item" data-model-id="` + row.PersonId + `" onclick="entity.update(this);"><i class="far fa-edit"></i> Editar</a></li>
+                    //                                <li><a class="dropdown-item" data-model-id="` + row.PersonId + `" data-model-name="` + row.Name + `" onclick="entity.delete(this);"><i class="fas fa-trash-alt"></i> Eliminar</a></li>
+                    //                                <li><a class="dropdown-item" data-model-id="` + row.PersonId + `" onclick="entity.asignUser(this);"><i class="fas fa-user-plus"></i> Asignar Usuario</a></li>
+                    //                            </ul>
+                    //                        </div>`; }
+                    //},
+                    { "data": "SECUENCIA", "name": "SECUENCIA", autoWidt: true },
+                    { "data": "CODIGOBODEGA", "name":   "CODIGOBODEGA", "autoWidth": true },
+                    { "data": "CODIGOMATERIAL", "name": "CODIGOMATERIAL", "autoWidth": true },
+                    { "data": "VENCE", "name": "VENCE", "autoWidth": true, "render": function (d) { return (d) ? moment(d).format('yyyy-MM-DD'): ""; } },
+                    { "data": "TIPO", "name": "TIPO", "autoWidth": true },
+                    { "data": "DOCUME", "name": "DOCUME", "autoWidth": true },
+                    { "data": "FECMOV", "name": "FECMOV", "autoWidth": true, "render": function (d) { return (d) ?  moment(d).format('yyyy-MM-DD'):""; } },
+                    { "data": "UNIMED", "name": "UNIMED", "autoWidth": true },
+                    { "data": "OBSMOV", "name": "OBSMOV", "autoWidth": true },
+                    { "data": "CANMOV", "name": "CANMOV", "autoWidth": true, render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "COSMOV", "name": "CANMOV", "autoWidth": true, render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                    { "data": "VALMOV", "name": "CANMOV", "autoWidth": true, render: $.fn.dataTable.render.number(',', '.', 2, '') },
+                ]
+            });
+            $('#btnFilter').click(function () { dataTable.ajax.reload(null, false); });
+            // === Auto Fill      
+
+            $('#CodigoMaterial').select2({
+                theme: "bootstrap-5",
+                allowClear: true,
+                minimumInputLength: 3,
+                //dropdownParent: $('#form-body-child'),
+                placeholder: "Seleccionar Material",
+                language: "es",
+                ajax: {
+                    delay: 250,
+                    url: '@Url.Action("JsGetMaterialesFilterDBF", "Materiales", new { Area = "Inventario"})',
+                    dataType: 'json',
+                    data: function (p) {
+                        return {
+                            f: p.term,
+                            tipo: 'S',
+                        };
+                    },
+                    processResults: function (r) {
+                        return {
+                            results: $.map(r.data, function (item) {
+                                return {
+                                    id: item.id,
+                                    text: item.text.trim(),
+                                    html: item.html
+                                }
+                            })
+                        };
+                    }
+                },
+                escapeMarkup: function (markup) {
+                    return markup;
+                },
+                templateResult: function (data) {
+                    return data.html;
+                },
+                templateSelection: function (data) {
+                    //$('#ProveedorId').val(data.id);
+                    return data.text;
+                },
+            });
+            $('#CodigoBodega').select2({
+                theme: "bootstrap-5",
+                allowClear: true,
+                delay:250,
+                //dropdownParent: $('#form-body-child'),
+                placeholder: "Seleccionar Bodega",
+                language: "es",
+                ajax: {
+                    url: '@Url.Action("JsGetBodegasFilterDBF","Bodegas", new {Area = "Inventario"})',
+                    dataType: 'json',
+                    data: function (p) {
+                        return {
+                            f: p.term,
+                            tipo: 'S',
+                        };
+                    },
+                    processResults: function (r) {
+                        return {
+                            results: $.map(r.data, function (item) {
+                                return {
+                                    text: item.text.trim(),
+                                    id: item.id,
+                                    html: item.html
+                                }
+                            })
+                        };
+                    }
+                },
+                escapeMarkup: function (markup) {
+                    return markup;
+                },
+                templateResult: function (data) {
+                    return data.html;
+                },
+                templateSelection: function (data) {
+                    $('#ProveedorId').val(data.id);
+                    return data.text;
+                },
+            });
+        });
+    </script>
+}

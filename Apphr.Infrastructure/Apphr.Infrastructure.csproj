@@ -49,14 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Persistence\Configuration\PersonaMap.cs" />
-    <Compile Include="Persistence\Configuration\PersonEntityConfiguration.cs" />
-    <Compile Include="Persistence\Configuration\ProveedorEntityConfiguration.cs" />
-    <Compile Include="Persistence\Configuration\SupplierEntityConfiguration.cs" />
-    <Compile Include="Persistence\DBF\DBFEngine.cs" />
-    <Compile Include="Persistence\DBF\DBFContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\MailService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Apphr.Domain\Apphr.Domain.csproj">

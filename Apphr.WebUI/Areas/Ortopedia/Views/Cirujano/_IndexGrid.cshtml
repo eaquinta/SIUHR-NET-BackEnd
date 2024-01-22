@@ -1,0 +1,49 @@
+﻿@model PagedList.IPagedList<Apphr.Application.Ortopedia.Cirujano.DTOs.CirujanoDTOIxGrid>
+@using PagedList.Mvc
+<!--Tabla-->
+<div class="table-responsive">
+    <table id="myTable" class="table table-striped table-bordered display responsive nowrap" width="100%">
+        <thead class="table-dark">
+            <tr>
+                <th style="width: 90px;">Acciones</th>                
+                <th>Nombre</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <!-- Acciones -->
+                        <td class="text-center">
+                            @*<a class="btn btn-sm btn-info" href="@Url.Action("Details", new { id = item.MaterialId })"><i class="far fa-eye"></i></a>*@
+                            <div class="dropdown d-inline-block">
+                                <button class="btn btn-primary btn-sm" type="button" id="ddBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="ddBtn">
+                                    <li><a class="dropdown-item" data-model-id="@item.CirujanoId" onclick="entity.view(this);"><i class="far fa-eye"></i> Ver</a></li>
+                                    <li><a class="dropdown-item" data-model-id="@item.CirujanoId" onclick="entity.update(this);" href="@Url.Action("CEdit", new { id = item.CirujanoId, mode = "UPD" })"><i class="fas fa-edit"></i> Editar</a></li>
+                                    <li><a class="dropdown-item" data-model-id="@item.CirujanoId" data-model-nombre="@item.Nombre" onclick="entity.delete(this);"><i class="fas fa-trash"></i> Eliminar</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                        <!-- Acciones -->
+                        <td>@item.Nombre</td>
+                    </tr>
+ }
+            }
+            else
+            {
+                <!--Sin registros-->
+                <tr>
+                    <td class="text-center" colspan="3">@Apphr.Resources.Strings.NoRegister</td>
+                </tr>
+
+                <!--Sin registros-->
+            }
+        </tbody>
+    </table>
+</div>
+<!--Tabla-->

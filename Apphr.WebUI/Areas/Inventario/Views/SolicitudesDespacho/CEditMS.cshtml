@@ -109,7 +109,7 @@
         <div class="col-12 mt-1">
             <div class="col-md-offset-2">
                 <button type="button" id="btn-masterSave" class="btn btn-success">Guardar</button>
-                @*<a class="btn btn-outline-dark btnReturn" href="">Regresar</a>*@
+                @*<a class="btn btn-outline-dark btnReturn" href=""><i class="fas fa-chevron-left"></i>&nbsp;Regresar</a>*@
                 <button type="button" class="btn btn-success ms-2 float-end onUpd" data-bs-toggle="modal" onclick="child.rowCreate();" data-bs-target="#child-modal"> Adicionar Material <i class="fa fa-plus"></i></button>
                 <button type="button" class="btn btn-outline-dark ms-2 float-end onUpd" onclick="refreshGrid();"><i class="fas fa-sync"></i></button>
             </div>
@@ -122,7 +122,7 @@
     <!-- Grid -->
     <!-- Botones formulario -->
     <div class="col-md-12 mt-2 onUpd">
-        <a class="btn btn-outline-dark btnReturn" href="">Regresar</a>
+        <a class="btn btn-outline-dark btnReturn" href=""><i class="fas fa-chevron-left"></i>&nbsp;Regresar</a>
         <div class="float-end">
             <a class="btn btn-outline-danger btn-eliminar" href="#"><i class="fas fa-trash"></i>&nbsp;Eliminar</a>
         </div>
@@ -148,7 +148,7 @@ new { id = "child-form" }))
                     <h5 id="myModalLabel" class="modal-title">Agregar Material</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" id="formLinea">
+                <div class="modal-body" id="form-body-child">
                     @Html.Partial("_CEditChild", Model.Child)
                 </div>
                 <div class="modal-footer">
@@ -180,8 +180,8 @@ new { id = "child-form" }))
                   GetChild = @Url.Action("JsGetChild"),
                   DeleteMaster = @Url.Action("JsDeleteMaster"),
                   DeleteChild = @Url.Action("JsDeleteChild"),
-                  FindMateriales = @Url.Action("JsGetMaterialesByFilter", "Materiales"),
-                  GetMatByCod = @Url.Action("JsGetMaterialByCodigo", "Materiales")
+                  FindMateriales = @Url.Action("JsGetByFilter", "Materiales"),
+                  GetMatByCod = @Url.Action("JsGetByCodigo", "Materiales")
               }));
         let id1 = '@Model.SolicitudDespachoId';
         

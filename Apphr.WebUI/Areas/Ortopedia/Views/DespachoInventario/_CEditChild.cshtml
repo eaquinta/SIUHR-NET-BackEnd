@@ -1,0 +1,45 @@
+﻿@model Apphr.Application.Ortopedia.DespachosInventario.DTOs.DespachoInventarioDTOCEditChild
+@Html.AntiForgeryToken()
+@Html.HiddenFor(x => x.MovimientoId)
+@Html.HiddenFor(x => x.DespachoInventarioId)
+@Html.HiddenFor(x => x.SolicitudPedidoId)
+@Html.HiddenFor(x => x.Fecha)
+@Html.HiddenFor(x => x.BodegaId)
+@Html.HiddenFor(x => x.MaterialId)
+@Html.HiddenFor(x => x.PacienteId)
+@Html.HiddenFor(x => x.Mode)
+<div class="row">
+    <div class="col-md-4">@Html.EditorFor(x => x.PacienteRM)</div>
+    <div class="col-md-8">@Html.EditorFor(x => x.PacienteNombreCompleto)</div>
+    <div class="col-md-4">@Html.EditorFor(x => x.BodegaNombre)</div>
+    <div class="col-md-8">@Html.EditorFor(x => x.BodegaDescripcion)</div>
+    <div class="col-md-4">@Html.EditorFor(x => x.MaterialCodigo)</div>
+    <div class="col-md-8">@Html.EditorFor(x => x.MaterialNombre)</div>
+    <div class="col-md-6">@Html.EditorFor(x => x.MaterialPrecio)</div>
+    <div class="col-md-6">@Html.EditorFor(x => x.UnidadMedida)</div>
+
+    <div class="col-md-4">
+        <div class="mb-2">
+            @Html.LabelFor(x => x.ProveedorId, "Nit", htmlAttributes: new { @class = "form-label", style = "font-weight:bold;" })
+            @Html.DropDownListFor(x => x.ProveedorId, null, htmlAttributes: new { @class = "form-select" })
+            @Html.ValidationMessageFor(x => x.ProveedorId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="col-md-8">@Html.EditorFor(x => x.ProveedorNombre)</div>
+
+    <div class="col-md-4">
+        <div class="mb-2">
+            @Html.LabelFor(x => x.OrdenCompraId, "Orden Compra #", htmlAttributes: new { @class = "form-label", style = "font-weight:bold;" })
+            @Html.DropDownListFor(x => x.OrdenCompraId, null, htmlAttributes: new { @class = "form-select" })
+            @Html.ValidationMessageFor(x => x.OrdenCompraId, "", new { @class = "text-danger" })
+        </div>
+        @Html.EditorFor(x => x.OrdenCompraId, new { optionsList = ViewBag.OrdenCompraId })
+    </div>
+    <div class="col-md-4">@Html.EditorFor(x => x.FechaOC)</div>
+    <div class="col-md-4">@Html.EditorFor(x => x.AnioOC)</div>
+    <div class="col-md-6">@Html.EditorFor(x => x.CirujanoId, new { optionsList = ViewBag.CirujanoId, btnId = "add-cirujano-btn" })</div>
+    <div class="col-md-6">@Html.EditorFor(x => x.ServicioId, new { optionsList = ViewBag.ServicioId, btnId = "add-servicio-btn" })</div>
+    <div class="col-md-4">@Html.EditorFor(x => x.Cantidad)</div>
+    <div class="col-md-4">@Html.EditorFor(x => x.Precio)</div>
+    <div class="col-md-4">@Html.EditorFor(x => x.Valor)</div>
+</div>

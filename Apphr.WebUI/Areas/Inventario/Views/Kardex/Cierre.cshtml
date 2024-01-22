@@ -73,7 +73,7 @@
     <script>
          let urls = @Html.Raw(JsonConvert.SerializeObject(new
                {
-                   FindBodegas = Url.Action("JsGetBodegasByFilter", "Bodegas"),
+                   FindBodegas = Url.Action("JsGetByFilter", "Bodegas"),
                    GetBodega = Url.Action("JsGetBodegaByNombre", "Bodegas"),
                }));
     </script>

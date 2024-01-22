@@ -1,0 +1,594 @@
+﻿@model Apphr.Application.ControlAbastecimiento.DTOs.ControlAbastecimientoDTOIxFilter
+@using Newtonsoft.Json
+@{
+    ViewBag.Title = "Control Abastecimiento";
+    ViewBag.Entidad = "";
+    ViewBag.Icon = "<i class=\"far fa-list-alt\"></i>";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<style>
+    .table-responsive {
+        font-size: 13px !important;
+    }
+</style>
+
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index", "Home", new { Area = "Inventario" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <span>@ViewBag.Title</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Encablezado -->
+    <h4 class="my-3">
+        @ViewBag.Title @ViewBag.Entidad @Html.Raw(ViewBag.Icon)
+        @*<a class="btn btn-success ms-3 float-end" href="@Url.Action("CEdit")">
+                Adicionar <i class="fa fa-plus"></i>
+            </a>
+            <a class="btn btn-default float-end" href="@Url.Action("IndexDBF")">
+                SIAHR <i class="fas fa-link"></i>
+            </a>*@
+    </h4>
+    <div class="clearfix"></div>
+    <!-- Encablezado -->
+    <!-- Menu-->
+    <p>
+        <a id="btnPrintExistencia" class="btn btn-warning" href="@Url.Action("Print", new { })">Existencias&nbsp;<i class="fas fa-print"></i></a>
+        @*<button type="button" class="btn btn-danger">danger style</button>
+            <button type="button" class="btn btn-warning">warning style</button>
+            <button type="button" class="btn btn-info">info style</button>
+            <button type="button" class="btn btn-success">success style</button>
+            <button type="button" class="btn btn-default">default style</button>
+            <button type="button" class="btn btn-link">link style</button>*@
+    </p>
+    <!-- Menu-->
+    <!-- Filtro -->
+    @using (Ajax.BeginForm("JsFilterIndex", "ControlAbastecimiento", new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnBegin = "filter.begin",
+        OnSuccess = "filter.success",
+        OnFailure = "jshelper.failure"
+    }, new { id = "form-filter" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.Page)
+        @Html.HiddenFor(x => x.MaterialId)
+        <div class="card mb-3 border border-dark">
+            <div class="card-header background-inventory">
+                Filtro
+                <a class="@*collapsed*@" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true" aria-controls="collapseExample">
+                    <i class="fa fa-chevron-up fa-pull-right" style="margin-top: 5px;"></i>
+                </a>
+            </div>
+            <div class="collapse show" id="collapseExample">
+                <div class="card-body">
+                    @*@Html.EditorFor(x => x.Buscar, "StringP", new { placeholder = "#Orden, Fecha, Nit" })*@
+                    <div class="row">
+                        <div class="col-md-4">@Html.EditorFor(x => x.MaterialCodigo)</div>
+                        <div class="col-md-8">@Html.EditorFor(x => x.MaterialNombre)</div>
+                    </div>
+                    <div class="form-group">
+                        <div class="float-end mb-3">
+                            <button id="btnFilter" type="submit" class="btn btn-info"><i class="fa fa-filter"></i> Aplicar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <!-- Filtro -->
+    <div class="row mb-2">
+        <div class="col-12">
+            <button id="btn-mostrar" class="btn btn-primary" onclick="clickBtnMostrar();">btn-mostrar</button>
+            <div class="btn-group">
+                <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Existencia Inicial
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" onclick="addInicial();" ><i class="fas fa-plus"></i> Agregar</a></li>
+                    <li><a class="dropdown-item" onclick="verIniciales();"><i class="fas fa-trash"></i> Eliminar</a></li>                    
+                </ul>
+            </div>
+            @*<button id="btn-addInicial" class="btn btn-primary" onclick="clickBtnAddInicial();">Agregar Inicial</button>
+            <button id="btn-addInicial" class="btn btn-primary" onclick="verIniciales();">Eliminar Inicial</button>*@
+            <button id="btn-ampliar" class="btn btn-primary float-end" onclick="toogleGrid();">btn-ampliar</button>
+        </div>
+    </div>
+</div>
+
+
+<div id="ContainerGrid" class="container-lg">
+    <!-- Tabla -->
+    <div id="Grid1"></div>
+    <!-- Tabla -->
+</div>
+
+
+<!-- Child-Modal -->
+<div class="modal fade" id="child-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="modalLabel" class="modal-title">Agregar Material</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="form-body-child">
+            </div>
+            @*<div class="modal-footer">
+                    <input type="submit" id="btnSaveDTmodal" class="btn btn-primary" value="Guardar" />
+                </div>*@
+        </div>
+    </div>
+</div>
+<!-- Child-Modal -->
+<!-- Report-Modal -->
+<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-fullscreen-lg-down">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportModalTitle">reportModalTitle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <object type="application/pdf" width="100%" height="500" style="height: 85vh;">No Support</object>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Report-Modal -->
+
+@section scripts{
+    <script>
+        let urls = @Html.Raw(JsonConvert.SerializeObject(new
+              {                  
+                  GetMaterial = Url.Action("JsGetByCodigo", "Materiales"),
+                  FindMaterial = Url.Action("JsGetByFilter", "Materiales"),
+                  FindProveedor = Url.Action("JsGetByFilter", "Proveedores"),
+                  GetMatByCod = Url.Action("JsGetByCodigo", "Materiales"),
+                  GetProveedor = Url.Action("JsGetProveedorByNit", "Proveedores"),
+              }));
+    </script>
+    <script>
+        var maximized = false;
+        var hidden = false;
+
+        function showHideColumns() {
+            let btn = $('#btn-mostrar');
+            if (hidden) {
+                btn.html('Mostrar <i class="far fa-eye"></i>');
+                $('.tg-sp').hide('fast', 'linear');
+            } else {
+                btn.html('Ocultar <i class="far fa-eye-slash"></i>');
+                $('.tg-sp').show('fast', 'linear');
+            }
+        }
+        function clickBtnMostrar() {
+            hidden = !hidden;
+            showHideColumns();
+        }
+
+        function toogleGrid() {
+            let btn = $('#btn-ampliar');
+            if (maximized) {
+                $('#ContainerGrid').removeClass('container-lg').addClass('container-fluid');
+                btn.html('<i class="fas fa-compress-alt"></i> Contraer');
+            }
+            else {
+                $('#ContainerGrid').removeClass('container-fluid').addClass('container-lg');
+                btn.html('<i class="fas fa-expand-alt"></i> Ampliar');
+            }
+            maximized = !maximized;
+            //btn.text('<i class="fas fa-compress-alt"></i> Contraer');
+            //$('#ContainerGrid').toggleClass('container-fluid')
+        }
+
+
+        function verIngresos(t) {
+            let MaterialId = $(t).data('m');
+            let OrdenCompraId = $(t).data('oc');
+            $('#modalLabel').html('Detalle Ingresos');
+            jshelper.get('@Url.Action("JsListaIngresos")', { MaterialId: MaterialId, OrdenCompraId: OrdenCompraId }, function (response) {
+                $('#form-body-child').html(response);
+            });
+            $('#child-modal').modal('show');
+        }
+        function verIniciales(t) {
+            let MaterialId = $('#MaterialId').val();
+            $('#modalLabel').html('Detalle Iniciales');
+            jshelper.get('@Url.Action("JsListaIniciales")', { MaterialId: MaterialId }, function (response) {
+                $('#form-body-child').html(response);
+            });
+            $('#child-modal').modal('show');
+        }
+        function verEgresos(t) {
+            let MaterialId = $(t).data('m');
+            let OrdenCompraId = $(t).data('oc');
+            $('#modalLabel').html('Detalle Egresos');
+            jshelper.get('@Url.Action("JsListaEgresos")', { MaterialId: MaterialId, OrdenCompraId: OrdenCompraId }, function (response) {
+                $('#form-body-child').html(response);
+            });
+            $('#child-modal').modal('show');
+        }
+
+
+        function addInicial() {
+            let MaterialId = $('#MaterialId').val();
+            $('#modalLabel').html('Agregar Existencia Inicial');
+            jshelper.get('@Url.Action("JsGetInicialForm")', { MaterialId: MaterialId }, function (response) {
+                $('#form-body-child').html(response);
+                let modalForm = $("#modal-inicial-form");
+                jshelper.bindValidation(modalForm);
+                //let modalForm = $("#modal-inicial-form");
+                //    .removeData('validator')
+                //    .removeData('unobtrusiveValidation');
+                //$.validator.unobtrusive.parse(modalForm);
+                //console.log(modalForm.validate());
+
+                bindAutocomplete();
+                bindOnBlur();
+                inicial.init();
+                $('#child-modal').modal('show');
+            });
+
+        }
+        function addIngreso(obj) {
+            let MaterialId = $(obj).data('m');
+            let OrdenCompraId = $(obj).data('oc');
+            let ProveedorId = $(obj).data("p");
+            if (!OrdenCompraId) {
+                toastr.info("Debe Importar la Orden de Compra")
+                return;
+            }
+            $('#modalLabel').html('Crear Nuevo Ingreso');
+            jshelper.get('@Url.Action("JsGetIngresoForm")', {}, function (response) {
+                $('#form-body-child').html(response);
+
+                let modalForm = $("#form-child");
+                jshelper.bindValidation(modalForm);
+               //     .removeData('validator')
+               //     .removeData('unobtrusiveValidation');
+               // $.validator.unobtrusive.parse(modalForm);
+               //console.log(modalForm.validate());
+                //$.validator.unobtrusive.parse("modal-inicial-form");
+
+
+                $('#IngresoAbastecimientoId').val('0');
+                $('#Cantidad').val('');
+                $('#form-child #MaterialId').val(MaterialId);
+                $('#OrdenCompraId').val(OrdenCompraId);
+                $('#ProveedorId').val(ProveedorId);
+                ingreso.init();
+            });
+            $('#child-modal').modal('show');
+        }
+        function addEgreso(obj) {
+            let MaterialId = $(obj).data('m');
+            let OrdenCompraId = $(obj).data('oc');
+            let ProveedorId = $(obj).data("p");
+
+            if (!OrdenCompraId) {
+                //console.log('Error');
+                toastr.info("Debe Importar la Orden de Compra")
+                return;
+            }
+            $('#modalLabel').html('Crear Nuevo Egreso');
+            jshelper.get('@Url.Action("JsGetEgresoForm")', {}, function (response) {
+                $('#form-body-child').html(response);
+
+                let form = $("#form-child"); //.closest("form");
+                jshelper.bindValidation(form);
+                //form.removeData('validator');
+                //form.removeData('unobtrusiveValidation');
+                //$.validator.unobtrusive.parse(form);
+
+
+                $('#IngresoAbastecimientoId').val('0');
+                $('#Cantidad').val('');
+                $('#form-child #MaterialId').val(MaterialId);
+                $('#OrdenCompraId').val(OrdenCompraId);
+                $('#ProveedorId').val(ProveedorId);
+                egreso.init();
+            });
+            $('#child-modal').modal('show');
+        }
+
+        function delIngreso(obj) {
+            jshelper.deleteConfirm(function () {
+                id = $(obj).data('id');
+                jshelper.deleteAjax(
+                    '@Url.Action("JsDeleteIngreso")',
+                    { id: id },
+                    function () {
+                        filter.form.submit();
+                        $('#child-modal').modal('hide');
+                    }
+                );
+            });
+        }
+        function delEgreso(obj) {
+            //let Id = $(obj).data('id');
+            //let MaterialId = $(obj).data('m');
+            //let OrdenCompraId = $(obj).data('oc');
+            //alert(Id);
+            jshelper.deleteConfirm(function () {
+                id = $(obj).data('id');
+                jshelper.deleteAjax(
+                    '@Url.Action("JsDeleteEgreso")',
+                    { id: id },
+                    function () {
+                        filter.form.submit();
+                        $('#child-modal').modal('hide');
+                    }
+                );
+            });
+
+        }
+        function delInicial(t) {
+            let MaterialId = $(t).data('m');
+            let ProveedorId = $(t).data('p');
+            jshelper.deleteConfirm(function () {
+                jshelper.deleteAjax(
+                    '@Url.Action("JsDeleteInicial")',
+                    { MaterialId: MaterialId, ProveedorId: ProveedorId },
+                    function () {
+                        filter.form.submit();
+                        $('#child-modal').modal('hide');
+                    }
+                );
+            });
+        }
+
+        function bindAutocomplete() {
+            // AutoComplete
+            $("#MaterialCodigo").autocomplete({
+                maxShowItems: 5,
+                //widthContainer: '#form-body-child',
+                source: function (request, response) {
+                    $.ajax({
+                        url: urls.FindMaterial,
+                        dataType: "json",
+                        data: "f=" + request.term,
+                        success: function (resp) {
+                            response($.map(resp.data, function (item) {
+                                //console.log(item);
+                                return {
+                                    label: item.id,
+                                    value: item.id,
+                                    desc: item.text
+                                };
+                            }));
+                        }
+                    });
+                },
+                appendTo: "#form-body-child"
+            }).data("ui-autocomplete")._renderItem = jshelper.ACRenderItem;
+            $("#ProveedorNit").autocomplete({
+                maxShowItems: 5,
+                source: function (request, response) {
+                    $.ajax({
+                        url: urls.FindProveedor,
+                        dataType: "json",
+                        data: "val=" + request.term,
+                        success: function (resp) {
+                            response($.map(resp.data, function (item) {
+                                //console.log(item);
+                                return {
+                                    label: item.Value,
+                                    value: item.Value,
+                                    desc: item.Text
+                                };
+                            }));
+                        }
+                    });
+                },
+                appendTo: "#form-body-child"
+            }).data("ui-autocomplete")._renderItem = jshelper.ACRenderItem;
+        }
+        function bindOnBlur() {
+            // Onblur
+            $('#ProveedorNit').on('blur', function () {
+                $.ajax({
+                    type: "GET",
+                    url: urls.GetProveedor,
+                    data: { val: $("#ProveedorNit").val() },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        //console.log(response);
+                        if (response.success) {
+                            $('#ProveedorNombre').val(response.data.Descripcion);
+                            $('#ProveedorId').val(response.data.ProveedorId);
+                        }
+                        else {
+                            $('#ProveedorNombre').val('');
+                            $('#ProveedorId').val('');
+                        }
+                    },
+                    failure: function (response) {
+                        console.log(response);
+                        jshelper.failure();
+                    }
+                });
+            });
+            $('#MaterialCodigo').on('blur', function () {
+                jshelper.get(
+                    urls.GetMatByCod,
+                    { id: $("#MaterialCodigo").val() },
+                    function (response) {
+                        if (response.success) {
+                            console.log(response.data);
+                            if (response.data != null) {
+                                $('#MaterialId').val(response.data.MaterialId);
+                                $('#MaterialNombre').val(response.data.Descripcion);
+                                //$('#MaterialUM').val(response.data.UnidadMedida);
+                                //$('#MaterialPrecio').val(response.data.Precio);
+                                //$('#MaterialExistencia').val(response.data.Existencia);
+                                //$('#MaterialMinimo').val(response.data.Minimo);
+                                //$('#Cantidad').focus();
+                            } else {
+                                $('#MaterialId').val('');
+                                $('#MaterialNombre').val('');
+                                //$('#MaterialUM').val('');
+                                //$('#MaterialPrecio').val('');
+                                //$('#MaterialExistencia').val('');
+                                //$('#MaterialMinimo').val('');
+                            }
+                        }
+                    }
+                );
+            });
+        }
+
+
+        var filter = {};
+        var ingreso = {};
+        var egreso = {};
+        var inicial = {};
+
+
+        inicial.begin = function () {
+
+        }
+        inicial.success = function (response) {
+            jshelper.showAlert(response.success, response.message);
+            if (response.success) {
+                $('#child-modal').modal('hide');
+                filter.form.submit();
+            }
+        }
+        inicial.end = function () {
+            filter.form.submit();
+        }
+        inicial.init = function ()
+        {
+            $('#modal-inicial-form #MaterialCodigo, #MaterialNombre, #ProveedorNombre').attr('readonly', 'readonly').attr('tabindex', '-1');
+        }
+
+        egreso.begin = function () { }
+        egreso.saveSuccess = function (response) {
+            jshelper.showAlert(response.success, response.message);
+            if (response.success) {
+                $('#child-modal').modal('hide');
+                filter.form.submit();
+            }
+        }
+        egreso.end = function () {
+            filter.form.submit();
+        }        
+        egreso.init = function () {
+            $('#Cantidad').focus();
+        }
+
+
+        ingreso.begin = function () { }
+        ingreso.saveSuccess = function (response) {
+            jshelper.showAlert(response.success, response.message);
+            if (response.success) {
+                $('#child-modal').modal('hide');
+                filter.form.submit();
+            }
+        }
+        ingreso.end = function () {
+            filter.form.submit();
+        }        
+        ingreso.init = function () {
+            $('#Cantidad').focus();
+        }
+
+
+        filter.btn = $('#btnFilter');
+        filter.grid = $('#Grid1');
+        filter.form = $('#form-filter');
+        filter.begin = function () {
+            filter.grid.fadeTo(0, 0.4);
+            filter.btn.prop('disabled', true);
+        }
+        filter.success = function (data) {
+            filter.grid.html(data);
+            //filter.bindPaged();
+            enablePopover();
+            filter.end();
+            showHideColumns();
+        }
+        filter.end = function () {
+            filter.grid.fadeTo('slow', 1);
+            filter.btn.prop('disabled', false);
+        }
+        filter.init = function () {
+            $('#MaterialNombre').attr('readonly', 'readonly').attr('tabindex', '-1');
+        }
+        var $table = $('#table');
+
+        $(function () {
+            filter.init();
+
+            $('#btnPrintExistencia').click(function () {
+                event.preventDefault();
+                var url = $(this).attr('href');
+                var objElem = $('<object id="rptObject" type="application/pdf" data="" width="100%" height="500" style="height: 75vh;">No Support</object>');               
+                $('#reportModal .modal-body').html(objElem);
+                $('#reportModalTitle').text('Existencias');
+                $('#rptObject').attr('data', url);
+                $('#reportModal').modal('show');
+            });
+
+            toogleGrid();
+            showHideColumns();
+
+            // autocomplete
+            $("#MaterialCodigo").autocomplete({
+                maxShowItems: 5,
+                //widthContainer: '#form-body-child',
+                source: function (request, response) {
+                    $.ajax({
+                        url: urls.FindMaterial,
+                        dataType: "json",
+                        data: "f=" + request.term,
+                        success: function (resp) {
+                            response($.map(resp.data, function (item) {
+                                //console.log(item);
+                                return {
+                                    label: item.id,
+                                    value: item.id,
+                                    desc: item.text
+                                };
+                            }));
+                        }
+                    });
+                },
+                appendTo: "#form-filter"
+            }).data("ui-autocomplete")._renderItem = jshelper.ACRenderItem;
+
+            // onblur
+            $('#MaterialCodigo').on('blur', function () {
+                jshelper.get(
+                    urls.GetMaterial,
+                    { id: $("#MaterialCodigo").val() },
+                    function (response) {
+                        $('#MaterialId').val('');
+                        $('#MaterialNombre').val('');
+                        if (response.success && response.data != null) {
+                            $('#MaterialId').val(response.data.MaterialId);
+                            $('#MaterialNombre').val(response.data.Descripcion);
+                            $('#btnFilter').focus();
+                        }
+                    }
+                );
+            });
+        });
+    </script>
+}

@@ -6,7 +6,7 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
 using Owin;
 using Apphr.WebUI.Models;
-using Apphr.Domain.Entities;
+using Apphr.WebUI.Models.Entities;
 
 namespace Apphr.WebUI
 {

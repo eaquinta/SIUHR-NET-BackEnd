@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation.Results;
 using Apphr.Application.RegistrosMedicos.DTOs;
-using Apphr.Domain.Entities;
+using Apphr.WebUI.Models.Entities;
 using Apphr.WebUI.Models;
 using System;
 using System.Collections.Generic;
@@ -122,12 +122,12 @@ namespace Apphr.WebUI.Controllers.RMU
             var vm = new RegistroMedicoDTOEdit();
             try
             {
-                using (var db = new ApphrDbContext())
-                {
-                    var reg = db.RegistrosMedicos.Include("Person").Where(x => x.RegistroMedicoId == id).FirstOrDefault();
-                    if (reg == null) return HttpNotFound("Error: El registro solicitado es inexistente");
-                    vm = mapper.Map<RegistroMedicoDTOEdit>(reg);
-                }
+                //using (var db = new ApphrDbContext())
+                //{
+                var reg = db.RegistrosMedicos.Include("Person").Where(x => x.RegistroMedicoId == id).FirstOrDefault();
+                if (reg == null) return HttpNotFound("Error: El registro solicitado es inexistente");
+                vm = mapper.Map<RegistroMedicoDTOEdit>(reg);
+                //}
             }
             catch (Exception)
             {

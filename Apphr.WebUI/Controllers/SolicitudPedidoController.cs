@@ -16,6 +16,7 @@ namespace Apphr.WebUI.Controllers
     {
         //GET: api/SolicitudesPedidoController
         [HttpGet]
+        //[Route("GetAll")]
         public IEnumerable<SolicitudPedidoDBF> GetAll()
         {
             return dbfContext.GetSolicitudesPedido();
@@ -23,8 +24,9 @@ namespace Apphr.WebUI.Controllers
 
         // GET: api/SolicitudesPedidoController/5
         [HttpGet]
+        //[Route("GetById")]
         [ResponseType(typeof(SolicitudPedidoDBF))]
-        public IHttpActionResult GetId(string id)
+        public IHttpActionResult GetById(string id)
         {
             id = SolicitudPedidoRepository.FixFormatId(id);
             SolicitudPedidoDBF reg = this.dbfContext.GetSolicitudPedido(id);

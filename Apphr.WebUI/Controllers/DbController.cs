@@ -11,6 +11,7 @@ using Microsoft.AspNet.Identity;
 using System.Configuration;
 using Apphr.Infrastructure.Persistence.DBF;
 using PagedList.Mvc;
+using Apphr.WebUI.Models.Entities;
 
 namespace Apphr.WebUI.Controllers
 {
@@ -19,17 +20,21 @@ namespace Apphr.WebUI.Controllers
         protected ApphrDbContext db;
         protected DBFContext dbfContext;
         protected string userName;
-        protected string dbfPath = ConfigurationManager.AppSettings["SiahrPath"].ToString();
+        protected int userId;
+        protected int defaultSiahrYear = DateTime.Now.Year;
+        //protected string dbfPath = ConfigurationManager.AppSettings["SiahrPath"].ToString();
         protected int pageSize = Convert.ToInt32(ConfigurationManager.AppSettings["PageSize"].ToString()); // 10;
         protected int autoCompleteSize = Convert.ToInt32(ConfigurationManager.AppSettings["AutocompleteSize"].ToString()); // 10;
         protected readonly IMapper mapper = AutoMapperConfig._mapper;        
         protected Dictionary<string, ToastTemplate> DTT = new Dictionary<string, ToastTemplate>();
         protected ViewConfig C = new ViewConfig();
         protected PagedListRenderOptions PagedListOptions;
+        protected int AnioActual = DateTime.Now.Year;
         public DbController() //(ApphrDbContext _db)
         {
-            db               = new ApphrDbContext(System.Web.HttpContext.Current.User.Identity.Name); 
-            dbfContext       = new DBFContext(dbfPath);
+            userId           = (System.Web.HttpContext.Current.User != null) ? System.Web.HttpContext.Current.User.Identity.GetUserId<int>() : -1;
+            db               = new ApphrDbContext(userId);// System.Web.HttpContext.Current.User.Identity.Name);
+            dbfContext       = new DBFContext(); 
             userName         = System.Web.HttpContext.Current.User.Identity.GetUserName();
             PagedListOptions = new PagedListRenderOptions
             {
@@ -61,6 +66,12 @@ namespace Apphr.WebUI.Controllers
             });
         }
         
+        protected List<int> GetUserRoleList()
+        {
+            int UserId = GetUserId();                        
+            return db.Set<AppUserRole>().Where(x => x.UserId == UserId).Select(x => x.RoleId).ToList();
+        }
+
         protected List<ToastTemplate> GetToastList(List<string> Toast)
         {
             List<ToastTemplate> ListToastTemplate = new List<ToastTemplate>();

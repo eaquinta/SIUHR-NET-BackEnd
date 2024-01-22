@@ -1,24 +1,26 @@
-﻿using CrystalDecisions.CrystalReports.Engine;
-using FluentValidation.Results;
-//using PagedList;
-using Apphr.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Web.Mvc;
-using System.Linq.Dynamic.Core;
-using Apphr.WebUI.Models;
-using Apphr.Application.Proveedores.DTOs;
+﻿using Apphr.Application.Common;
+using Apphr.Application.Common.DTOs;
 using Apphr.Application.Proveedores.Commands;
-using Apphr.Application.Common;
-using Apphr.WebUI.CustomAttributes;
-using Apphr.WebUI.Controllers;
-using System.Threading.Tasks;
-using PagedList;
+using Apphr.Application.Proveedores.DTOs;
+using Apphr.WebUI.Models.Entities;
 using Apphr.Domain.Enums;
 using Apphr.WebUI.Common;
+using Apphr.WebUI.Controllers;
+using Apphr.WebUI.CustomAttributes;
+using Apphr.WebUI.Models;
+using Apphr.WebUI.Models.Repository;
+using CrystalDecisions.CrystalReports.Engine;
+using FluentValidation.Results;
+using PagedList;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.IO;
+using System.Linq;
+using System.Linq.Dynamic.Core;
+using System.Net;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace Apphr.WebUI.Areas.Inventario.Controllers
 {
@@ -26,6 +28,11 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
     [LogAction]
     public class ProveedoresController : DbController
     {
+        private ProveedorRepository ProveedorRep;
+        public ProveedoresController()
+        {
+            ProveedorRep = new ProveedorRepository(db);
+        }
         [HttpPost]
         public JsonResult AjaxMethod(IxDataTable vm)
         {
@@ -70,7 +77,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
             return Json(new { data = Data, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, });
         }
 
-        [AppAuthorization(Permit.View)]
+        [Can("proveedor.ver")]
         public ActionResult IndexDBF(ProveedorDTOIndexDBF dto, string currentFilter, string searchString, int? page) // GET
         {
             int pageIndex = 1;
@@ -84,6 +91,10 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
             pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
 
             var regs = this.dbfContext.GetProveedores();
+            if (regs == null)
+            {
+                return View("ErrorSiahr");
+            }
 
             if (!String.IsNullOrEmpty(dto?.F?.Buscar))
             {
@@ -94,11 +105,12 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
             }
 
             dto.Result = regs.ToPagedList(pageIndex, pageSize);
+            ViewBag.Anio = dbfContext.GetYear();
             return View(dto);
 
         }
 
-        [AppAuthorization(Permit.View)]
+        [Can("proveedor.ver")]
         public ActionResult DetailsDBF(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -113,38 +125,47 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
             return View(dto);
         }
 
-        [AppAuthorization(Permit.View)]
-        public ActionResult Index(ProveedorDTOIndex dto, int? page) //GET
+        [Can("proveedor.ver")]
+        public ActionResult Index() //GET
+        {
+            ViewBag.Permissions = Utilidades.GetPermissions(ControllerContext, userName);
+            return View();
+        }
+
+        [ValidateAntiForgeryToken]
+        public ActionResult JsFilterIndex(string Buscar, int? page)     // GET
         {
             IQueryable<Proveedor> regs;
-
-            int pageIndex = 1;
-            if (dto?.F == null) dto.F = new ProveedorDTOIxFilter();
-            if (dto.F.Buscar != dto.F._Buscar)
-            {
-                page = 1;
-                dto.F._Buscar = dto.F.Buscar;
-            }
-
-            pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
-            //            BodegaDTOIndex dto = new BodegaDTOIndex();
-
+            int pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
 
             regs = (from p in db.Proveedores select p);
-            if (dto.F != null)
+
+            if (Buscar != null)
             {
-                if (!string.IsNullOrEmpty(dto.F.Buscar))
-                    regs = regs.Where(x => x.Nit.Contains(dto.F.Buscar) || x.Descripcion.Contains(dto.F.Buscar) || x.Contacto.Contains(dto.F.Buscar));
+                if (!string.IsNullOrEmpty(Buscar))
+                    regs = regs.Where(x => x.Nit.Contains(Buscar) || x.Descripcion.Contains(Buscar) || x.Contacto.Contains(Buscar));
             }
 
             regs = regs.OrderBy(x => x.Nit);
 
-            var rows = mapper.Map<List<ProveedorDTOBase>>(regs.ToList());
-            dto.Result = (PagedList<ProveedorDTOBase>)rows.ToPagedList(pageIndex, pageSize);
-            return View(dto);
+            var rows = regs.Select(x => new ProveedorDTOIxGrid
+            {
+                ProveedorId = x.ProveedorId,
+                Nit = x.Nit,
+                Descripcion = x.Descripcion,
+                Direccion = x.Direccion,
+                Telefono = x.Telefono,
+                Contacto = x.Contacto,
+                Email = x.Email,
+            }).ToList();
+
+            var dto = (PagedList<ProveedorDTOIxGrid>)rows.ToPagedList(pageIndex, pageSize);
+
+            ViewBag.PLROpions = PagedListOptions;
+            return PartialView("_IndexGrid", dto);
         }
-        
-        [AppAuthorization(Permit.View)]
+
+        [Can("proveedor.ver")]
         public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
@@ -157,13 +178,13 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
                 return HttpNotFound();
             }
 
-            var dto = mapper.Map<ProveedorDTODetails>(reg);
+            var dto = mapper.Map<ProveedorDTOView>(reg);
 
             return View(dto);
         }
         
 
-        [AppAuthorization(Permit.Edit)]
+        [Can("proveedor.editar")]
         public ActionResult Create()
         {
             var dto = new ProveedorDTOCreate();
@@ -171,7 +192,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
         }
 
 
-        [AppAuthorization(Permit.Edit)]
+        [Can("proveedor.editar")]
         [HttpPost, ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Exclude = "ProveedorId")] ProveedorDTOCreate dto)
         {
@@ -200,10 +221,10 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
         }
 
 
-        [AppAuthorization(Permit.Edit)]
+        [Can("proveedor.editar")]
         public ActionResult Edit(int? id)
         {
-            ProveedorDTOEdit dto = null;
+            ProveedorDTOCEdit dto = null;
 
             if (id == null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -215,7 +236,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
                 if (reg == null)
                     return HttpNotFound();
 
-                dto = mapper.Map<ProveedorDTOEdit>(reg);
+                dto = mapper.Map<ProveedorDTOCEdit>(reg);
                 return View(dto);
             }
             catch (Exception ex)
@@ -225,9 +246,9 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
             }
         }
 
-        [AppAuthorization(Permit.Edit)]
+        [Can("proveedor.editar")]
         [HttpPost, ValidateAntiForgeryToken]
-        public ActionResult Edit(ProveedorDTOEdit dto)
+        public ActionResult Edit(ProveedorDTOCEdit dto)
         {
             if (!ModelState.IsValid)
                 return View(dto);
@@ -276,7 +297,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
                 return HttpNotFound();
             }
 
-            var dto = mapper.Map<ProveedorDTODetails>(reg);
+            var dto = mapper.Map<ProveedorDTOView>(reg);
             return View(dto);
         }
 
@@ -302,22 +323,22 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
         public JsonResult GetProveedorNombre(string id)
         {
             Proveedor res;
-            using (var db = new ApphrDbContext())
-            {
+            //using (var db = new ApphrDbContext())
+            //{
                 res = db.Proveedores.Find(id);
                 if (res == null)
                     return Json(new { estatus = false, Nombre = "" }, JsonRequestBehavior.AllowGet);
                 else
                     return Json(new { estatus = true, Nombre = res.Descripcion }, JsonRequestBehavior.AllowGet);
-            }
+            //}
         }
 
         public ActionResult ReporteProveedores()
         {
             ReportDocument rd = new ReportDocument();
             rd.Load(Path.Combine(Server.MapPath("~/Reportes/repProveedores.rpt")));
-            using (var db = new ApphrDbContext())
-            {
+            //using (var db = new ApphrDbContext())
+            //{
                 rd.SetDataSource(db.Proveedores.Select(s => new ProveedorDTOReport
                 {
                     Nit = s.Nit,
@@ -325,7 +346,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
                     Direccion = s.Direccion,
                     DiasCredito = s.DiasCredito ?? 0
                 }).ToList());
-            }
+            //}
             Response.Buffer = false;
             Response.ClearContent();
             Response.ClearHeaders();
@@ -381,25 +402,49 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 
         }
 
-        public JsonResult JsGetProveedoresByFilter(string val)
+        public async Task<JsonResult> JsGetById(int? id)
         {
-            var result = new List<ProveedorDTOACItem>();
-            if (!string.IsNullOrEmpty(val))
+            var res = await db.Proveedores.Where(x => x.ProveedorId == id).FirstOrDefaultAsync();
+            return Json(new { success = (res != null), data = res }, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public async Task<JsonResult> JsGetByFilter(string f, string tipo = "AC")
+        {
+            var result = from r in db.Proveedores select r;
+            Object res = null;
+
+            if (!string.IsNullOrEmpty(f))
             {
-                result = db.Proveedores.Where(x => x.Nit.Contains(val) || x.Descripcion.Contains(val))
-                   .Take(autoCompleteSize)
-                   .Select(p => new ProveedorDTOACItem { Value = p.Nit, Text = p.Descripcion })
-                   .ToList();
+                result = result.Where(x => x.Nit.Contains(f) || x.Descripcion.Contains(f));
             }
-            return Json(new { data = result }, JsonRequestBehavior.AllowGet);
+
+            result = result.Take(autoCompleteSize);
+
+            if (tipo == "AC")
+            {
+                res = await result.Select(p => new ProveedorDTOACItem { Value = p.Nit, Text = p.Descripcion })
+                    .ToListAsync();
+            }
+            if (tipo == "S")
+            {
+                res = await result.Select(s => new DTOSelect2
+                {
+                    id = s.ProveedorId.ToString(),
+                    text = s.Nit,
+                    html = "<div style=\"font-weight: bold;\">" + s.Nit + "</div><div style=\"font-size: 0.75em;\">" + s.Descripcion + "</div>"
+                })
+                .ToListAsync();
+            }
+            return Json(new { data = res }, JsonRequestBehavior.AllowGet);
         }
 
 
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> JsDelete(int? id)
         {
-            Permit[] permisosRequeridos = { Permit.Delete };
-            bool hasPermit = Utilidades.hasPermit(permisosRequeridos, ControllerContext, userName);
+            string[] permisosRequeridos = { "proveedor.eliminar" };
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
             if (!hasPermit)
             {
                 return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
@@ -439,34 +484,241 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 
         public JsonResult JsImportProveedor(string NIT)
         {
+            return Json(new { result = ProveedorRep.ImportIfNotExist(NIT) }, JsonRequestBehavior.AllowGet);            
+        }
+
+        public ActionResult ImportProveedores(bool? update)
+        {
+            if (update == null)
+            {
+                update = false;
+            }
+            dbfContext.SetYear(DateTime.Now.Year);
+            var dbf = dbfContext.GetProveedores().ToList();
+            //db.Database.ExecuteSqlCommand($"DELETE FROM Materiales");
+            //db.Database.ExecuteSqlCommand($"DBCC CHECKIDENT ('[dbo].[Materiales]', RESEED, 0)");
+            foreach (var item in dbf)
+            {
+                try
+                {
+                    if (!db.Proveedores.Any(x => x.Nit == item.NIT))
+                    {
+                        var reg = new Proveedor()
+                        {
+                            Nit = item.NIT,
+                            Descripcion = item.DESCRI,
+                            Direccion = item.DIRECC,
+                            Telefono = item.TELEFO,
+                            Contacto = item.CONTAC,
+                            DiasCredito = item.CREDIT                            
+                        };
+                        //reg.SetRenglon();
+                        //reg.SetGrupo();
+                        db.Proveedores.Add(reg);
+                    }
+                    else
+                    {
+                        if (update.Value)
+                        {
+                            var upd = db.Proveedores.Where(x => x.Nit == item.NIT).FirstOrDefault();
+                            upd.Descripcion = item.DESCRI;
+                            upd.Direccion = item.DIRECC;
+                            upd.Telefono = item.TELEFO;
+                            upd.Contacto = item.CONTAC;
+                            upd.DiasCredito = item.CREDIT;
+                            upd.Descripcion = item.DESCRI;                            
+                        }
+                    }
+                    db.SaveChanges();
+                }
+                catch (Exception)
+                {
+                    Console.Write(item.NIT);
+                }
+            }
+            ViewBag.Registros = db.Proveedores.Count();
+            return View();
+        }
+        #endregion
+
+
+
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> JsSaveMaster(ProveedorDTOCEdit dto)               // POST 
+        {
+            List<string> ListPermit = new List<string>();
+
+            if (dto.ProveedorId == 0)
+                ListPermit.Add("proveedor.crear");
+            else
+                ListPermit.Add("proveedor.editar");
+
+            bool hasPermit = await Utilidades.Can(ListPermit.ToArray(), userId);
+            if (!hasPermit)
+            {
+                return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
+            }
             try
             {
-                if (string.IsNullOrEmpty(NIT))
+                if (!ModelState.IsValid)
                 {
-                    throw new ArgumentException("Parametro CODIGO de contener algun valor");
+                    return Json(new { success = false, message = Resources.Msg.failure_model_invalid });
                 }
-                var ProveedorDBF = dbfContext.GetProveedor(NIT).FirstOrDefault();
-                if (!db.Proveedores.Any(x => x.Nit == ProveedorDBF.NIT))
+                if (dto.ProveedorId == 0)
                 {
-                    var reg = mapper.Map<Proveedor>(ProveedorDBF);
+                    // INSERT
+                    // Validación Adicional
+                    //if (db.ORTSolicitudesPedido.Any(x => x.Anio == dto.Fecha.Year && x.Numero == dto.Numero))
+                    //{
+                    //    return Json(new { success = false, message = "Esta Solicitud de Pedido ya esta registrada." });
+                    //}
+
+                    var reg = new Proveedor()
+                    {
+                        Nit = dto.Nit,
+                        Descripcion = dto.Descripcion,
+                    };
+
                     db.Proveedores.Add(reg);
+                    await db.SaveChangesAsync();
+                    return Json(new { success = true, message = Resources.Msg.success_create, data = reg }, JsonRequestBehavior.DenyGet);
                 }
                 else
                 {
-                    var reg = db.Proveedores.Where(x => x.Nit == ProveedorDBF.NIT).FirstOrDefault();
-                    if (reg != null)
-                    {
-                        mapper.Map(ProveedorDBF, reg);
-                    }
+                    // UPDATE
+                    var reg = await db.Proveedores
+                        .Where(x => x.ProveedorId == dto.ProveedorId)
+                        .FirstOrDefaultAsync();
+
+                    reg.Nit = dto.Nit;
+                    reg.Descripcion = dto.Descripcion;
+                    reg.Direccion = dto.Direccion;
+                    reg.Contacto = dto.Contacto;
+                    reg.Telefono = dto.Telefono;
+                    reg.Email = dto.Email;
+                    reg.DiasCredito = dto.DiasCredito;
+                    reg.Banco1 = dto.Banco1;
+                    reg.Cuenta1 = dto.Cuenta1;
+                    reg.Banco2 = dto.Banco2;
+                    reg.Cuenta2 = dto.Cuenta2;
+                    reg.Banco3 = dto.Banco3;
+                    reg.Cuenta3 = dto.Cuenta3;
+
+                    await db.SaveChangesAsync();
+                    return Json(new { success = true, message = Resources.Msg.success_edit, data = reg }, JsonRequestBehavior.DenyGet);
                 }
-                db.SaveChanges();
-                return Json(new { result = true }, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Json(new { result = false }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = Resources.Msg.failure, messageEx = ex.Message, messageInner = ex.InnerException }, JsonRequestBehavior.DenyGet);
             }
         }
-        #endregion
+
+        public async Task<ActionResult> JsViewMaster(int? id)                           // GET 
+        {
+            var reg = await db.Proveedores
+                .Where(x => x.ProveedorId == id)
+                .FirstOrDefaultAsync();
+
+            var dto = new ProveedorDTOView()
+            {
+                Nit = reg.Nit,
+                Descripcion = reg.Descripcion,
+                Direccion = reg.Direccion,
+                Contacto = reg.Contacto,
+                Telefono = reg.Telefono,
+                Email = reg.Email,
+                DiasCredito = reg.DiasCredito,
+                Banco1 = reg.Banco1,
+                Banco2 = reg.Banco2,
+                Banco3 = reg.Banco3,
+                Cuenta1 = reg.Cuenta1,
+                Cuenta2 = reg.Cuenta2,
+                Cuenta3 = reg.Cuenta3,
+            };
+
+            return PartialView("_ViewMaster", dto);
+        }
+
+        public async Task<ActionResult> JsGetCreateForm()                                           // GET 
+        {
+            string[] permisosRequeridos = { "proveedor.crear" };
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
+            if (!hasPermit)
+            {
+                return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.AllowGet);
+            }
+            var dto = new ProveedorDTOCreate();
+            dto.ProveedorId = 0;
+
+            return PartialView("_CreateMaster", dto);
+        }
+
+        public async Task<ActionResult> JsGetCEditForm(int? id)
+        {
+            string[] permisosRequeridos = { "proveedor.editar" };
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
+            if (!hasPermit)
+            {
+                return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.AllowGet);
+            }
+            var reg = db.Proveedores.Where(x => x.ProveedorId == id).FirstOrDefault();
+            var dto = new ProveedorDTOCEdit()
+            {
+                ProveedorId = reg.ProveedorId,
+                Nit = reg.Nit,
+                Descripcion = reg.Descripcion,
+                Direccion = reg.Direccion,
+                Contacto = reg.Contacto,
+                Telefono = reg.Telefono,
+                Email = reg.Email,
+                Banco1 = reg.Banco1,
+                Cuenta1 = reg.Cuenta1,
+                Banco2 = reg.Banco2,
+                Cuenta2 = reg.Cuenta2,
+                Banco3 = reg.Banco3,
+                Cuenta3 = reg.Cuenta3,
+            };
+            return PartialView("_CEditMaster", dto);
+        }
+
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> JsDeleteMaster(int id)                            // POST 
+        {
+            string[] permisosRequeridos = { "proveedor.eliminar" };
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
+            if (!hasPermit)
+            {
+                return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
+            }
+            try
+            {
+                using (DbContextTransaction t = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var reg = await db.Proveedores
+                            .Where(x => x.ProveedorId == id)
+                            .FirstOrDefaultAsync();
+                        
+
+                        db.Proveedores.Remove(reg);
+
+                        await db.SaveChangesAsync();
+                        t.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        t.Rollback();
+                        throw;
+                    }
+                }
+                return Json(new { success = true, message = Resources.Msg.success_delete }, JsonRequestBehavior.DenyGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = Resources.Msg.failure, exMessage = ex.Message, exInner = ex.InnerException }, JsonRequestBehavior.DenyGet);
+            }
+        }
     }
 }

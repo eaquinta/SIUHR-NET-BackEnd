@@ -31,7 +31,7 @@
     <h4 class="mb-0">
         @ViewBag.Title @ViewBag.Entidad @Html.Raw(ViewBag.Icon)
         <a class="btn btn-warning float-end ms-2" href="@Url.Action("CEdit", IdKey)"><i class="fa fa-pen-square"></i>&nbsp;Editar</a>
-        <a class="btn btn-outline-dark float-end ms-2" href="@Url.Action("Index")">Regresar</a>
+        <a class="btn btn-outline-dark float-end ms-2" href="@Url.Action("Index")"><i class="fas fa-chevron-left"></i>&nbsp;Regresar</a>
         <a id="btnPrint" class="btn btn-outline-dark float-end" href="@Url.Action("Print", IdKey)"><i class="fas fa-print"></i>&nbsp;Imprimir</a>
     </h4>
     <hr />
@@ -64,7 +64,7 @@
                 <thead class="table-dark">
                     <tr>
                         <th>Material</th>
-                        <th>Cantidad</th>
+                        <th class="text-end">Cantidad</th>
                     </tr>
                 </thead>
                 @if (Model.Detalle != null && Model.Detalle.Any())
@@ -73,7 +73,7 @@
                     {
                         <tr>
                             <td>[@item.Material.Codigo] @item.Material.Descripcion</td>
-                            <td>@item.Cantidad</td>
+                            <td>@string.Format("{0:N2}", item.Cantidad)</td>
                         </tr>
                     }
 

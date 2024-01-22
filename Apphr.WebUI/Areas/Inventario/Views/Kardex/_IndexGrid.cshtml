@@ -73,8 +73,8 @@
             <tr>
                 <td>@item.TipoMovimiento</td>
                 <td>@item.CantidadDocumentos</td>
-                <td>@item.Cantidad</td>
-                <td>@item.Valor</td>
+                <td>@string.Format("{0:N2}", item.Cantidad)</td>
+                <td>@string.Format("{0:N2}", item.Valor)</td>
             </tr>
         }
     </table>

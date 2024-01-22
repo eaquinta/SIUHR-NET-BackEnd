@@ -1,0 +1,258 @@
+﻿@model Apphr.Application.Ortopedia.Cirujano.DTOs.CirujanoDTOJsIxFilter
+@using Newtonsoft.Json
+@using Apphr.Resources
+
+@{
+    ViewBag.Pagina = "Índice";
+    ViewBag.Entidad = "Cirujanos";
+    ViewBag.Icon = "<i class=\"far fa-list-alt\"></i>";
+    ViewBag.Title = ViewBag.Pagina + " de " + ViewBag.Entidad;
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index", "Home", new { Area = "Inventario" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <span>@ViewBag.Title</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Encablezado -->
+    <h4 class="my-3">
+        @ViewBag.Title @Html.Raw(ViewBag.Icon)
+        <a class="btn btn-success ms-3 float-end" onclick="entity.create();"> Adicionar <i class="fa fa-plus"></i></a>
+        @*<a class="btn btn-default float-end" href="@Url.Action("IndexDBF")">
+                SIAHR <i class="fas fa-link"></i>
+            </a>*@
+    </h4>
+    <hr class="mb-0" />
+    <div class="clearfix"></div>
+    <!-- Encablezado -->
+    <!-- Permisos -->
+    <div class="row mb-2">
+        <div class="col text-end">
+            <button id="icon-view" type="button" class="btn btn-info    btn-micro btn-round"><span class="fa fa-xs fa-eye"></span></button>
+            <button id="icon-create" type="button" class="btn btn-success btn-micro btn-round"><span class="fa fa-xs fa-plus"></span></button>
+            <button id="icon-edit" type="button" class="btn btn-primary btn-micro btn-round"><span class="fa fa-xs fa-edit"></span></button>
+            <button id="icon-delete" type="button" class="btn btn-danger  btn-micro btn-round"><span class="fa fa-xs fa-trash"></span></button>
+        </div>
+    </div>
+    <!-- Permisos -->
+    <!-- Filtro -->
+    @using (Ajax.BeginForm("JsIndexGrid", "SolicitudPedido", new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnBegin = "filter.begin",
+        OnSuccess = "filter.success",
+        OnFailure = "filter.failure"
+    }, new { id = "form-filter" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.Page)
+        <div class="card border border-dark mb-3">
+            <div class="card-header background-inventory">
+                Filtro
+                <a data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true" aria-controls="collapseExample">
+                    <i class="fa fa-chevron-up fa-pull-right" style="margin-top: 5px;"></i>
+                </a>
+            </div>
+            <div class="collapse show" id="collapseExample">
+                <div class="card-body">
+                    @Html.EditorFor(x => x.Buscar, "StringP", new { placeholder = "#Nombre" })
+                    <div class="form-group">
+                        <div class="float-end mb-3">
+                            <button id="btn-filter" type="submit" class="btn btn-info"><i class="fa fa-filter"></i> Aplicar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <!-- Filtro -->
+    <!-- Tabla -->
+    <div id="grid-1"></div>
+    <!-- Tabla -->
+    <!-- Child-Modal -->
+    @using (Ajax.BeginForm("JsSaveMaster", "Materiales", new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnBegin = "child.begin",
+        OnSuccess = "child.success",
+        OnFailure = "child.failure"
+    }, new { id = "form-child" }))
+    {
+        @Html.Partial("_ChildModal")
+    }
+    <!-- Child-Modal -->
+    <!-- Report-Modal -->
+    @Html.Partial("_ReportModal")
+    <!-- Report-Modal -->
+</div>
+
+@section Scripts {
+    <script>
+        let urls = @Html.Raw(JsonConvert.SerializeObject(new
+              {
+                  CEdit = Url.Action("CEdit"),
+                  Details = Url.Action("Details"),
+                  DeleteMaster = Url.Action("JsDeleteMaster"),
+                  GetCreateForm = Url.Action("JsGetCreateForm"),
+                  GetCEditForm = Url.Action("JsGetCEditForm")
+              }));
+        let permissions = @Html.Raw(JsonConvert.SerializeObject(ViewBag.Permissions));
+        let SinPrivilegios = '@Msg.privileges_none';
+    </script>
+    <script>
+        var filter          = {};
+        var entity          = {};
+        var grid            = {};
+        var child           = {};
+
+        filter.form         = $('#form-filter');
+        filter.btn          = $('#btn-filter');
+        filter.begin        = function () {
+            filter.btn.prop('disabled', true);
+        }
+        filter.success      = function (d) {
+            $('#grid-1').html(d);
+            filter.bindPaged();
+            filter.end();
+        }
+        filter.end          = function () {
+            filter.btn.prop('disabled', false);
+        }
+        filter.bindPaged    = function () {
+            $(".pagination a").click(function () {
+                if (event.preventDefault) {
+                    event.preventDefault();
+                    //console.log('detenido');
+                    //console.log($(this).attr('href'));
+                    $('#Page').val($(this).attr('href'));
+                    filter.btn.trigger('click');
+                }
+            });
+        }
+
+        entity.view         = function (o) {
+            if (!permissions.View) {
+                jshelper.error(SinPrivilegios);
+                return;
+            }
+            let id = $(o).data("model-id");
+            $('#modalLabel').html('Ver Cirujano');
+
+            jshelper.get('@Url.Action("JsViewMaster")', {id: id}, function (r) {
+                $('#form-body-child').html(r);
+            });
+            $('#child-modal > .modal-dialog > .modal-content .modal-footer').hide();
+            $('#child-modal').modal('show');
+        }
+        entity.create       = function (o) {
+            if (!permissions.Create) {
+                jshelper.error(SinPrivilegios);
+                return;
+            }
+            $('#modalLabel').text('Crear Cirujano');
+            jshelper.get(urls.GetCreateForm, {}, function (r) {
+                //console.log(r);                
+                if (r.success == false) {
+                    //alert(r.message);
+                    jshelper.error(r.message);
+                }
+                else {
+                    $('#form-body-child').html(r);
+                    let modalForm = $("#form-child");
+                    jshelper.bindValidation(modalForm);
+                    //childInicial.init();
+                    $('#child-modal > .modal-dialog > .modal-content .modal-footer').show();
+                    $('#child-modal').modal('show');
+                }
+            });
+        }
+        entity.update       = function (o) {
+            event.preventDefault();
+
+            if (!permissions.Edit) {
+                jshelper.error(SinPrivilegios);
+                return;
+            }
+
+            let id = $(o).data("model-id");
+
+            jshelper.get(urls.GetCEditForm, {id: id}, function (r) {
+                //console.log(r);                
+                if (r.success == false) {
+                    //alert(r.message);
+                    jshelper.error(r.message);
+                }
+                else {
+                    $('#form-body-child').html(r);
+                    let modalForm = $("#form-child");
+                    jshelper.bindValidation(modalForm);
+                    //childInicial.init();
+                    $('#child-modal > .modal-dialog > .modal-content .modal-footer').show();
+                    $('#child-modal').modal('show');
+                }
+            });
+            //let url = $(o).attr('href');
+            //window.location.href = url;
+        }
+        entity.delete       = function (o) {
+            if (!permissions.Delete) {
+                jshelper.error(SinPrivilegios);
+                return;
+            }
+            let id = $(o).data("model-id");
+            let nombre = $(o).data("model-nombre");
+            jshelper.deleteConfirm(function () {
+                jshelper.deleteAjax(
+                    urls.DeleteMaster,
+                    { id: id },
+                    function () { filter.form.submit(); }
+                );
+            },
+                'Se eliminará el <strong>Cirujano: ' + nombre + '</strong> con todo su detalle, esta acción es irreversible !'
+            );
+        }
+
+        child.btnSave       = $('#btn-save-modal');
+        child.modal         = $('#child-modal');
+        child.begin         = function () {
+            child.btnSave.prop('disabled', true);
+        };
+        child.end           = function () {
+            child.btnSave.prop('disabled', false);
+        };
+        child.success       = function (r) {
+            //console.log(r);
+            jshelper.showAlert(r.success, r.message);
+            if (r.success) {
+                child.modal.modal('hide');
+                // Un solo nivel
+                filter.form.submit();
+                // Dos niveles
+                //window.location.replace(urls.CEdit + '/' + r.data.CirujanoId);
+            }
+            child.end();
+        };
+        child.failure       = function () {
+            jshelper.failure();
+            child.end();
+        };
+
+        // Autoload
+        $(function () {
+            jshelper.showPermissions();
+            filter.form.submit();
+        });
+    </script>
+}

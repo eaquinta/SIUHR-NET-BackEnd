@@ -1,13 +1,15 @@
 ﻿using Apphr.Application.Common;
 using Apphr.Application.Common.Models;
 using Apphr.Application.SolicitudesPedido.DTOs;
-using Apphr.Domain.Entities;
+using Apphr.WebUI.Models.Entities;
+using Apphr.WebUI.Models.Entities.Ortopedia;
 using Apphr.Domain.EntitiesDBF;
 using Apphr.Domain.Enums;
 using Apphr.WebUI.Common;
 using Apphr.WebUI.Controllers;
 using Apphr.WebUI.CustomAttributes;
 using Apphr.WebUI.Models;
+using Apphr.WebUI.Models.Repository;
 using CrystalDecisions.CrystalReports.Engine;
 using PagedList;
 using System;
@@ -27,7 +29,23 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
     [LogAction]
     public class SolicitudesPedidoController : DbController
     {
-        [AppAuthorization(Permit.View)]
+        private DestinoRepository DestinoRep;
+        private MaterialRepository MaterialRep;
+        private OrdenCompraRepository OrdenCompraRep;
+        private SolicitudPedidoRepository SolicitudPedidoRep;
+        private ControlAbastecimientoRepository ControlAbastecimientoRep;
+
+        public SolicitudesPedidoController()
+        {
+            DestinoRep = new DestinoRepository(db);
+            MaterialRep = new MaterialRepository(db);
+            OrdenCompraRep = new OrdenCompraRepository(db);
+            SolicitudPedidoRep = new SolicitudPedidoRepository(db);
+            ControlAbastecimientoRep = new ControlAbastecimientoRepository(db);
+        }
+
+
+        [Can("solicitud_pedido.ver")]
         public ActionResult Index(SolicitudPedidoDTOIndex dto, int? page) //GET
         {
             IQueryable<SolicitudPedido> regs;
@@ -41,9 +59,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
             }
 
             pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
-            //            BodegaDTOIndex dto = new BodegaDTOIndex();
-
-
+          
             regs = (from p in db.SolicitudesPedido.Include("Departamento") select p);
             if (dto.F != null)
             {
@@ -61,14 +77,14 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
             return View(dto);
         }
 
-        [AppAuthorization(Permit.View)]
+        [Can("solicitud_pedido.ver")]
         public async Task<ActionResult> Details(string id)
         {
             if (string.IsNullOrEmpty(id))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var reg = await this.DetailsData(id);
+            var reg = await DetailsData(id);
             if (reg == null)
             {
                 return HttpNotFound();
@@ -79,7 +95,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
             return View(dto);
         }
 
-        [AppAuthorization(Permit.Edit)]
+        [Can("solicitud_pedido.editar")]
         public async Task<ActionResult> CEdit(string id)  //GET
         {
             var dto = new SolicitudPedidoDTOCEdit();
@@ -99,12 +115,12 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
                 // Mapeo especial
                 dto.DepartamentoCodigo = reg.Departamento.Codigo;
                 dto.DepartamentoNombre = reg.Departamento.Descripcion;
-                dto.SeccionCodigo = reg.Seccion.Codigo;
-                dto.SeccionNombre = reg.Seccion.Descripcion;
+                dto.SeccionCodigo = reg.Seccion?.Codigo;
+                dto.SeccionNombre = reg.Seccion?.Descripcion;
                 dto.serie = dto.SolicitudPedidoId.Substring(5, 6);
                 dto.year = dto.SolicitudPedidoId.Substring(0, 4);
                 
-                dto.Child.SolicitudId = dto.SolicitudPedidoId;
+                dto.Child.SolicitudPedidoId = dto.SolicitudPedidoId;
                 ViewBag.mode = "UPD";
             }
             else
@@ -118,98 +134,111 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
                 ViewBag.mode = "INS";
             }
 
-            ViewBag.ListTipo = PrioridadTipo.GetSelectList();
-
+            ViewBag.ListTipo = TipoPrioridad.GetSelectList();
+            ViewBag.ListTipoEvento = TipoEvento.GetSelectList();
 
             return View(dto);
         }
 
-        [AppAuthorization(Permit.View)]
-        public ActionResult IndexDBF(SolicitudPedidoDTOIndexDBF dto, string currentFilter, string searchString, int? page) // GET
+        [Can("solicitud_pedido.ver")]
+        public ActionResult IndexDBF() // GET
         {            
-            int pageIndex = 1;
-            if (dto?.F == null) dto.F = new IxFilter();
-            if ( dto.F.Buscar != dto.F._Buscar)
-            {
-                page = 1;
-                dto.F._Buscar = dto.F.Buscar;
-            }           
-           
-            pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
+            ViewBag.AnioList = ControlAbastecimientoRep.AnioList();
+            var dto = new SolicitudPedidoDTOIxDBFFilter();            
+            return View(dto);
+        }
 
-            var regs = this.dbfContext.GetSolicitudesPedido();
-           
-            if (!String.IsNullOrEmpty(dto?.F?.Buscar))
+        [ValidateAntiForgeryToken]
+        public ActionResult JsFilterDBFIndex(string Buscar, int Anio, int? page)
+        {            
+            int pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
+
+            dbfContext.SetYear(Anio);
+
+            var regs = dbfContext.GetSolicitudesPedido();
+            if (regs == null)
+                return PartialView("_ErrorSiahr");
+
+            if (!String.IsNullOrEmpty(Buscar))
             {
-                regs = regs.Where(s => 
-                s.NUMSOL.Contains(dto?.F?.Buscar) || 
-                s.DEPSOL.ToUpper().Contains(dto?.F?.Buscar.ToUpper()) ||                
-                (s.Fecha.HasValue ? s.Fecha.Value.ToString("d") :"").Contains(dto?.F?.Buscar)
+                if (!string.IsNullOrEmpty(Buscar))
+                    regs = regs.Where(s =>
+                s.NUMSOL.Contains(Buscar) || 
+                s.DEPSOL.ToUpper().Contains(Buscar.ToUpper()) ||                
+                (s.Fecha.HasValue ? s.Fecha.Value.ToString("d") :"").Contains(Buscar)
                 );
             }
-            
-            regs = regs.ToList();
-            dto.Result = regs.ToPagedList(pageIndex, pageSize);
-            return View(dto);
+           
+            var dto = regs.ToPagedList(pageIndex, pageSize);
+            ViewBag.PLROpions = PagedListOptions;
+            ViewBag.Anio = Anio;
+            return PartialView("_IndexDBFGrid", dto);
         }
 
-        [AppAuthorization(Permit.View)]
-        public ActionResult DetailsDBF(string id) // GET
-        {
-            id = FixFormatId(id);            
 
-            SolicitudPedidoDBF dte = this.dbfContext.GetSolicitudPedido(id);
-            List<SolicitudPedidoDetalleDBF> dtd = this.dbfContext.GetSolicitudPedidoDetalle(id);
-            List<MaterialDBF> mat = this.dbfContext.GetMateriales();
+        //[Can(.".ver")]
+        //public ActionResult DetailsDBF(string id, int year) // GET
+        //{
+        //    id = FixFormatId(id);
+
+        //    this.dbfContext.SetYear(year);
+
+        //    SolicitudPedidoDBF dte = this.dbfContext.GetSolicitudPedido(id);
+        //    List<SolicitudPedidoDetalleDBF> dtd = this.dbfContext.GetSolicitudPedidoDetalle(id);
+        //    List<MaterialDBF> mat = this.dbfContext.GetMateriales();
 
 
-            SolicitudPedidoDTODetailsDBF reg = new SolicitudPedidoDTODetailsDBF()
-            {
-                Solicitud = dte.NUMSOL,
-                Correlativo = dte.CORSOL,
-                DIASOL = dte.DIASOL,
-                MESSOL = dte.MESSOL,
-                ANOSOL = dte.ANOSOL,
-                Departamento = dte.DEPSOL,
-                Observaciones = dte.OBSSOL,
-                Solicito = dte.SOLSOL,
-                Elaboro = dte.OTRSOL,
-                Jefe = dte.JEFSOL,
-                Gerente = dte.GERSOL,
-                Director = dte.DIRSOL,
-                Tipo = dte.TIPSOL,            
-            };
+        //    SolicitudPedidoDTODetailsDBF reg = new SolicitudPedidoDTODetailsDBF()
+        //    {
+        //        Solicitud = dte.NUMSOL,
+        //        Correlativo = dte.CORSOL,
+        //        DIASOL = dte.DIASOL,
+        //        MESSOL = dte.MESSOL,
+        //        ANOSOL = dte.ANOSOL,
+        //        Departamento = dte.DEPSOL,
+        //        Observaciones = dte.OBSSOL,
+        //        Solicito = dte.SOLSOL,
+        //        Elaboro = dte.OTRSOL,
+        //        Jefe = dte.JEFSOL,
+        //        Gerente = dte.GERSOL,
+        //        Director = dte.DIRSOL,
+        //        Tipo = dte.TIPSOL,            
+        //    };
 
-            var joined = from d in dtd
-                         join m in mat on d.MATSOL equals m.CODIGO
-                         select new { d, m };
+        //    var joined = from d in dtd
+        //                 join m in mat on d.MATSOL equals m.CODIGO
+        //                 select new { d, m };
 
-            List<SolicitudPedidoDTODetailsL2DBF> regs = new List<SolicitudPedidoDTODetailsL2DBF>();
+        //    List<SolicitudPedidoDetalleDTODetailsDBF> regs = new List<SolicitudPedidoDetalleDTODetailsDBF>();
 
-            foreach (var j in joined)
-            {
-                regs.Add(new SolicitudPedidoDTODetailsL2DBF()
-                {
-                    Material = j.d.MATSOL,
-                    Descripcion = j.m.DESCRI,
-                    Cantidad = j.d.CANSOL,
-                    Valor = j.d.VALSOL
-                });
-            }
+        //    foreach (var j in joined)
+        //    {
+        //        regs.Add(new SolicitudPedidoDetalleDTODetailsDBF()
+        //        {
+        //            Material = j.d.MATSOL,
+        //            Descripcion = j.m.DESCRI,
+        //            Cantidad = j.d.CANSOL,
+        //            Precio = j.d.PRESOL??0,
+        //            Valor = j.d.VALSOL
+        //        });
+        //    }
 
-            reg.Detalle = regs;
-            return View(reg);
-        }
-        public ActionResult Print(string id) // GET
+        //    reg.Detalle = regs;
+        //    return View(reg);
+        //}
+        public ActionResult Print(string id, int year) // GET
         {
             id = FixFormatId(id);
 
             List<SolicitudPedidoDTORpt> regsReport = new List<SolicitudPedidoDTORpt>();
             List<SolicitudPedidoDBF> def = new List<SolicitudPedidoDBF>();
-            def.Add(this.dbfContext.GetSolicitudPedido(id));
-            List<DestinoDBF> des = this.dbfContext.GetDestinos();
-            List<MaterialDBF> mat = this.dbfContext.GetMateriales();
-            List<SolicitudPedidoDetalleDBF> det = this.dbfContext.GetSolicitudPedidoDetalle(id);
+
+            dbfContext.SetYear(year);
+
+            def.Add(dbfContext.GetSolicitudPedido(id));
+            List<DestinoDBF> des = dbfContext.GetDestinos();
+            List<MaterialDBF> mat = dbfContext.GetMateriales();
+            List<SolicitudPedidoDetalleDBF> det = dbfContext.GetSolicitudPedidoDetalle(id);
 
             var joined = from df in def
                          join dt in det on df.NUMSOL equals dt.NUMSOL 
@@ -270,7 +299,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var reg = await this.DetailsData(id);
+            var reg = await DetailsData(id);
             if (reg == null)
             {
                 return HttpNotFound();
@@ -279,6 +308,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
             var dto = mapper.Map<SolicitudPedidoDTODetails>(reg);
             return View(dto);
         }
+
         [AppAuthorization(Permit.Delete)]
         [HttpPost, ValidateAntiForgeryToken, ActionName("Delete")]
         public async Task<ActionResult> DeleteConfirmed(int id) // POST
@@ -291,7 +321,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 
         #region Js
 
-        [AppAuthorization(Permit.Edit)]
+        [Can("solicitud_pedido.editar")]
         [HttpPost, ValidateAntiForgeryToken]
         public JsonResult JsSaveMaster(SolicitudPedidoDTOCEdit dto)
         {
@@ -310,6 +340,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
                         Correlativo = dto.Correlativo,
                         Fecha = dto.Fecha,
                         Tipo = dto.Tipo,
+                        TipoEvento = dto.TipoEvento,
                         DepartamentoId = dto.DepartamentoId,
                         SeccionId = dto.SeccionId,
                         Elaboro = dto.Elaboro,
@@ -325,10 +356,12 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
                 }
                 else
                 {
+                    // UPDATE
                     var reg = db.SolicitudesPedido.Find(dto.SolicitudPedidoId);
                     reg.Correlativo = dto.Correlativo;
                     reg.Fecha = dto.Fecha;
                     reg.Tipo = dto.Tipo;
+                    reg.TipoEvento = dto.TipoEvento;
                     reg.DepartamentoId = dto.DepartamentoId;
                     reg.SeccionId = dto.SeccionId;
                     reg.Elaboro = dto.Elaboro;
@@ -343,15 +376,15 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = Resources.Msg.failure, messageEx = ex.Message, messageInner = ex.InnerException });
+                return Json(new { success = false, message = Resources.Msg.failure, messageEx = ex.Message, messageInner = ex.InnerException.InnerException.Message });
             }
         }
 
 
 
-        [AppAuthorization(Permit.Edit)]
+        [Can("solicitud_pedido.editar")]
         [HttpPost, ValidateAntiForgeryToken]
-        public JsonResult JsSaveChild(SolicitudPedidoDTOBaseDT dto)
+        public JsonResult JsSaveChild(SolicitudPedidoDetalleDTOBase dto)
         {
             try
             {
@@ -359,26 +392,26 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
                 {
                     return Json(new { success = false, message = Resources.Msg.failure_model_invalid });
                 }
-                if (dto.SolicitudPedidoDTId == 0)
+                if (dto.SolicitudPedidoDetalleId == 0)
                 {
                     //var reg = mapper.Map<SolicitudPedidoDT>(dto);
                     var reg = new SolicitudPedidoDetalle()
                     {
-                        SolicitudId = dto.SolicitudId,
+                        SolicitudPedidoId = dto.SolicitudPedidoId,
                         MaterialId = dto.MaterialId,
                         Cantidad = dto.Cantidad,
                         Precio = dto.Precio,
                         Valor = dto.Valor ?? 0
                     };
                     reg.Material = null;
-                    db.SolicitudesPedidoDT.Add(reg);
+                    db.SolicitudesPedidoDetalle.Add(reg);
                     db.SaveChanges();
                     return Json(new { success = true, message = Resources.Msg.success_create });
                 }
                 else
                 {
-                    var reg = db.SolicitudesPedidoDT.Find(dto.SolicitudPedidoDTId);
-                    reg.SolicitudId = dto.SolicitudId;
+                    var reg = db.SolicitudesPedidoDetalle.Find(dto.SolicitudPedidoDetalleId);
+                    reg.SolicitudPedidoId = dto.SolicitudPedidoId;
                     reg.MaterialId = dto.MaterialId;
                     reg.Cantidad = dto.Cantidad;
                     reg.Precio = dto.Precio;
@@ -389,7 +422,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = Resources.Msg.failure, messageEx = ex.Message, messageInner = ex.InnerException });
+                return Json(new { success = false, message = Resources.Msg.failure, messageEx = ex.Message, messageInner = ex.InnerException.InnerException.Message });
             }
         }
 
@@ -397,47 +430,50 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> JsDeleteMaster(string id) // POST
         {
-            Permit[] permisosRequeridos = { Permit.Delete };
-            bool hasPermit = Utilidades.hasPermit(permisosRequeridos, ControllerContext, userName);
+            string[] permisosRequeridos = { "solicitud_pedido.eliminar" };
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
             if (!hasPermit)
             {
                 return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
             }
             try
             {
-                var reg = await db.SolicitudesPedido
-                .Include("Detalle")
-                .Where(x => x.SolicitudPedidoId == id).FirstOrDefaultAsync();               
+                var reg = await db.SolicitudesPedido.Where(x => x.SolicitudPedidoId == id).FirstOrDefaultAsync();
+                var det = await db.SolicitudesPedidoDetalle.Where(x => x.SolicitudPedidoId == id).ToListAsync();
+                foreach (var item in det)
+                {
+                    db.SolicitudesPedidoDetalle.Remove(item);
+                }
                 db.SolicitudesPedido.Remove(reg);
                 await db.SaveChangesAsync();
                 return Json(new { success = true, message = Resources.Msg.success_delete }, JsonRequestBehavior.DenyGet);
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = Resources.Msg.failure,  exMessage = ex.Message, exInner = ex.InnerException }, JsonRequestBehavior.DenyGet);
+                return Json(new { success = false, message = Resources.Msg.failure,  exMessage = ex.Message, exInner = ex.InnerException.InnerException.Message }, JsonRequestBehavior.DenyGet);
             }
         }
 
 
         [ValidateAntiForgeryToken]
-        public ActionResult JsDeleteChild(int? id)
+        public async  Task<ActionResult> JsDeleteChild(int? id)
         {
-            Permit[] permisosRequeridos = { Permit.Delete };
-            bool hasPermit = Utilidades.hasPermit(permisosRequeridos, ControllerContext, userName);
+            string[] permisosRequeridos = { "solicitud_pedido.eliminar" };
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
             if (!hasPermit)
             {
                 return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
             }
             try
             {
-                var reg = db.SolicitudesPedidoDT.Find(id);
-                db.SolicitudesPedidoDT.Remove(reg);
+                var reg = db.SolicitudesPedidoDetalle.Find(id);
+                db.SolicitudesPedidoDetalle.Remove(reg);
                 db.SaveChanges();
                 return Json(new { success = true, message = Resources.Msg.success_delete }, JsonRequestBehavior.DenyGet);
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = Resources.Msg.failure, exMessage = ex.Message, exInner = ex.InnerException }, JsonRequestBehavior.DenyGet);
+                return Json(new { success = false, message = Resources.Msg.failure, exMessage = ex.Message, exInner = ex.InnerException.InnerException.Message }, JsonRequestBehavior.DenyGet);
             }
         }
 
@@ -446,12 +482,10 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
         {
             if (string.IsNullOrEmpty(id))
             { return null; }
-            var regs = db.SolicitudesPedidoDT.Include("Material").Where(x => x.SolicitudId == id).ToList();
-            var dto = mapper.Map<IEnumerable<SolicitudPedidoDTOBaseDT>>(regs);
+            var regs = db.SolicitudesPedidoDetalle.Include("Material").Where(x => x.SolicitudPedidoId == id).ToList();
+            var dto = mapper.Map<IEnumerable<SolicitudPedidoDetalleDTOBase>>(regs);
             return PartialView("_Grid", dto);
         }
-
-
 
 
         [HttpPost]
@@ -475,8 +509,8 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
             {
                 return Json(new { success = false, message ="Solicitud mal formada!" }, JsonRequestBehavior.AllowGet);
             }
-            var reg = db.SolicitudesPedidoDT
-                .Where(x => x.SolicitudPedidoDTId == id)
+            var reg = db.SolicitudesPedidoDetalle
+                .Where(x => x.SolicitudPedidoDetalleId == id)
                 .Include("Material").FirstOrDefault();
             if (reg == null)
             {
@@ -497,11 +531,155 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
                 .Include("Departamento")
                 .FirstOrDefaultAsync();
         }
+
         private string GetCorrelativo()
         {
             string Usuario = System.Web.HttpContext.Current.User.Identity.Name;
             return Usuario.ToUpper().Substring(0, 3) + " " + DateTime.Now.ToString("yyyyMMdd HH:mm:ss");
         }
+
+        public async Task<JsonResult> JsImportSolicitudPedido(string CODIGO, int year)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(CODIGO))
+                {
+                    throw new ArgumentException("Parametro CODIGO de contener algun valor");
+                }
+
+                dbfContext.SetYear(year);
+
+                var SolicitudPedidoDBF = dbfContext.GetSolicitudPedido(CODIGO);
+                var SolicitudPedidoDetalleDBF = dbfContext.GetSolicitudPedidoDetalle(CODIGO);
+                // Datos Relacionados
+                //DestinoRep.ImportIfNotExist(SolicitudPedidoDBF.CPROVE);               
+                //int DepartamentoId = DestinoRep.GetIdFromCodigo(SolicitudPedidoDBF.CPROVE)??0;
+                //int? SeccionId = DestinoRep.GetIdFromCodigo(SolicitudPedidoDBF.DPROVE);
+
+                //var SolicitudPedidoId = SolicitudPedidoRep.SolicitudPedidoIdFromDBF(year,SolicitudPedidoDBF.NUMSOL);
+                var Numero = Convert.ToInt32(SolicitudPedidoDBF.NUMSOL);
+                using (DbContextTransaction t = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        if (!await db.ORTSolicitudesPedido.AnyAsync(x => x.Anio == year && x.Numero == Numero))
+                        {
+                            var reg = new ORTSolicitudPedido()
+                            {
+                                Anio = year,
+                                Numero = Numero,
+                                Fecha = SolicitudPedidoDBF.Fecha ?? DateTime.MaxValue,
+                                Director = SolicitudPedidoDBF.DIRSOL,
+                                Elaboro = SolicitudPedidoDBF.OTRSOL,
+                                JefeDepartamento = SolicitudPedidoDBF.JEFSOL,
+                                Gerente = SolicitudPedidoDBF.GERSOL,
+                                Solicito = SolicitudPedidoDBF.SOLSOL,
+                                Observacion = SolicitudPedidoDBF.OBSSOL,
+                                TipoPrioridad = SolicitudPedidoDBF.TIPSOL
+                            };
+
+                            db.ORTSolicitudesPedido.Add(reg);
+                            await db.SaveChangesAsync();
+
+                            foreach (var item in SolicitudPedidoDetalleDBF)
+                            {
+                                //string OrdenCompraId = OrdenCompraRep.OrdenCompraIdFromDBF(Anio, item.ORDASI);
+                                MaterialRep.ImportIfNotExist(item.MATSOL);
+                                int MaterialId = MaterialRep.GetIdFromCodigo(item.MATSOL) ?? 0;
+                                //ControlAbastecimientoRep.AddMaterial(MaterialId); //reg.DepartamentoId,
+
+                                db.ORTMovimientos.Add(new ORTMovimiento()
+                                {
+                                    Tipo = "SOL",
+                                    SolicitudPedidoId = reg.SolicitudPedidoId,
+                                    Fecha = reg.Fecha,
+                                    Cantidad = item.CANSOL ?? 0,
+                                    Precio = item.PRESOL ?? 0,
+                                    Valor = item.VALSOL ?? 0,
+                                    MaterialId = MaterialId,
+                                });
+                            }
+                            //db.SolicitudesPedido.Add(reg);
+                        }
+                        else
+                        {
+                            var reg = await db.ORTSolicitudesPedido.Where(x => x.Anio == year && x.Numero == Numero).FirstOrDefaultAsync();
+                            if (reg != null)
+                            {
+                                reg.Fecha = SolicitudPedidoDBF.Fecha ?? DateTime.MinValue;
+                                reg.Observacion = SolicitudPedidoDBF.OBSSOL;
+
+                            }
+                        }
+                        await db.SaveChangesAsync();
+                        t.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        t.Rollback();
+                        throw;
+                    }
+                }                
+                //await db.SaveChangesAsync();
+                return Json(new { result = true }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = false, message = ex.Message, innerexeption = ex.InnerException.InnerException.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        public ActionResult JsDetailsDBF(string id, int year) // GET
+        {
+            id = FixFormatId(id);
+
+            dbfContext.SetYear(year);
+
+            SolicitudPedidoDBF dte = dbfContext.GetSolicitudPedido(id);
+            List<SolicitudPedidoDetalleDBF> dtd = dbfContext.GetSolicitudPedidoDetalle(id);
+            List<MaterialDBF> mat = dbfContext.GetMateriales();
+
+
+            SolicitudPedidoDTODetailsDBF reg = new SolicitudPedidoDTODetailsDBF()
+            {
+                Solicitud = dte.NUMSOL,
+                Correlativo = dte.CORSOL,
+                DIASOL = dte.DIASOL,
+                MESSOL = dte.MESSOL,
+                ANOSOL = dte.ANOSOL,
+                Departamento = dte.DEPSOL,
+                Observaciones = dte.OBSSOL,
+                Solicito = dte.SOLSOL,
+                Elaboro = dte.OTRSOL,
+                Jefe = dte.JEFSOL,
+                Gerente = dte.GERSOL,
+                Director = dte.DIRSOL,
+                Tipo = dte.TIPSOL,
+            };
+
+            var joined = from d in dtd
+                         join m in mat on d.MATSOL equals m.CODIGO
+                         select new { d, m };
+
+            List<SolicitudPedidoDetalleDTODetailsDBF> regs = new List<SolicitudPedidoDetalleDTODetailsDBF>();
+
+            foreach (var j in joined)
+            {
+                regs.Add(new SolicitudPedidoDetalleDTODetailsDBF()
+                {
+                    Material = j.d.MATSOL,
+                    Descripcion = j.m.DESCRI,
+                    Cantidad = j.d.CANSOL,
+                    Precio = j.d.PRESOL ?? 0,
+                    Valor = j.d.VALSOL
+                });
+            }
+
+            reg.Detalle = regs;
+            return PartialView("_DetailsDBF", reg);
+        }
+
         private string FixFormatId(string id)
         {
             return id.PadLeft(4);

@@ -1,0 +1,35 @@
+﻿@model Apphr.WebUI.Application.AppPermissions.DTOs.AppPermissionDTOCEdit
+@using Apphr.WebUI.CustomAttributes
+
+@{
+    var _genderList = (IEnumerable<SelectListItem>)ViewData["GenderList"];
+    var _estadoCivilList = (IEnumerable<SelectListItem>)ViewData["EstadoCivilList"];
+    var _religionList = (IEnumerable<SelectListItem>)ViewData["ReligionList"];
+    var _etniaList = (IEnumerable<SelectListItem>)ViewData["EtniaList"];
+}
+
+@using (Ajax.BeginForm("JsSaveMaster", "People", new AjaxOptions
+{
+    HttpMethod = "POST",
+    OnBegin = "modal2.begin",
+    OnSuccess = "modal2.success",
+    OnFailure = "modal2.failure"
+}, new { id = "modal2-form", enctype = "multipart/form-data", InsertionMode = InsertionMode.Replace })) // new { enctype = "multipart/form-data" }
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(x => x.PermissionId)    
+<div class="row">
+    <div class="col-lg-12">
+        <div class="row">
+            @*<div class="col-12">@Html.EditorFor(x => x.IsActive)</div>*@   
+            <div class="col-md-12">@Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })</div>            
+        </div>
+    </div>    
+    <hr class="mb-3 mt-3" />
+    <div class="col-12">
+        <input type="submit" id="modal2-btn-save" class="btn btn-primary float-end" value="Guardar" />
+    </div>
+</div>
+}
+

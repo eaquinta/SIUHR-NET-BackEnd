@@ -1,0 +1,18 @@
+﻿@model Apphr.Application.Ortopedia.OrdenesCompra.DTOs.OrdenCompraDTOCreate
+
+@Html.AntiForgeryToken()
+@Html.HiddenFor(x => x.OrdenCompraId)
+@Html.HiddenFor(x => x.SolicitudPedidoId)
+@Html.HiddenFor(x => x.ProveedorId)
+
+<div class="row">
+    <div class="col-md-4">@Html.EditorFor(x => x.Numero)</div>
+    <div class="col-md-4">@Html.EditorFor(x => x.Fecha)</div>
+    <div class="col-md-4">@Html.EditorFor(x => x.Anio)</div>
+    <div class="col-md-4">@Html.EditorFor(x => x.NumeroSP)</div>
+    <div class="col-md-4">@Html.EditorFor(x => x.FechaSP)</div>
+    <div class="col-md-4">@Html.EditorFor(x => x.AnioSP)</div>
+    <div class="col-md-4">@Html.EditorFor(x => x.ProveedorNit)</div>
+    <div class="col-md-8">@Html.EditorFor(x => x.ProveedorNombre)</div>
+    <div class="col-md-12">@Html.EditorFor(x => x.Observacion)</div>
+</div>

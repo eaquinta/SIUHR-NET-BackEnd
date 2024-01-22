@@ -1,0 +1,8 @@
+﻿@model Int64?
+<div class="form-group mb-2">
+    @Html.LabelFor(x => x, htmlAttributes: new { @class = "form-label", style = "font-weight:bold;" })
+    <div class="col">
+        @Html.TextBoxFor(x => x, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x, "", new { @class = "text-danger" })
+    </div>
+</div>

@@ -1,8 +1,9 @@
 ﻿@model Apphr.Application.SolicitudMaterialesSala.DTOs.SolicitudMaterialSalaDTOCEdit
 @using Newtonsoft.Json
 @{
-    ViewBag.Title = "Crear";
+    ViewBag.Accion = "Crear";
     ViewBag.Entidad = "Solicitud Material Sala";
+    ViewBag.Title = ViewBag.Accion + " " + ViewBag.Entidad;
     ViewBag.Icon = "<i class=\"far fa-plus-square\"></i>";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
     //var IdKey = new { id = Model.SolicitudPedidoId };
@@ -33,8 +34,8 @@
     <!--BreadCrum-->
     <!-- Form Title -->
     <h4>
-        @ViewBag.Title @ViewBag.Entidad @Html.Raw(ViewBag.Icon)
-        <a class="btn btn-outline-dark float-end btnReturn" href="">Regresar</a>
+        @ViewBag.Title @Html.Raw(ViewBag.Icon)
+        <a class="btn btn-outline-dark float-end btnReturn" href=""><i class="fas fa-chevron-left"></i>&nbsp;Regresar</a>
     </h4>
     <hr />
     <!-- Form Title -->
@@ -102,7 +103,7 @@
 
     <!-- Botones formulario -->
     <div class="col-md-12 mt-2 onUpd">
-        <a class="btn btn-outline-dark btnReturn onUpd" href="">Regresar</a>
+        <a class="btn btn-outline-dark btnReturn onUpd" href=""><i class="fas fa-chevron-left"></i>&nbsp;Regresar</a>
         <div class="float-end">
             <a class="btn btn-outline-danger btn-eliminar onUpd" href="#"><i class="fas fa-trash"></i>&nbsp;Eliminar</a>
         </div>
@@ -127,7 +128,7 @@ new { id = "child-form" }))
                     <h5 id="myModalLabel" class="modal-title">Agregar Material</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" id="formLinea">
+                <div class="modal-body" id="form-body-child">
                     @Html.Partial("_CEditChild", Model.Child)
                 </div>
                 <div class="modal-footer">                    
@@ -151,13 +152,13 @@ new { id = "child-form" }))
                   GetChild = Url.Action("JsGetChild"),
                   DeleteMaster = Url.Action("JsDeleteMaster"),
                   DeleteChild = Url.Action("JsDeleteChild"),
-                  FindMateriales = Url.Action("JsGetMaterialesByFilter", "Materiales"),
-                  FindBodegas = Url.Action("JsGetBodegasByFilter","Bodegas"),
-                  FindProveedores = Url.Action("JsGetProveedoresByFilter", "Proveedores"),
-                  GetMatByCod = Url.Action("JsGetMaterialByCodigo","Materiales"),
+                  FindMateriales = Url.Action("JsGetByFilter", "Materiales"),
+                  FindBodegas = Url.Action("JsGetByFilter","Bodegas"),
+                  FindProveedores = Url.Action("JsGetByFilter", "Proveedores"),
+                  GetMatByCod = Url.Action("JsGetByCodigo","Materiales"),
                   GetBodega = Url.Action("JsGetBodegaByNombre", "Bodegas"),
                   GetProveedor = Url.Action("JsGetProveedorByNit","Proveedores"),
-                  GetMaterial = Url.Action("JsGetMaterialByCodigo", "Materiales"),
+                  GetMaterial = Url.Action("JsGetByCodigo", "Materiales"),
               }));
         var urlDetails = '@Url.Action("Details")';
         var urlCEdit = '@Url.Action("CEdit")';
@@ -167,9 +168,9 @@ new { id = "child-form" }))
         var urlGetChild = '@Url.Action("JsGetChild")';
         var urlDeleteMaster = '@Url.Action("JsDeleteMaster")';
         var urlDeleteChild = '@Url.Action("JsDeleteChild")';
-        var urlFindMateriales = '@Url.Action("JsGetMaterialesByFilter", "Materiales")';
+        var urlFindMateriales = '@Url.Action("JsGetByFilter", "Materiales")';
         var urlFindDestinos = '@Url.Action("JsGetDestinosByFilter","Destinos")'
-        var urlGetMatByCod = '@Url.Action("JsGetMaterialByCodigo","Materiales")';
+        var urlGetMatByCod = '@Url.Action("JsGetByCodigo","Materiales")';
         var id1 = '@Model.SolicitudMaterialSalaId';
     </script>
     <script src="~/Content/apphr/SolicitudMaterialesSala/CEdit.js"></script>

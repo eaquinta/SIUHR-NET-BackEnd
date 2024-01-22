@@ -66,6 +66,10 @@ artifacts/
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
 
+#Subidas de fotos\
+AppUploadImages/
+
+
 # StyleCop
 StyleCopReport.xml
 

@@ -1,0 +1,59 @@
+﻿@model Apphr.Application.SolicitudesPedido.DTOs.SolicitudPedidoDTODetailsDBF
+
+<div class="container-lg">
+    <div class="row">
+        <div class="col-md-6">@Html.DisplayFor(x => x.Solicitud, "StringD")</div>
+        <div class="col-md-6">@Html.DisplayFor(x => x.Correlativo, "StringD")</div>
+        <div class="col-md-6">@Html.DisplayFor(x => x.Fecha, "DateD")</div>
+        <div class="col-md-6">@Html.DisplayFor(x => x.Tipo, "StringD")</div>
+        <div class="col-12">@Html.DisplayFor(x => x.Departamento, "StringD")</div>
+        <div class="col-md-6">@Html.DisplayFor(x => x.Elaboro, "StringD")</div>
+        <div class="col-md-6">@Html.DisplayFor(x => x.Solicito, "StringD")</div>
+        <div class="col-md-6">@Html.DisplayFor(x => x.Jefe, "StringD")</div>
+        <div class="col-md-6">@Html.DisplayFor(x => x.Gerente, "StringD")</div>
+        <div class="col-md-6">@Html.DisplayFor(x => x.Director, "StringD")</div>
+        @Html.DisplayFor(x => x.Observaciones, "StringD")
+    </div>
+    <!-- Tabla -->
+    <div class="table-responsive">
+        <table id="myTable" class="table table-striped table-bordered display responsive nowrap" width="100%">
+            <thead class="table-dark">
+                <tr>
+                    <th>Material</th>
+                    <th>Descripción</th>
+                    <th class="text-end">Cantidad</th>
+                    <th class="text-end">Precio</th>
+                    <th class="text-end">Valor</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Detalle.Any())
+                {
+                    foreach (var item in Model.Detalle)
+                    {
+                        <tr>
+                            <td>
+                                @item.Material
+                            </td>
+                            <td>
+                                @item.Descripcion
+                            </td>
+                            <td class="text-end">@string.Format("{0:N2}", item.Cantidad)</td>
+                            <td class="text-end">@string.Format("{0:N2}", item.Precio)</td>
+                            <td class="text-end">@string.Format("{0:N2}", item.Valor)</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <!--Sin registros-->
+                    <tr>
+                        <td class="text-center" colspan="4">@Apphr.Resources.Strings.NoRegister</td>
+                    </tr>
+                    <!--Sin registros-->
+                }
+            </tbody>
+        </table>
+        <!-- Tabla -->
+    </div>
+</div>

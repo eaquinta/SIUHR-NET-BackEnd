@@ -1,0 +1,23 @@
+﻿@model Apphr.Application.Ortopedia.OrdenesCompra.DTOs.OrdenCompraDTOViewChild
+@if (Model == null)
+{
+    @Html.Partial("_RegisterNotFound")
+}
+else
+{
+    <div class="container-lg">
+        <div class="row">
+            <div class="col-md-4">@Html.DisplayFor(x => x.MaterialCodigo, "StringD")</div>
+            <div class="col-md-8">@Html.DisplayFor(x => x.MaterialNombre, "StringD")</div>
+            <div class="col-md-6">@Html.DisplayFor(x => x.MaterialPrecio, "DecimalD")</div>
+            <div class="col-md-6">@Html.DisplayFor(x => x.UnidadMedida, "StringD")</div>
+
+            @*<div class="col-md-4">@Html.DisplayFor(x => x.ProveedorNit, "StringD")</div>
+            <div class="col-md-8">@Html.DisplayFor(x => x.ProveedorNombre, "StringD")</div>*@
+
+            <div class="col-md-4">@Html.DisplayFor(x => x.Cantidad, "DecimalD")</div>
+            <div class="col-md-4">@Html.DisplayFor(x => x.Precio, "DecimalD")</div>
+            <div class="col-md-4">@Html.DisplayFor(x => x.Valor, "DecimalD")</div>
+        </div>
+    </div>
+}

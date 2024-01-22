@@ -1,0 +1,32 @@
+﻿@model object
+@{
+    var _optionList = (IEnumerable<SelectListItem>)ViewData["optionsList"];
+    //var _noOptionList = (string)ViewData["noOptionList"];
+    var _class = ViewData["class"] != null ? " " + ViewData["class"] : "";
+    var _btnId = ViewData["btnId"] != null ? " " + ViewData["btnId"] : "";
+}
+
+<div class="@(ViewData["groupSize"] != null ? string.Format("input-group-{0}", ViewData["groupSize"]) : null) mb-2">
+    @if (ViewData["label"] != null)
+    {
+        @Html.LabelFor(x => x, ((string)ViewData["label"]), new { @class = "mb-0", style = "font-weight:bold;" })
+    }
+    else
+    {
+        @Html.LabelFor(x => x, new { @class = "form-label", style = "font-weight:bold;" })
+    }
+    @*@if (ViewData["noOptionList"] != null)
+    {
+        @Html.DropDownListFor(x => x, _optionList, _noOptionList, new { @class = "form-select" + _class })
+    }
+    else
+    {*@
+    <div class="input-group mb-3">
+        @Html.DropDownListFor(x => x, _optionList, new { @class = "form-select" + _class })
+        <button @(ViewData["btnId"] != null ? "id=" + ViewData["btnId"] : null) class="btn btn-outline-secondary" type="button"><i class="fas fa-plus-circle"></i></button>
+    </div>
+    @*}*@
+</div>
+@Html.ValidationMessageFor(x => x, null, new { @class = "text-danger" })
+
+

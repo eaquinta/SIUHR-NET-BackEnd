@@ -1,0 +1,8 @@
+﻿@model Apphr.Application.Ortopedia.Cirujano.DTOs.CirujanoDTOCEdit
+
+@Html.AntiForgeryToken()
+@Html.HiddenFor(x => x.CirujanoId)
+
+<div class="row">
+    <div class="col-md-12">@Html.EditorFor(x => x.Nombre)</div>
+</div>

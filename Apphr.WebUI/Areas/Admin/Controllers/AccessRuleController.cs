@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Net;
 using System.Web.Mvc;
-using Apphr.Domain.Entities;
+using Apphr.WebUI.Models.Entities;
 using Apphr.WebUI.Controllers;
 using Apphr.Application.AccessRules.DTOs;
 using Apphr.WebUI.CustomAttributes;
@@ -91,7 +91,11 @@ namespace Apphr.WebUI.Areas.Admin.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            AccessRule reg = await db.AccessRules.Include(x => x.Roles).Include("Permits").Where(r => r.AccessRuleId == id).FirstOrDefaultAsync();
+            AccessRule reg = await db.AccessRules
+                .Include(x => x.Roles)
+                .Include("Permits")
+                .Where(r => r.AccessRuleId == id)
+                .FirstOrDefaultAsync();
 
             if (reg == null)
             {
@@ -119,7 +123,13 @@ namespace Apphr.WebUI.Areas.Admin.Controllers
                 if (vm.SelectedPermits != null)
                 vm.Permits = vm.SelectedPermits.Select((p) => new AccessRulePermitAssignment() { PermitId  = p, AccessRuleId = vm.AccessRuleId }).ToList();
 
-                var reg = db.AccessRules.Include(x => x.Roles).Include("Roles.Role").Include(x => x.Permits).Where(r => r.AccessRuleId == vm.AccessRuleId).FirstOrDefault();                
+                var reg = db.AccessRules
+                    .Include(x => x.Roles)
+                    .Include("Roles.Role")
+                    .Include(x => x.Permits)
+                    .Where(r => r.AccessRuleId == vm.AccessRuleId)
+                    .FirstOrDefault();                
+
                 mapper.Map(vm, reg);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");

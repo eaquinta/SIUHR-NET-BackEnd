@@ -6,7 +6,7 @@ using System.Net;
 using System.Web.Mvc;
 using System.Threading.Tasks;
 using Apphr.Application.Facilitadores.DTOs;
-using Apphr.Domain.Entities;
+using Apphr.WebUI.Models.Entities;
 using System.Data.SqlClient;
 using System.Collections.Generic;
 using Microsoft.AspNet.Identity;
@@ -33,7 +33,7 @@ namespace Apphr.WebUI.Areas.General.Controllers
             }
         }
 
-        [AppAuthorization(Permit.View)]
+        [Can("usuario.ver")]
         public async Task<ActionResult> Index(UsuarioDTOIndex vm, List<string> Toast) // GET
         {
             
@@ -264,8 +264,8 @@ namespace Apphr.WebUI.Areas.General.Controllers
                     // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
                     // Enviar correo electrónico con este vínculo
                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    var callbackUrl = "http://admision.hospitalroosevelt.gob.gt" + Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code });
-                    await UserManager.SendEmailAsync(user.Id, "Confirmar cuenta Hospital Roosevelt", "Para confirmar la cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    await UserManager.SendEmailAsync(user.Id, "Confirmar cuenta", "Para confirmar la cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
 
                     return RedirectToAction("Index", "Home", new { Area = "" });
                 }

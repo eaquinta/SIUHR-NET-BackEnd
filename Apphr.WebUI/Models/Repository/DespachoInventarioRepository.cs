@@ -1,5 +1,5 @@
 ﻿using Apphr.Application.DespachosInventario.DTOs;
-using Apphr.Domain.Entities;
+using Apphr.WebUI.Models.Entities;
 using System;
 using System.Data.Entity;
 using System.Linq;
@@ -26,6 +26,7 @@ namespace Apphr.WebUI.Models.Repository
 					{
 						var rel = await db.SolicitudesDespacho.FindAsync(dto.DocumentoReferencia);
 						rel.DespachoInventarioId = dto.DespachoInventarioId;
+						rel.Protegido = true;
 					}
 					else
 					{

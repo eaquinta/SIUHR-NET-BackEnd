@@ -1,4 +1,4 @@
-﻿using Apphr.Domain.Entities;
+﻿using Apphr.WebUI.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;

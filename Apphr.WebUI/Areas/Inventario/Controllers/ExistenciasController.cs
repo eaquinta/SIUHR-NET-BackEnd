@@ -15,7 +15,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
     [LogAction]
     public class ExistenciasController : DbController
     {
-        [AppAuthorization(Permit.View)]
+        [Can("existencia.ver")]
         public ActionResult Index() // GET
         {
             ViewBag.TipoExistencia = new List<SelectListItem>() {

@@ -1,0 +1,33 @@
+﻿@model List<Apphr.WebUI.Models.Entities.InicialAbastecimiento>
+<table class="table table-sm table-striped table-hover nowrap table-bordered" width="100%">
+    <thead>
+        <tr>
+            <th class="text-center">Acción</th>
+            <th class="text-center text-wrap">Proveedor</th>
+            <th class="text-wrap">Nombre</th>
+        </tr>
+    </thead>
+    @if (Model != null && Model.Any())
+    {
+        foreach (var item in Model)
+        {
+            <tr>
+                <!-- Acciones -->
+                <td class="text-center">
+                    <a class="btn btn-sm btn-danger" data-m="@item.MaterialId" data-p="@item.ProveedorId" onclick="delInicial(this);"><i class="fas fa-trash" aria-hidden="true"></i></a>
+                </td>
+                <!-- Acciones -->
+                <td class="text-center">@item.Proveedor.Nit</td>
+                <td>@item.Proveedor.Descripcion</td>
+            </tr>
+        }
+    }
+    else
+    {
+        <!--Sin registros-->
+        <tr>
+            <td class="text-center" colspan="3">@Apphr.Resources.Strings.NoRegister</td>
+        </tr>
+        <!--Sin registros-->
+    }
+</table>

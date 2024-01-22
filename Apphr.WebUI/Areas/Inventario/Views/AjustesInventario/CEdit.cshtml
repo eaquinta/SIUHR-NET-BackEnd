@@ -31,7 +31,7 @@
     <!-- Form Title -->
     <h4>
         @ViewBag.Title @ViewBag.Entidad @Html.Raw(ViewBag.Icon)
-        <a class="btn btn-outline-dark float-end btnReturn" href="">Regresar</a>
+        <a class="btn btn-outline-dark float-end btnReturn" href=""><i class="fas fa-chevron-left"></i>&nbsp;Regresar</a>
     </h4>
     <hr />
     <!-- Form Title -->
@@ -88,7 +88,7 @@
 
     <!-- Botones Formulario -->
     <div class="col-md-12 mt-2 onUpd">
-        <a class="btn btn-outline-dark btnReturn" href="">Regresar</a>
+        <a class="btn btn-outline-dark btnReturn" href=""><i class="fas fa-chevron-left"></i>&nbsp;Regresar</a>
         <div class="float-end">
             <a class="btn btn-outline-danger btn-eliminar" href="#"><i class="fas fa-trash"></i>&nbsp;Eliminar</a>
         </div>
@@ -110,7 +110,7 @@
                         <h5 id="myModalLabel" class="modal-title">Agregar Material</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body" id="formLinea">
+                    <div class="modal-body" id="form-body-child">
                         @Html.Partial("_CEditChild", Model.Child)
                     </div>
                     <div class="modal-footer">
@@ -138,10 +138,10 @@
                   GetChild = Url.Action("JsGetChild"),
                   DeleteMaster = Url.Action("JsDeleteMaster"),
                   DeleteChild = Url.Action("JsDeleteChild"),
-                  FindMateriales = Url.Action("JsGetMaterialesByFilter", "Materiales"),
-                  FindBodegas = Url.Action("JsGetBodegasByFilter","Bodegas"),
-                  FindProveedor = Url.Action("JsGetProveedoresByFilter", "Proveedores"),
-                  GetMatByCod = Url.Action("JsGetMaterialByCodigo","Materiales"),
+                  FindMateriales = Url.Action("JsGetByFilter", "Materiales"),
+                  FindBodegas = Url.Action("JsGetByFilter","Bodegas"),
+                  FindProveedor = Url.Action("JsGetByFilter", "Proveedores"),
+                  GetMatByCod = Url.Action("JsGetByCodigo","Materiales"),
                   GetBodega = Url.Action("JsGetBodegaByNombre", "Bodegas"),
                   GetProveedor = Url.Action("JsGetProveedorByNit","Proveedores"),
 

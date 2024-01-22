@@ -1,0 +1,19 @@
+﻿@model Apphr.Application.Controladores.DTOs.ControladorDTOCEdit
+@{
+    var _RoleList = (IEnumerable<SelectListItem>)ViewData["RoleList"];
+}
+@Html.AntiForgeryToken()
+@Html.HiddenFor(x => x.AccionId)
+@Html.HiddenFor(x => x.Area)
+@Html.HiddenFor(x => x.Controller)
+<div class="row">
+    <div class="col-md-12">@Html.EditorFor(x => x.Detalle)</div>
+    <div class="col-md-12">@Html.EditorFor(x => x.Area)</div>
+    <div class="col-md-12">@Html.EditorFor(x => x.Controller)</div>
+    <div class="input-group mb-3">
+        <div class="input-group-text" data-aos="slide-left" data-aos-easing="ease-out-cubic" data-aos-delay="" data-aos-duration="" data-aos-anchor-placement="top-bottom">
+            Roles <i class="ms-1 fas fa-user-shield"></i>
+        </div>
+        @Html.ListBoxFor(x => x.SelectedRoles, _RoleList, new { @class = "form-select" })
+    </div>
+</div>

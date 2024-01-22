@@ -14,7 +14,7 @@ namespace Apphr.WebUI.Controllers
         protected string dbfPath = ConfigurationManager.AppSettings["SiahrPath"].ToString();
         public DbApiController()
         {
-            dbfContext = new DBFContext(dbfPath);
+            dbfContext = new DBFContext(); //dbfPath);
         }
 
         protected override void Dispose(bool disposing)

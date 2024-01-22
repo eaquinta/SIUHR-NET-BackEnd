@@ -304,7 +304,7 @@ $(function () {
             $.ajax({
                 url: urlFindMateriales,
                 dataType: "json",
-                data: "id=" + request.term,
+                data: "f=" + request.term,
                 success: function (resp) {
                     response($.map(resp.data, function (item) {
                         //console.log(item);
@@ -317,7 +317,7 @@ $(function () {
                 }
             });
         },
-        appendTo: "#formLinea"
+        appendTo: "#form-body-child"
     }).data("ui-autocomplete")._renderItem = function (ul, item) {
         var item = $('<div class="list_item_container"><div class="label"><strong>' + item.label + '</strong></div><div class="description" style="font-size: smaller;">' + item.desc + '</div></div>')
         return $("<li>").append(item).appendTo(ul);
@@ -341,7 +341,7 @@ $(function () {
                 }
             });
         },
-        appendTo: "#formLinea"
+        appendTo: "#form-body-child"
     }).data("ui-autocomplete")._renderItem = function (ul, item) {
         var item = $('<div class="list_item_container"><div class="label"><strong>' + item.label + '</strong></div><div class="description" style="font-size: smaller;">' + item.desc + '</div></div>')
         return $("<li>").append(item).appendTo(ul);
@@ -365,7 +365,7 @@ $(function () {
                 }
             });
         },
-        appendTo: "#formLinea"
+        appendTo: "#form-body-child"
     }).each(function (idx, ele) {
         $(ele).data("ui-autocomplete")._renderItem = function (ul, item) {
             var item = $('<div class="list_item_container"><div class="label"><strong>' + item.value + '</strong></div><div class="description" style="font-size: smaller;">' + item.desc + '</div></div>')

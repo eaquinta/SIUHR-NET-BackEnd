@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Ver";
     ViewBag.Entidad = "Bodega";
-    ViewBag.Icon = "<i class=\"fas fa-box\"></i>";
+    ViewBag.Icon = "<i class=\"far fa-eye\"></i>";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
 	var IdKey = new { id = Model.DestinoId };
 }

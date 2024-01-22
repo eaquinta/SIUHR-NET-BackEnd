@@ -1,7 +1,6 @@
-﻿using Apphr.Domain.Entities;
+﻿using Apphr.WebUI.Models.Entities;
+using Microsoft.AspNet.Identity;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -10,8 +9,8 @@ namespace Apphr.WebUI.Models.Repository
     public class UnitOfWork: IDisposable
     {
         public UnitOfWork()
-        {
-            this.context = new ApphrDbContext(System.Web.HttpContext.Current.User.Identity.Name); //ApphrDbContext();
+        {            
+            this.context = new ApphrDbContext((HttpContext.Current.User != null) ? HttpContext.Current.User.Identity.GetUserId<int>() : -1); //ApphrDbContext(System.Web.HttpContext.Current.User.Identity.Name);
         }
         private readonly ApphrDbContext context;
 

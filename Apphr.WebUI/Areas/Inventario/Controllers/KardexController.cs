@@ -1,5 +1,5 @@
 ﻿using Apphr.Application.Kardex.DTOs;
-using Apphr.Domain.Entities;
+using Apphr.WebUI.Models.Entities;
 using Apphr.Domain.Enums;
 using Apphr.WebUI.Controllers;
 using Apphr.WebUI.CustomAttributes;
@@ -21,7 +21,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
     [LogAction]
     public class KardexController : DbController
     {
-        [AppAuthorization(Permit.View)]
+        [Can("kardex.ver")]
         public ActionResult Index() // GET
         {            
             return View();

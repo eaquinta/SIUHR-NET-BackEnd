@@ -1,6 +1,7 @@
 ﻿using Apphr.Application.Kardex.DTOs;
-using Apphr.Domain.Entities;
+using Apphr.WebUI.Models.Entities;
 using Apphr.WebUI.Models;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -137,7 +138,7 @@ namespace Apphr.WebUI.Services
         {
             DateTime now = DateTime.Now;
             now = now.AddDays(-now.Day);
-            using (var db = new ApphrDbContext(System.Web.HttpContext.Current.User.Identity.Name))
+            using (var db = new ApphrDbContext((HttpContext.Current.User != null) ? HttpContext.Current.User.Identity.GetUserId<int>() : -1)) //System.Web.HttpContext.Current.User.Identity.Name
             {
                 var existencias = db.CierresInventario.Where(x => x.BodegaId == BodegaId && x.MaterialId == MaterialId && DbFunctions.TruncateTime(x.Fecha) <= now.Date).OrderByDescending(x => x.Fecha).FirstOrDefault();
                 if (existencias != null)

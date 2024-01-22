@@ -1,4 +1,4 @@
-﻿using Apphr.Domain.Entities;
+﻿using Apphr.WebUI.Models.Entities;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;

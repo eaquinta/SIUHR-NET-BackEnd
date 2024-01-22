@@ -1,0 +1,25 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+
+@{
+    ViewBag.Title = "Error";
+}
+
+<div style="background-color: #A52A2A; color: brown; height: 10px;">
+</div>
+<div style="background-color: #F5F5DC; color:brown; height: 170px;">
+    <div style=" padding:20px;">
+        <h3>
+            Error de apliación:
+        </h3>
+        <h4>
+            Lo sentimos, un error a ocurrido mientras procesamos su petición.
+        </h4>
+        <h6><a area="" href="@Url.Action("Index", "Home", new { Area = "" })">Ir a pagina Inicial</a></h6>
+        
+        <br />
+        <br />
+    </div>
+</div>
+<div style="background-color: #A52A2A; color: White; height: 20px;">
+</div>
+

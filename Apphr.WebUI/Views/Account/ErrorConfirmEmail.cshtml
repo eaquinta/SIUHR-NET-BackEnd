@@ -4,12 +4,34 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container-lg">
-    @Html.Partial("_DefaultHeader")
-    <h3>@ViewBag.Title</h3>
+<style>
+    body {
+        background: url('../Content/imgs/Login-bg2.jpg') no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+    }
+</style>
 
-    <div class="alert alert-danger" role="alert">
-        <i class="fas fa-exclamation-circle"></i> Este link de confirmación ya fue utilizado o es invalido
+<div class="container-fluid">
+    <div class="row vh-100 align-items-center justify-content-center">
+        <div class="col-12 col-sm-8 col-md-6 col-xl-4">
+            <div class="card border-dark mt-3">
+                <div class="card-header text-white bg-dark py-2 text-center"><h4>@ViewBag.Title</h4></div>
+                <div class="card-body">
+                    <div class="alert alert-danger" role="alert">
+                        <i class="fas fa-exclamation-circle"></i> Este link de confirmación ya fue utilizado o es invalido
+                    </div>
+                    <div class="mt-2 mb-3 form-group">
+                        @*<input type="submit" class="btn btn-success" value="Recuperar Conraseña" />
+                        <a href="@Url.Action("Index","Home")" class="btn btn-primary float-end">Regresar al inicio</a>*@
+                        <a class="btn btn-primary float-end" href="@Url.Action("Index","Home",new { Area = "" })">ir a página Inicial</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <a class="btn btn-primary" href="@Url.Action("Index","Home",new { Area = "" })">ir a página Inicial</a>
 </div>
+
+

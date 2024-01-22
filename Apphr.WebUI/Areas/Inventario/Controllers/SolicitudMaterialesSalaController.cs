@@ -1,5 +1,5 @@
 ﻿using Apphr.Application.SolicitudMaterialesSala.DTOs;
-using Apphr.Domain.Entities;
+using Apphr.WebUI.Models.Entities;
 using Apphr.Domain.Enums;
 using Apphr.WebUI.Common;
 using Apphr.WebUI.Controllers;
@@ -23,20 +23,27 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
     public class SolicitudMaterialesSalaController : DbController
     {
 		private SolicitudMaterialSalaRepository SolicitudMaterialSalaRep;
-		
+		private OrdenCompraRepository OrdenCompraRep;
+		private EgresoAbastecimientoRepositoy EgresoAbastecimientoRep;
+		private MovimientosAbastecimientoRepository MovimientosAbastecimientoRep;
+
 
 		public SolicitudMaterialesSalaController()
         {
 			SolicitudMaterialSalaRep = new SolicitudMaterialSalaRepository(db);
-        }
-		[AppAuthorization(Permit.View)]
+			OrdenCompraRep = new OrdenCompraRepository(db);
+			EgresoAbastecimientoRep = new EgresoAbastecimientoRepositoy(db);
+			MovimientosAbastecimientoRep = new MovimientosAbastecimientoRepository(db);
+
+		}
+		[Can("solicitud_material_sala.ver")]
 		public ActionResult Index() // GET
         {
 			ViewBag.PLROpions = PagedListOptions;
 			return View();
         }
 
-		[AppAuthorization(Permit.View)]
+		[Can("solicitud_material_sala.ver")]
 		public async Task<ActionResult> Details(string id)
         {
             if (id == null)
@@ -52,7 +59,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 			return View(dto);
         }
 
-		[AppAuthorization(Permit.Edit)]
+		[Can("solicitud_material_sala.editar")]
 		public async Task<ActionResult> CEdit(string id) // GET
 		{
 			var dto = new SolicitudMaterialSalaDTOCEdit();
@@ -125,8 +132,8 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<JsonResult> JsSaveMaster(SolicitudMaterialSalaDTOCEdit dto)
 		{
-            Permit[] permisosRequeridos = { Permit.Edit };
-            bool hasPermit = Utilidades.hasPermit(permisosRequeridos, ControllerContext, userName);
+            string[] permisosRequeridos = { "solicitud_material_sala.editar" };
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
             if (!hasPermit)
             {
                 return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
@@ -155,15 +162,15 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Json(new { success = false, message = Resources.Msg.failure, messageEx = ex.Message, messageInner = ex.InnerException }, JsonRequestBehavior.DenyGet);
+				return Json(new { success = false, message = Resources.Msg.failure, messageEx = ex.Message, messageInner = ex.InnerException.InnerException.Message }, JsonRequestBehavior.DenyGet);
 			}
 		}
 
 		[ValidateAntiForgeryToken]
 		public async Task<JsonResult> JsSaveChild(SolicitudMaterialSalaDetalleDTOCEdit dto)
 		{
-            Permit[] permisosRequeridos = { Permit.Edit };
-            bool hasPermit = Utilidades.hasPermit(permisosRequeridos, ControllerContext, userName);
+            string[] permisosRequeridos = { "solicitud_material_sala.editar" };
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
             if (!hasPermit)
             {
                 return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
@@ -177,6 +184,8 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 				if (dto.SolicitudMaterialSalaDetalleId == 0)
 				{
 					// INSERT
+					var Distribucion = OrdenCompraRep.GetOrdenCompraIdPEPS(dto.MaterialId, dto.ProveedorId ?? 0, dto.Cantidad);
+
 					using (DbContextTransaction transaction = db.Database.BeginTransaction())
 					{
 						try
@@ -194,8 +203,30 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 								Intercambio = dto.Intercambio,
 								ProveedorId = dto.ProveedorId
 							};
-
 							db.SolicitudMaterialesSalaDetalle.Add(childReg);
+							await db.SaveChangesAsync();
+
+							//EgresoAbastecimientoRep.AddEgresos(
+							MovimientosAbastecimientoRep.AddEgresos(
+								childReg.SolicitudMaterialSalaId,
+								childReg.SolicitudMaterialSalaDetalleId,
+								DateTime.Now.Date,
+								dto.MaterialId,
+								dto.ProveedorId??0,
+								Distribucion
+								);
+
+							//var RegAbastecimiento = new EgresoAbastecimiento()
+							//{
+							//	SolicitudMaterialSalaId = childReg.SolicitudMaterialSalaId,
+							//	SolicitudMaterialSalaDetalleId = childReg.SolicitudMaterialSalaDetalleId,
+							//	Fecha = DateTime.Now.Date,
+							//	MaterialId = dto.MaterialId,
+							//	Cantidad = dto.Cantidad,
+							//	OrdenCompraId = "" //OrdenCompraId
+							//};
+							//db.EgresosAbastecimiento.Add(RegAbastecimiento);
+
 							await db.SaveChangesAsync();
 							transaction.Commit();
 						}
@@ -210,23 +241,62 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 				else
 				{
 					// UPDATE
-					// Despacho Inventario Detalle
-					var reg = await db.SolicitudMaterialesSalaDetalle
-						.Where(x => x.SolicitudMaterialSalaDetalleId == dto.SolicitudMaterialSalaDetalleId)
-						//.Include("MovimientoInventario")
-						.FirstOrDefaultAsync();
-					reg.MaterialId = dto.MaterialId;
-					reg.Cantidad = dto.Cantidad;					
-					reg.ProveedorId = dto.ProveedorId;
-					reg.Intercambio = dto.Intercambio;
+					//var OrdenCompraId = OrdenCompraRep.GetOrdenCompraIdPEPS(dto.MaterialId, dto.ProveedorId ?? 0, dto.Cantidad);
 
-					await db.SaveChangesAsync();
+					using (DbContextTransaction transaction = db.Database.BeginTransaction())
+					{
+						try
+						{
+							// Despacho Inventario Detalle
+							var reg = await db.SolicitudMaterialesSalaDetalle
+								.Where(x => x.SolicitudMaterialSalaDetalleId == dto.SolicitudMaterialSalaDetalleId)
+								//.Include("MovimientoInventario")
+								.FirstOrDefaultAsync();
+
+							reg.MaterialId = dto.MaterialId;
+							reg.Cantidad = dto.Cantidad;
+							reg.ProveedorId = dto.ProveedorId;
+							reg.Intercambio = dto.Intercambio;
+							await db.SaveChangesAsync();
+
+
+							// Egreso Abastecimieno
+
+							await MovimientosAbastecimientoRep.DeleteEgresos(reg.SolicitudMaterialSalaDetalleId);
+							await db.SaveChangesAsync();
+							// Calcular Distribucion 
+							var Distribucion = OrdenCompraRep.GetOrdenCompraIdPEPS(dto.MaterialId, dto.ProveedorId ?? 0, dto.Cantidad, dto.SolicitudMaterialSalaDetalleId);
+							// Crear Egresos
+							MovimientosAbastecimientoRep.AddEgresos(
+								reg.SolicitudMaterialSalaId,
+								reg.SolicitudMaterialSalaDetalleId,
+								DateTime.Now.Date,
+								dto.MaterialId,
+								dto.ProveedorId ?? 0,
+								Distribucion
+								);
+
+							await db.SaveChangesAsync();
+
+							transaction.Commit();
+						}
+						catch (Exception)
+						{
+							transaction.Rollback();
+							throw;
+						}
+
+					}
 					return Json(new { success = true, message = Resources.Msg.success_edit });
 				}
 			}
+			catch (ArgumentException ax)
+            {
+				return Json(new { success = false, message = ax.Message });
+			}
 			catch (Exception ex)
 			{
-				return Json(new { success = false, message = Resources.Msg.failure, messageEx = ex.Message, messageInner = ex.InnerException });
+				return Json(new { success = false, message = Resources.Msg.failure, messageEx = ex.Message, messageInner = ex.InnerException.InnerException.Message });
 			}
 		}
 
@@ -234,8 +304,8 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> JsDeleteMaster(string id) // POST
 		{
-            Permit[] permisosRequeridos = { Permit.Delete };
-            bool hasPermit = Utilidades.hasPermit(permisosRequeridos, ControllerContext, userName);
+            string[] permisosRequeridos = { "solicitud_material_sala.eliminar" };
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
             if (!hasPermit)
             {
                 return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
@@ -267,7 +337,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Json(new { success = false, message = Resources.Msg.failure, exMessage = ex.Message, exInner = ex.InnerException }, JsonRequestBehavior.DenyGet);
+				return Json(new { success = false, message = Resources.Msg.failure, exMessage = ex.Message, exInner = ex.InnerException.InnerException.Message }, JsonRequestBehavior.DenyGet);
 			}
 		}
 
@@ -275,8 +345,8 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> JsDeleteChild(int? id)
 		{
-            Permit[] permisosRequeridos = { Permit.Delete };
-            bool hasPermit = Utilidades.hasPermit(permisosRequeridos, ControllerContext, userName);
+            string[] permisosRequeridos = { "solicitud_material_sala.eliminar" };
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
             if (!hasPermit)
             {
                 return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
@@ -290,6 +360,8 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 						var reg = await db.SolicitudMaterialesSalaDetalle
 							.Where(x => x.SolicitudMaterialSalaDetalleId == id)
 							.FirstOrDefaultAsync();
+
+						await MovimientosAbastecimientoRep.DeleteEgresos(reg.SolicitudMaterialSalaDetalleId);
 
 						db.SolicitudMaterialesSalaDetalle.Remove(reg);
 						await db.SaveChangesAsync();
@@ -305,7 +377,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Json(new { success = false, message = Resources.Msg.failure, exMessage = ex.Message, exInner = ex.InnerException }, JsonRequestBehavior.DenyGet);
+				return Json(new { success = false, message = Resources.Msg.failure, exMessage = ex.Message, exInner = ex.InnerException.InnerException.Message }, JsonRequestBehavior.DenyGet);
 			}
 		}
 
@@ -377,7 +449,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Json(new { success = false, message = Apphr.Resources.Msg.failure, exmessage = ex.Message, exinner = ex.InnerException }, JsonRequestBehavior.AllowGet);
+				return Json(new { success = false, message = Apphr.Resources.Msg.failure, exmessage = ex.Message, exinner = ex.InnerException.InnerException.Message }, JsonRequestBehavior.AllowGet);
 			}
 		}
 		#endregion

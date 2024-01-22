@@ -12,8 +12,8 @@
                     <th>Lin</th>
                     <th>Material</th>
                     <th>Bodega</th>
-                    <th>Cantidad</th>
-                    <th>Valor</th>
+                    <th class="text-end">Cantidad</th>
+                    <th class="text-end">Valor</th>
                     <th>Fecha Vencimiento</th>
                 </tr>
             </thead>
@@ -36,8 +36,8 @@
                         <td class="text-center">@item.Linea</td>
                         <td>[@item.Material.Codigo] @item.Material.Descripcion</td>
                         <td>@item.Bodega.Nombre</td>
-                        <td>@item.Cantidad</td>
-                        <td>@item.Precio</td>
+                        <td>@string.Format("{0:N2}", item.Cantidad)</td>
+                        <td>@string.Format("{0:N2}", item.Precio)</td>
                         <td>@(item.FechaVencimiento?.ToString("d"))</td>
                     </tr>
                 }

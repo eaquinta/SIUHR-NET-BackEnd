@@ -16,7 +16,7 @@ $(document).ready(function () {
             $.ajax({
                 url: urlFindMateriales,
                 dataType: "json",
-                data: "id=" + request.term,
+                data: "f=" + request.term,
                 success: function (resp) {
                     response($.map(resp.data, function (item) {
                         //console.log(item);
@@ -29,7 +29,7 @@ $(document).ready(function () {
                 }
             });
         },
-        appendTo: "#formLinea"        
+        appendTo: "#form-body-child"        
     }).data("ui-autocomplete")._renderItem = function (ul, item) {        
         var item = $('<div class="list_item_container"><div class="label"><strong>' + item.label + '</strong></div><div class="description" style="font-size: smaller;">' + item.desc + '</div></div>')
         return $("<li>").append(item).appendTo(ul);
@@ -128,7 +128,7 @@ $(function () {
     };
     child.fillForm = function (data) {
         console.log(data);
-        //$('#formLinea > #mode').val('UPD');
+        //$('#form-body-child > #mode').val('UPD');
         //$('#SolicitudPedidoId').val(id1);
         $('#SolicitudDespachoDTId').val(data.SolicitudDespachoDTId);        
         $('#MaterialId').val(data.MaterialId);        

@@ -4,6 +4,7 @@
     <table class="table table-hover table-bordered">
         <tr class="table-dark">
             <th style="width:65px;">Acción</th>
+            @*<th>SP</th>*@
             <th>Orden</th>
             <th>Fecha</th>          
             <th>Nit</th>                               
@@ -13,7 +14,20 @@
             foreach (var item in Model)
             {
             <tr>
-                <td class="text-center"><a href="@Url.Action("DetailsDBF",new { Area = "Inventario", id = item.ORDEN })"><i class="far fa-eye"></i></a> </td>
+                @*<td class="text-center"><a href="@Url.Action("DetailsDBF",new { Area = "Inventario", id = item.ORDEN })"><i class="far fa-eye"></i></a> </td>*@
+                <td class="text-center">
+                    <div class="dropdown d-inline-block">
+                        <button class="btn btn-primary btn-sm" type="button" id="ddBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="ddBtn">                            
+                            <li><a class="dropdown-item" data-id="@item.ORDEN" data-year="@ViewBag.year" onclick="Details(this);"><i class="far fa-eye"></i> Ver</a></li>
+                            @*<li><a class="dropdown-item" data-id="@item.ORDEN" data-year="@ViewBag.year" onclick="Print(this);"><i class="fas fa-print"></i> Imprimir</a></li>*@
+                            <li><a class="dropdown-item" data-id="@item.ORDEN" data-year="@ViewBag.year" onclick="ImportOrdenCompra(this);"><i class="fas fa-sync"></i> Importar</a></li>
+                        </ul>
+                    </div>
+                </td>
+                @*<td>@Html.DisplayFor(modelItem => item.p)</td>*@
                 <td>@Html.DisplayFor(modelItem => item.ORDEN)</td>
                 <td>@Html.DisplayFor(modelItem => item.Fecha)</td>
                 <td>@Html.DisplayFor(modelItem => item.NIT)</td>

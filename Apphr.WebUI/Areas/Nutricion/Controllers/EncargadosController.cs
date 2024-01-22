@@ -1,5 +1,5 @@
 ﻿using Apphr.Application.Encargados.DTOs;
-using Apphr.Domain.Entities;
+using Apphr.WebUI.Models.Entities;
 using Apphr.WebUI.Controllers;
 using System.Data.Entity;
 using System.Net;

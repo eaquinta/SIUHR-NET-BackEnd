@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using Apphr.WebUI.Models.Entities;
+using Apphr.WebUI.Controllers;
 using System.Data.Entity;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Net;
-using System.Web;
+using System.Threading.Tasks;
 using System.Web.Mvc;
-using Apphr.Domain.Entities;
-using Apphr.WebUI.Models;
 
 namespace Apphr.WebUI.Areas.Admision.Controllers
 {
-    public class PacienteEventoHistorialesController : Controller
+    public class PacienteEventoHistorialesController : DbController
     {
-        private readonly ApphrDbContext db = new ApphrDbContext();
+        //private readonly ApphrDbContext db = new ApphrDbContext((HttpContext.Current.User != null) ? HttpContext.Current.User.Identity.GetUserId<int>() : -1);
 
         // GET: Admision/PacienteEventoHistoriales
         public async Task<ActionResult> Index()
@@ -120,15 +115,6 @@ namespace Apphr.WebUI.Areas.Admision.Controllers
             db.PacienteEventoHistoriales.Remove(pacienteEventoHistorial);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

@@ -1,9 +1,10 @@
-Add-Migration Inventario-08
+Add-Migration Inventario-44
 Update-Database
+Update-Database -Verbose
 Update-Database -script
 
 Get-Migrations
-Update-Database -TargetMigration:"name_of_migration"
+Update-Database -TargetMigration:"Inventario-43"
 
 Update-Database -TargetMigration:"Materiales"
 =====================================================
@@ -94,3 +95,29 @@ public async Task<ActionResult> Create(BodegaDTOCreate dto) //POST
 $(document).ready(function () {
 	
 });
+
+
+<!-- Table -->
+<div class="card border border-dark">
+        <div class="card-header background-inventory">
+            Datos Generales
+        </div>
+        <div class="card-body">
+            
+        </div>
+</div>
+<!-- Table -->
+
+ViewBag.PLROpions = PagedListOptions;
+, (PagedListRenderOptions)ViewBag.PLROpions
+
+
+master.refreshGrid = () => {
+        if (!master.isInsert()) {
+            master.grid.fadeTo(0, 0.4);
+            jshelper.get(urlGrid, master.idData(), function (data) {
+                $('#Grid1').html(data);
+                master.grid.fadeTo('slow', 1);
+            });
+        }
+    }

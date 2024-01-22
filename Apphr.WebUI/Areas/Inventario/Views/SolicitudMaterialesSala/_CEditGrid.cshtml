@@ -11,7 +11,7 @@
                 <tr>
                     <th style="width:75px;">Acciones</th>
                     <th>Material</th>
-                    <th>Cantidad</th>
+                    <th class="text-end">Cantidad</th>
                     <th>Proveedor</th>
                     <th>Intercambio</th>
                 </tr>
@@ -33,7 +33,7 @@
                             </div>
                         </td>
                         <td>[@item.Material.Codigo] @item.Material.Descripcion</td>
-                        <td>@item.Cantidad</td>
+                        <td>@string.Format("{0:N2}", item.Cantidad)</td>
                         <td>@(item.Proveedor != null ? item.Proveedor.Descripcion : "")</td>
                         <td>@(item.Intercambio?"Sí":"")</td>
                     </tr>

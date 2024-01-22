@@ -1,0 +1,46 @@
+﻿@model List<Apphr.Application.ControlAbastecimiento.DTOs.ControlAbastecimientoDTOListaEgresos>
+
+    <table class="table table-sm table-striped table-hover nowrap table-bordered" width="100%">
+        <thead>
+            <tr>
+                <th class="text-center">Acción</th>
+                <th>Solicitud Material No.</th>
+                <th class="text-center">Hoja de Gasto</th>
+                <th class="text-center text-wrap">Fecha Egreso</th>
+                <th class="text-end text-wrap">Cantidad Egreso</th>
+            </tr>
+        </thead>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <!-- Acciones -->
+                    <td class="text-center">
+                        @if (item.SolicitudMaterialSalaId == null)
+                        {
+                            <a class="btn btn-sm btn-danger" data-id="@item.MovimientoAbastecimientoId" onclick="delEgreso(this);"><i class="fas fa-trash" aria-hidden="true"></i></a>
+                        }
+                    </td>
+                    <!-- Acciones -->
+                    <td class="text-center">
+                        @if (item.SolicitudMaterialSalaId != null)
+                        {
+                        <a href="@Url.Action("Details", "SolicitudMaterialesSala", new { Area = "Inventario", id = item.SolicitudMaterialSalaId })" target="_blank">@item.SolicitudMaterialSalaId</a>
+                        }                        
+                    </td>
+                    <td class="text-center">@item.HojaControlSala</td>
+                    <td class="text-center">@item.Fecha.ToString("d")</td>
+                    <td class="text-end">@string.Format("{0:N2}", item.Cantidad)</td>                   
+                </tr>
+            }
+        }
+        else
+        {
+            <!--Sin registros-->
+            <tr>
+                <td class="text-center" colspan="5">@Apphr.Resources.Strings.NoRegister</td>
+            </tr>
+            <!--Sin registros-->
+        }
+    </table>

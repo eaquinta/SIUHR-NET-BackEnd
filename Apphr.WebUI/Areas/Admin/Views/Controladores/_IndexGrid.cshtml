@@ -1,0 +1,58 @@
+﻿@model PagedList.IPagedList<Apphr.Application.Controladores.DTOs.ControladorDTOIxGrid>
+@using PagedList.Mvc
+<!-- Tabla -->
+<div class="table-responsive">
+    <table id="myTable" class="table table-striped table-bordered display responsive nowrap" width="100%">
+        <tr class="table-dark">
+            <th style="width:80px;">Acciones</th>
+            <th>Detalle</th>
+            <th>Area</th>
+            <th>Controller</th>
+            <th>Roles</th>
+            @*<th>@Html.DisplayNameFor(model => model.Action)</th>*@
+        </tr>
+        @if (Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <!-- Acciones -->
+                    <td class="text-center">
+                        <div class="dropdown d-inline-block">
+                            <button class="btn btn-primary btn-sm" type="button" id="ddBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="ddBtn">
+                                <li><a class="dropdown-item" data-model-id="@item.AccionId" onclick="entity.view(this);"><i class="far fa-eye"></i> Ver</a></li>
+                                @*<li><a class="dropdown-item" data-id="@item.ProveedorId" onclick="SyncProveedor(this);"><i class="fas fa-sync"></i> Sincronizar</a></li>*@
+                                <li><a class="dropdown-item" data-model-id="@item.AccionId" onclick="entity.update(this);" href="@Url.Action("CEdit", new { id = item.AccionId, mode = "UPD" })"><i class="fas fa-edit"></i> Editar</a></li>
+                                <li><a class="dropdown-item" data-model-id="@item.AccionId" data-model-nombre="@item.Detalle" onclick="entity.delete(this);"><i class="fas fa-trash"></i> Eliminar</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                    <!-- Acciones -->
+                    <td>@Html.DisplayFor(modelItem => item.Detalle)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Area)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Controller)</td>
+                    <td>@Html.DisplayFor(modelItem => item.RolesList)</td>
+                    @*<td>
+                            @Html.DisplayFor(modelItem => item.Action)
+                        </td>*@
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td class="text-center" colspan="4">@Apphr.Resources.Strings.NoRegister</td>
+            </tr>
+        }
+    </table>
+</div>
+<!-- Tabla -->
+<!-- Table Paged Navigation-->
+<div class="row">
+    <div class="col-12 text-center">@Html.PagedListPager(Model, page => page.ToString(), (PagedListRenderOptions)ViewBag.PLROpions)</div>
+    <div class="text-center">Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount</div>
+</div>
+<!-- Table Paged Navigation-->

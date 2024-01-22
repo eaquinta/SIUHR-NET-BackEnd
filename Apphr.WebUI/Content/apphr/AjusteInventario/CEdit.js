@@ -234,7 +234,7 @@ $(function () {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
-                console.log(response);
+                //console.log(response);
                 if (response.success) {
                     //$('#DepartamentoNombre').val(response.data.Descripcion);
                     $('#BodegaId').val(response.data.BodegaId);
@@ -242,7 +242,7 @@ $(function () {
                 }
             },
             failure: function (response) {
-                console.log(response);
+                //console.log(response);
                 jshelper.failure();
             }
         });
@@ -302,13 +302,15 @@ $(function () {
             }
         );        
     });
+
+
     $("#MaterialCodigo").autocomplete({
         maxShowItems: 5,
         source: function (request, response) {
             $.ajax({
                 url: urls.FindMateriales,
                 dataType: "json",
-                data: "id=" + request.term,
+                data: "f=" + request.term,
                 success: function (resp) {
                     response($.map(resp.data, function (item) {
                         //console.log(item);
@@ -321,10 +323,8 @@ $(function () {
                 }
             });
         },
-        appendTo: "#formLinea"
+        appendTo: "#form-body-child"
     }).data("ui-autocomplete")._renderItem = jshelper.ACRenderItem;
-    
-
     $("#BodegaNombre").autocomplete({
         maxShowItems: 5,
         source: function (request, response) {
@@ -344,13 +344,29 @@ $(function () {
                 }
             });
         },
-        appendTo: "#formLinea"
-    }).each(function (idx, ele) {
-        $(ele).data("ui-autocomplete")._renderItem = function (ul, item) {
-            var item = $('<div class="list_item_container"><div class="label"><strong>' + item.value + '</strong></div><div class="description" style="font-size: smaller;">' + item.desc + '</div></div>')
-            return $("<li>").append(item).appendTo(ul);
-        }
-    });
+        appendTo: "#form-body-child"
+    }).data("ui-autocomplete")._renderItem = jshelper.ACRenderItem;
+    $("#ProveedorNit").autocomplete({
+        maxShowItems: 5,
+        source: function (request, response) {
+            $.ajax({
+                url: urls.FindProveedor,
+                dataType: "json",
+                data: "val=" + request.term,
+                success: function (resp) {
+                    response($.map(resp.data, function (item) {
+                        //console.log(item);
+                        return {
+                            label: item.Value,
+                            value: item.Value,
+                            desc: item.Text
+                        };
+                    }));
+                }
+            });
+        },
+        appendTo: "#form-body-child"
+    }).data("ui-autocomplete")._renderItem = jshelper.ACRenderItem;
   
     
 });

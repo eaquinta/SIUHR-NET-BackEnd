@@ -1,0 +1,36 @@
+﻿@model Apphr.Application.Bodegas.DTOs.BodegaDTOCEditDBF
+@{
+    ViewBag.Title = "CEditDBF";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+@Html.Partial("_PartialAdvSiahr")
+
+<div class="container-lg">
+    @using (Ajax.BeginForm("JsSaveDBF", "Bodegas", new AjaxOptions
+    {
+        HttpMethod = "POST",
+        //OnBegin = "child.begin",
+        //OnSuccess = "child.success",
+        //OnFailure = "child.failure"
+    }, new { id = "form-child" }))
+    {
+        <!-- Form -->
+        @Html.AntiForgeryToken()
+        @*@Html.HiddenFor(x => x.Anio)*@
+        @Html.EditorFor(x => x.CODIGO, new { style = "text-transform:uppercase" })
+        @Html.EditorFor(x => x.DESCRI, new { style = "text-transform:uppercase" })
+        @Html.EditorFor(x => x.PROCED,  new { style = "text-transform:uppercase", placeholder = "H, P, D, M, R" } )
+        @Html.EditorFor(x => x.BODMAT, new { style = "text-transform:uppercase" })
+        <!-- Form -->
+        <input type="submit" id="btnSaveChild" class="btn btn-primary" value="Guardar" />
+    }
+
+</div>
+
+@section Scripts {
+    <script>
+       
+    </script>
+}
+

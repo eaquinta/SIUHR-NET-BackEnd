@@ -1,4 +1,4 @@
-﻿@model Apphr.Domain.Entities.PacienteEvento
+﻿@model Apphr.WebUI.Models.Entities.PacienteEvento
 
 @{
     ViewBag.Title = "Eliminar";
@@ -14,11 +14,11 @@
     <dl class="dl-horizontal">        
 
         <dt>
-            @Html.DisplayNameFor(model => model.RegistroMedico.CreatedBy)
+            @Html.DisplayNameFor(model => model.RegistroMedico.CreatedByUser)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.RegistroMedico.CreatedBy)
+            @Html.DisplayFor(model => model.RegistroMedico.CreatedByUser)
         </dd>
 
         <dt>

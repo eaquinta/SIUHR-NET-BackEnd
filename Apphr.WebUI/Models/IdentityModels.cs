@@ -1,7 +1,7 @@
 ﻿using Apphr.Domain.Common;
-using Apphr.Domain.Entities;
 using Apphr.Infrastructure.Persistence.Configuration;
-using Apphr.WebUI.Services;
+using Apphr.WebUI.Models.Entities;
+using Apphr.WebUI.Models.Entities.Ortopedia;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
@@ -11,7 +11,6 @@ using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace Apphr.WebUI.Models
 {
@@ -51,27 +50,38 @@ namespace Apphr.WebUI.Models
 
     public class ApphrDbContext : IdentityDbContext<AppUser, AppRole, int, AppUserLogin, AppUserRole, AppUserClaim>
     {
-
+        public int UserId { get; set; } = -1;
         public string UserName { get; private set; }
 
         public ApphrDbContext() : base("DefaultConnection")
         {
+            //UserId = userId ?? -1;            
+            //UserId = -1;
+            //if (HttpContext.Current.User != null)
+            //    UserId = HttpContext.Current.User.Identity.GetUserId<int>();
             UserName = "Anonymus";
         }
-        public ApphrDbContext(string userName) : base("DefaultConnection")
+        public ApphrDbContext(int userId) : base("DefaultConnection")
         {
-
-            UserName = !string.IsNullOrEmpty(userName)
-            ? userName
-            : "Anonymous";
-            // this.getUserName();
+        //    //    UserId = HttpContext.Current.User.Identity.GetUserId<int>();
+            UserId = userId;
+            ////    UserName = !string.IsNullOrEmpty(userName)
+            ////    ? userName
+            ////    : "Anonymous";
+            ////    // this.getUserName();
+            UserName = "Usuario";
         }
 
-        // Aplication Entites        
+        // Aplication Entites
+        
+        
         public DbSet<Persona> Personas { get; set; }
         public DbSet<AppGroup> AppGroups { get; set; }
+        public DbSet<AppPermission> AppPermissions { get; set; }
+        public DbSet<AppRolePermission> AppRolePermissions { get; set; }
         public DbSet<AppRoleGroup> AppRoleGroups { get; set; }
         public DbSet<AppUserGroup> AppUserGroups { get; set; }
+        public DbSet<AppUserRole> AppUserRoles { get; set; }
         public DbSet<AppEntityLog> AppLogs { get; set; }
         public DbSet<AppEntityChangeLog> AppChangeLogs { get; set; }
         public DbSet<AppAuditLog> AppAuditLogs { get; set; }
@@ -82,19 +92,19 @@ namespace Apphr.WebUI.Models
         public DbSet<AccessRule> AccessRules { get; set; }
         public DbSet<AccessRulePermitAssignment> AccessRulePermitAssignments { get; set; }
         public DbSet<AccessRuleRoleAssignment> AccessRuleRoleAssignments { get; set; }
-        public DbSet<Facilitador> Facilitadores { get; set; }
+        //public DbSet<Facilitador> Facilitadores { get; set; }
         public DbSet<PacienteEvento> PacienteEventos { get; set; }
         public DbSet<PacienteEventoTraslado> PacienteEventoTraslados { get; set; }
         public DbSet<PacienteEventoHistorial> PacienteEventoHistoriales { get; set; }
         public DbSet<Controlador> Controladores { get; set; }
         public DbSet<ControladorRolAsignacion> ControladorRolAsignaciones { get; set; }
-        public DbSet<Empleado> Empleados { get; set; }
+        //public DbSet<Empleado> Empleados { get; set; }
         public DbSet<ControladorPermiso> ControladorPermisos { get; set; }
         public DbSet<Bodega> Bodegas { get; set; }
         public DbSet<Destino> Destinos { get; set; }
         public DbSet<Material> Materiales { get; set; }
         public DbSet<SolicitudPedido> SolicitudesPedido { get; set; }
-        public DbSet<SolicitudPedidoDetalle> SolicitudesPedidoDT { get; set; }
+        public DbSet<SolicitudPedidoDetalle> SolicitudesPedidoDetalle { get; set; }
         public DbSet<DespachoInventario> DespachosInventario { get; set; }
         public DbSet<DespachoInventarioDetalle> DespachosInventarioDetalle { get; set; }
         public DbSet<IngresoInventario> IngresosInventario { get; set; }
@@ -111,8 +121,39 @@ namespace Apphr.WebUI.Models
         public DbSet<Paciente> Pacientes { get; set; }
         public DbSet<CierreInventario> CierresInventario { get; set; }
         public DbSet<TipoMovimientoInventario> TiposMovimientoInventario { get; set; }
-        public DbSet<SolicitudMaterialSala> SolicitudMaterialesSala {get;set;}
-        public DbSet<SolicitudMaterialSalaDetalle> SolicitudMaterialesSalaDetalle {get;set;}
+        public DbSet<SolicitudMaterialSala> SolicitudMaterialesSala { get; set; }
+        public DbSet<SolicitudMaterialSalaDetalle> SolicitudMaterialesSalaDetalle { get; set; }
+        public DbSet<OrdenCompra> OrdenesCompra { get; set; }
+        public DbSet<OrdenCompraDetalle> OrdenesCompraDetalle { get; set; }
+        public DbSet<ControlAbastecimiento> ControlAbastecimiento { get; set; }
+        public DbSet<IngresoAbastecimiento> IngresosAbastecimiento { get; set; }
+        public DbSet<EgresoAbastecimiento> EgresosAbastecimiento { get; set; }
+        public DbSet<MovimientoAbastecimiento> MovimientosAbastecimiento { get; set; }
+        public DbSet<InicialAbastecimiento> InicialAbastecimiento { get; set; }
+
+        // Siahad
+        public DbSet<SHDAdministracion> SHDAdministracion { get; set; }
+        public DbSet<SHDContador> SHDContador { get; set; }
+        public DbSet<SHDBodega> SHDBodega { get; set; }
+        public DbSet<SHDExistenciaBodega> SHDExistenciaBodega { get; set; }
+        public DbSet<SHDExistenciaLote> SHDExistenciaLote { get; set; }
+        public DbSet<SHDExistenciaTotal> SHDExistenciaTotal { get; set; }
+        public DbSet<SHRMaterial> SHRMaterial { get; set; }
+        public DbSet<SHDMovimientoInventario> SHDMovimientosInventario { get; set; }
+        public DbSet<SHRDestino> SHRDestino { get; set; }
+
+        // ORTOPEDIA
+        public DbSet<ORTMovimiento> ORTMovimientos { get; set; }
+        public DbSet<ORTCirujano> ORTCirujanos { get; set; }
+        public DbSet<ORTHojaGasto> ORTHojasGasto { get; set; }
+        public DbSet<ORTPaciente> ORTPacientes { get; set; }
+        public DbSet<ORTOrdenCompra> ORTOrdenesCompra { get; set; }
+        public DbSet<ORTSolicitudPedido> ORTSolicitudesPedido { get; set; }
+        public DbSet<ORTAjusteInventario> ORTAjustesInventario { get; set; }
+        public DbSet<ORTIngresoInventario> ORTIngresosInventario { get; set; }
+        public DbSet<ORTDespachoInventario> ORTDespachosInventario { get; set; }
+        public DbSet<ORTDevolucionInventario> ORTDevoluciones { get; set; }
+
 
         public static ApphrDbContext Create()
         {
@@ -134,16 +175,18 @@ namespace Apphr.WebUI.Models
             modelBuilder.Entity<Paciente>().Property(x => x.RefPac_NumHCAntiguo).HasPrecision(18, 0);             
             modelBuilder.Configurations.Add(new PersonaMap());
             modelBuilder.Configurations.Add(new ProveedorEntityConfiguration());
-            //modelBuilder.Configurations.Add(new SupplierEntityConfiguration());
-            //modelBuilder.Entity<SolicitudPedido>().HasRequired(s => s.Departamento).WithRequiredPrincipal().WillCascadeOnDelete(false);}
-            //modelBuilder.Entity<SolicitudPedido>().HasRequired(s => s.Seccion).WithRequiredPrincipal().WillCascadeOnDelete(false);
-        }
 
-        //public int SaveChangesAudit()
-        //{
-        //    //UserName = getUserName();
-        //    return SaveChanges();
-        //}
+
+            //modelBuilder.Entity<AppRole>()
+            //.HasMany(r => r.Permissions)
+            //.WithMany(p => p.AppRoles)
+            //.Map(m =>
+            //{
+            //    m.ToTable("AppRolePermissions");
+            //    m.MapLeftKey("AppRoleId");
+            //    m.MapRightKey("AppPermissionId");
+            //});
+        }
 
         public override int SaveChanges()
         {
@@ -194,7 +237,6 @@ namespace Apphr.WebUI.Models
         {
             return ChangeTracker.Entries().Where(p => p.State == EntityState.Modified && p.Entity.GetType().Name != "AppAuditLog").ToList();
         }
-
         private List<DbEntityEntry> GetINSEntry()
         {
             return ChangeTracker.Entries().Where(e => e.State == EntityState.Added && e.Entity.GetType().Name != "AppAuditLog").ToList();
@@ -251,7 +293,8 @@ namespace Apphr.WebUI.Models
                 AppEntityLog log = new AppEntityLog()
                 {
                     EntityLogId = entityLogId,
-                    Created_by = currentUsername,
+                    //Created_by = currentUsername,
+                    CreatedByUser = this.UserId,
                     EventType = eventType,
                     Created_date = currentDateTime,
                     RecordID = GetPrimaryKeyValue(entry),
@@ -271,12 +314,12 @@ namespace Apphr.WebUI.Models
                     {
                         case EntityState.Added:
                             auditableEntity.Entity.CreatedDate = currentDateTime;
-                            auditableEntity.Entity.CreatedBy = currentUsername;
+                            auditableEntity.Entity.CreatedByUser = this.UserId;
                             break;
                         case EntityState.Modified:
                             auditableEntity.Entity.LastModifiedDate = currentDateTime;
-                            auditableEntity.Entity.LastModifiedBy = currentUsername;
-                            if (auditableEntity.Property(p => p.CreatedDate).IsModified || auditableEntity.Property(p => p.CreatedBy).IsModified)
+                            auditableEntity.Entity.LastModifiedByUser = this.UserId;
+                            if (auditableEntity.Property(p => p.CreatedDate).IsModified || auditableEntity.Property(p => p.CreatedByUser).IsModified)
                             {
                                 throw new DbEntityValidationException(string.Format("Se esta intentando actualizar la fecha de creación en {0}", auditableEntity.Entity.GetType().FullName));
                             }

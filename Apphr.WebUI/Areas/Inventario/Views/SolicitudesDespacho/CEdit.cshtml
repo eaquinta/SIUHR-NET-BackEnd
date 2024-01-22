@@ -90,12 +90,6 @@
                     <div class="col-12">@Html.EditorFor(x => x.Observacion)</div>
                 </div>
                 <div class="row">
-                    @*<div class="col-6">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
-                                <label class="form-check-label" for="flexSwitchCheckDefault">Incluir datos M</label>
-                            </div>
-                        </div>*@
                     <div class="col-12">
                         <button id="btnSaveMaster" type="submit" class="btn btn-success float-end">Guardar <i class="far fa-save"></i></button>
                     </div>
@@ -120,7 +114,7 @@
     <!-- Grid -->
     <!-- Botones formulario -->
     <div class="col-md-12 mt-2 onUpd">
-        <a class="btn btn-outline-dark btnReturn" href="">Regresar</a>
+        <a class="btn btn-outline-dark btnReturn" href=""><i class="fas fa-chevron-left"></i>&nbsp;Regresar</a>
         <div class="float-end">
             <a class="btn btn-outline-danger btn-eliminar" href="#"><i class="fas fa-trash"></i>&nbsp;Eliminar</a>
         </div>
@@ -148,7 +142,7 @@ new { id = "child-form" }))
                     <h5 id="myModalLabel" class="modal-title">Agregar Material</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" id="formLinea">
+                <div class="modal-body" id="form-body-child">
                     @Html.Partial("_CEditChild", Model.Child)
                 </div>
                 <div class="modal-footer">
@@ -188,9 +182,9 @@ new { id = "child-form" }))
         var urlGetChild = '@Url.Action("JsGetChild")';
         var urlDeleteMaster = '@Url.Action("JsDeleteMaster")';
         var urlDeleteChild = '@Url.Action("JsDeleteChild")';
-        var urlFindMateriales = '@Url.Action("JsGetMaterialesByFilter", "Materiales")';
+        var urlFindMateriales = '@Url.Action("JsGetByFilter", "Materiales")';
         var urlFindDestinos = '@Url.Action("JsGetDestinosByFilter","Destinos")'
-        var urlGetMatByCod = '@Url.Action("JsGetMaterialByCodigo","Materiales")';
+        var urlGetMatByCod = '@Url.Action("JsGetByCodigo","Materiales")';
         var id1 = '@Model.SolicitudDespachoId';
     </script>
     <script src="~/Content/apphr/SolicitudDespacho/CEdit.js"></script>

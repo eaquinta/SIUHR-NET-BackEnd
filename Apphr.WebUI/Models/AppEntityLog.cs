@@ -26,8 +26,9 @@ namespace Apphr.WebUI.Models
 
         //public string NewValue { get; set; }
 
-        [Required]
-        public string Created_by { get; set; }
+        //[Required]
+        //public string Created_by { get; set; }
+        public int CreatedByUser { get; set; } = -1;
 
         [Required]
         public DateTime Created_date { get; set; }

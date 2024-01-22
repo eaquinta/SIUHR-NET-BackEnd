@@ -1,10 +1,12 @@
 ﻿@using PagedList.Mvc
+
 @model Apphr.Application.OrdenesCompra.DTOs.OrdenCompraDTOIxFilter
+
 @{
-    ViewBag.Title = "Índice";
-    ViewBag.Entidad = "Ordenes de Compra";
+    ViewBag.Title = "Índice Ordenes de Compra SIAHR";
     ViewBag.Icon = "<i class=\"far fa-list-alt\"></i>";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
+    var _yearList = (IEnumerable<SelectListItem>)ViewData["yearList"];
 }
 
 <link href="~/Content/PagedList.css" rel="stylesheet" />
@@ -29,7 +31,7 @@
     <!--BreadCrum-->
     <!-- Encablezado -->
     <h4 class="my-3">
-        @ViewBag.Title @ViewBag.Entidad @Html.Raw(ViewBag.Icon)
+        @ViewBag.Title @Html.Raw(ViewBag.Icon)
         @*<a class="btn btn-success ms-3 float-end" href="@Url.Action("Create")">
                 Adicionar <i class="fa fa-plus"></i>
             </a>
@@ -39,26 +41,28 @@
     </h4>
     <div class="clearfix"></div>
     <!-- Encablezado -->
+    <!-- Filtro -->
     @using (Ajax.BeginForm("JsFilterIndexDBF", "OrdenesCompra", new AjaxOptions
     {
         HttpMethod = "POST",
         OnBegin = "filter.begin",
         OnSuccess = "filter.success",
-        OnFailure = "jshelper.failure"
+        OnFailure = "filter.failure"
     }, new { id = "form-filter" }))
     {
         @Html.AntiForgeryToken()
-        @Html.HiddenFor(x => x.page)
-        <div class="card mb-3">
-            <div class="card-header">
-                <a class="text-decoration-none" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-                    Filtro <i class="fa fa-filter"></i>
+        @Html.HiddenFor(x => x.Page)
+        <div class="card border border-dark mb-3">
+            <div class="card-header background-siahr">
+                Filtro
+                <a class="@*collapsed*@" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true" aria-controls="collapseExample">
+                    <i class="fa fa-chevron-up fa-pull-right" style="margin-top: 5px;"></i>
                 </a>
             </div>
-            @*<div id="collapse1" class="panel-collapse collapse">*@
             <div class="collapse show" id="collapseExample">
                 <div class="card-body">
                     @Html.EditorFor(x => x.Buscar, "StringP", new { placeholder = "#Orden, Fecha, Nit" })
+                    @Html.EditorFor(x => x.Year, "DropDownP", new { optionsList = _yearList, label = "Año" })
                     <div class="form-group">
                         <div class="float-end mb-3">
                             <button id="btnFilter" type="submit" class="btn btn-info"><i class="fa fa-filter"></i> Aplicar</button>
@@ -72,6 +76,41 @@
     <!-- Tabla -->
     <div id="Grid1"></div>
     <!-- Tabla -->
+    <!-- Modal -->
+    <div class="modal fade" id="child-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="modalLabel" class="modal-title">Agregar Material</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="form-body-child">
+                </div>
+                @*<div class="modal-footer">
+                        <input type="submit" id="btnSaveDTmodal" class="btn btn-primary" value="Guardar" />
+                    </div>*@
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <!-- Report Modal -->
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-fullscreen-lg-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Solicitud de Pedido SIAHR</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <object type="application/pdf" data="@*@Url.Action(" Print", new { id=Model.Solicitud })*@" width="100%" height="500" style="height: 85vh;">No Support</object>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Report Modal -->
 </div>
 
 @section scripts{
@@ -101,17 +140,82 @@
         filter.bindPaged = function () {
             $(".pagination a").click(function () {
                 if (event.preventDefault) {
-                    event.preventDefault();
-                    console.log('detenido');
-                    console.log($(this).attr('href'));
-                    $('#page').val($(this).attr('href'));
+                    event.preventDefault();                    
+                    $('#Page').val($(this).attr('href'));
                     filter.btn.trigger('click');
                 }
             });
         }
+        filter.failure = function () {
+            jshelper.failure();
+            filter.end();
+        }
 
         $(document).ready(() => {
+            // alert slide up
+            $('#siahr-bsalert').delay(5000).slideUp(500, function () {
+                $(this).remove();
+            });
+            // auto fill
             filter.form.submit();
+            // reset page
+            filter.form.on('keyup change paste', 'input, select, textarea', function () {
+                $('#Page').val("");
+            });
         });
+
+        function ImportOrdenCompra(t) {
+            let id = $(t).data("id");
+            let year = $(t).data("year");
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("JsImportOrdenCompra", "OrdenesCompra", new { Area = "Inventario" })',
+                data: { CODIGO: id, year: year },
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    //console.log(r);
+                    if (r.success) {
+                        toastr.success('Sincronizado satisfactoriamente', 'Sincronizacion');
+                    } else {
+                        toastr.error(r.message);
+                        if (jshelper.debug) {
+                            alert(r.innerexeption);
+                        }
+                    }
+                },
+                failure: function (response) {
+                    jshelper.failure();
+                   // console.log(response);
+                }
+            });
+        }
+        // At Work
+        @*function Print(t) {
+            event.preventDefault();
+            let id = $(t).data("id");
+            let year = $(t).data("year");
+
+            let url = '@Url.Action("Print")'; //, new { id = Model.Solicitud })
+
+            var objElem = $('<object id="rptObject" type="application/pdf" data="" width="100%" height="500" style="height: 75vh;">No Support</object>');
+            var urlReport = url + '?id=' + id + '&year=' + year;
+            $('#reportModal .modal-body').html(objElem);
+            $('#rptObject').attr('data', urlReport);
+
+            $('#reportModal').modal('show');
+
+        }*@
+
+        function Details(t) {
+            let id = $(t).data("id");
+            let year = $(t).data("year");
+            $('#modalLabel').html('Orden Compra SIAHR');
+
+            jshelper.get('@Url.Action("JsDetailsDBF")', {id: id, year: year}, function (response) {
+                $('#form-body-child').html(response);
+            });
+            $('#child-modal').modal('show');
+        }
     </script>
 }

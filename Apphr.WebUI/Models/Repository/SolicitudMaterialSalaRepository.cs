@@ -1,5 +1,5 @@
 ﻿using Apphr.Application.SolicitudMaterialesSala.DTOs;
-using Apphr.Domain.Entities;
+using Apphr.WebUI.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -127,7 +127,12 @@ namespace Apphr.WebUI.Models.Repository
             return db.SolicitudMaterialesSala
                 .Any(x => string.IsNullOrEmpty(x.DespachoInventarioId) && x.SolicitudMaterialSalaId == id);
         }
-
+        public string GetHojaControlSalaById(string id)
+        {
+            return db.SolicitudMaterialesSala
+                .Find(id)?
+                .HojaControlSala;
+        }
         public async Task<Paciente> GetPacienteInfo(string id)
         {
             var reg = await db.SolicitudMaterialesSala

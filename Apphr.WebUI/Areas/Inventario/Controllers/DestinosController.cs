@@ -1,9 +1,12 @@
-﻿using Apphr.Application.Destinos.DTOs;
-using Apphr.Domain.Entities;
+﻿using Apphr.Application.Common;
+using Apphr.Application.Common.DTOs;
+using Apphr.Application.Destinos.DTOs;
+using Apphr.WebUI.Models.Entities;
 using Apphr.Domain.Enums;
 using Apphr.WebUI.Common;
 using Apphr.WebUI.Controllers;
 using Apphr.WebUI.CustomAttributes;
+using Apphr.WebUI.Models.Repository;
 using PagedList;
 using System;
 using System.Collections.Generic;
@@ -18,115 +21,16 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
     [Authorize]
     public class DestinosController : DbController
     {
-        //[HttpPost]
-        //public JsonResult IfDestinoIdExist(int? DestinoId)
-        //{
-        //    if (DestinoId != null)
-        //    {
-        //        return Json(DestinoIdExist(DestinoId.Value));
-        //    }
-        //    return Json(false); 
-        //}
-
-
-
-        //[HttpPost]
-        //public JsonResult IfCodigoDepartamentoExist(string CodigoDepartamento)
-        //{
-        //    if (!string.IsNullOrEmpty(CodigoDepartamento))
-        //    {
-        //        return Json(CodigoDestinoExist(CodigoDepartamento));
-        //    }
-        //    return Json(false);
-        //}
-        //[HttpPost]
-        //public JsonResult IfCodigoSeccionExist(string CodigoSeccion)
-        //{
-        //    if (!string.IsNullOrEmpty(CodigoSeccion))
-        //    {
-        //        return Json(CodigoDestinoExist(CodigoSeccion));
-        //    }
-        //    return Json(false);
-        //}
-
-
-
-        //[HttpPost]
-        //public JsonResult IfDepartamentoIdExist(int? DepartamentoId)
-        //{
-        //    if (DepartamentoId != null)
-        //    {
-        //        return Json(DestinoIdExist(DepartamentoId.Value));
-        //    }
-        //    return Json(false);
-        //}
-        //[HttpPost]
-        //public JsonResult IfDepartamentoSeccionIdExist(int? SeccionId)
-        //{
-        //    if (SeccionId != null)
-        //    {
-        //        return Json(DestinoIdExist(SeccionId.Value));
-        //    }
-        //    return Json(false);
-        //}
-
-        //private bool CodigoDestinoExist(string id)
-        //{
-        //    //bool res = false;
-        //    if (!string.IsNullOrEmpty(id))
-        //        return db.Destinos.Any(u => u.Codigo == id);
-        //    else
-        //        return false;
-        //}
-
-
-        //private bool DestinoIdExist(int id)
-        //{
-        //    bool res = false;
-        //    res = db.Destinos.Any(u => u.DestinoId == id);
-        //    return res;
-        //}
-        //public ActionResult BuscarDestino(string Search_Data, string Filter_Value, string llamar)
-        //{
-        //    if (Search_Data == null)
-        //        Search_Data = Filter_Value;
-        //    ViewBag.FilterValue = Search_Data;
-        //    ViewBag.llamar = llamar;
-        //    List<Destino> regs;
-
-        //    regs = db.Destinos.Where(s => s.Codigo.ToUpper().Contains(Search_Data.ToUpper()) || s.Descripcion.ToUpper().Contains(Search_Data.ToUpper())).ToList();
-        //    var dto = mapper.Map<IEnumerable<DestinoDTOBase>>(regs);
-        //    return PartialView(dto);
-        //}
-        //public async Task<ActionResult> Delete(int? id) //GET
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    Destino reg = await db.Destinos.FindAsync(id);
-        //    if (reg == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-
-        //    DestinoDTODelete dto = mapper.Map<DestinoDTODelete>(reg);
-        //    return View(dto);
-        //}
-
-        //[HttpPost, ValidateAntiForgeryToken, ActionName("Delete")]
-        //public async Task<ActionResult> DeleteConfirmed(int id) // POST
-        //{
-        //    Destino reg = await db.Destinos.FindAsync(id);
-        //    db.Destinos.Remove(reg);
-        //    await db.SaveChangesAsync();
-        //    return RedirectToAction("Index", new { Toast = "success.delete" });
-        //}
+        private DestinoRepository DestinoRep;
+        public DestinosController()
+        {
+            DestinoRep = new DestinoRepository(db);
+        }
 
         public ActionResult IndexDBF(DestinoDTOIndexDBF dto, string currentFilter, string searchString, int? page) // GET
         {
             int pageIndex = 1;
-            if (dto?.F == null) dto.F = new Application.Common.IxFilter();
+            if (dto?.F == null) dto.F = new IxFilter();
             if (dto.F.Buscar != dto.F._Buscar)
             {
                 page = 1;
@@ -136,6 +40,11 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
             pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
 
             var regs = this.dbfContext.GetDestinos();
+
+            if (regs == null)
+            {
+                return View("ErrorSiahr");
+            }
 
             if (!String.IsNullOrEmpty(dto?.F?.Buscar))
             {
@@ -166,7 +75,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
         }
 
               
-        [AppAuthorization(Permit.View)]
+        [Can("destino.ver")]
         public ActionResult Index(DestinoDTOIndex dto, int? page) //GET
         {
             IQueryable<Destino> regs;
@@ -268,8 +177,8 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> JsDelete(int id) // POST
         {
-            Permit[] permisosRequeridos = { Permit.Delete };
-            bool hasPermit = Utilidades.hasPermit(permisosRequeridos, ControllerContext, userName);
+            string[] permisosRequeridos = { "destino.eliminar" };
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
             if (!hasPermit)
             {
                 return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
@@ -302,12 +211,12 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
             {
                 val = Request.Params[0];
             }
-            var result = new List<MaterialDTOSelectItem>();
+            var result = new List<DTOAutocompleteItem>();
             if (!string.IsNullOrEmpty(val))
             {
                 result = db.Destinos.Where(x => x.Codigo.Contains(val) || x.Descripcion.Contains(val))
                    .Take(autoCompleteSize)
-                   .Select(p => new MaterialDTOSelectItem { id = p.Codigo, text = p.Descripcion })
+                   .Select(p => new DTOAutocompleteItem { id = p.Codigo, text = p.Descripcion })
                    .ToList();
             }
             return Json(new { data = result }, JsonRequestBehavior.AllowGet);
@@ -350,33 +259,34 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 
         public JsonResult JsImportDestino(string CODIGO)
         {
-            try
-            {
-                if (string.IsNullOrEmpty(CODIGO))
-                {
-                    throw new ArgumentException("Parametro CODIGO de contener algun valor");
-                }
-                var DestinoDBF = dbfContext.GetDestino(CODIGO).FirstOrDefault();
-                if (!db.Destinos.Any(x => x.Codigo == DestinoDBF.CODIGO))
-                {
-                    var reg = mapper.Map<Destino>(DestinoDBF);
-                    db.Destinos.Add(reg);
-                }
-                else
-                {
-                    var reg = db.Destinos.Where(x => x.Codigo == DestinoDBF.CODIGO).FirstOrDefault();
-                    if (reg != null)
-                    {
-                        mapper.Map(DestinoDBF, reg);
-                    }
-                }
-                db.SaveChanges();
-                return Json(new { result = true }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception)
-            {
-                return Json(new { result = false }, JsonRequestBehavior.AllowGet);
-            }
+            return Json(new { result = DestinoRep.ImportIfNotExist(CODIGO) }, JsonRequestBehavior.AllowGet);
+            //try
+            //{
+            //    if (string.IsNullOrEmpty(CODIGO))
+            //    {
+            //        throw new ArgumentException("Parametro CODIGO de contener algun valor");
+            //    }
+            //    var DestinoDBF = dbfContext.GetDestino(CODIGO).FirstOrDefault();
+            //    if (!db.Destinos.Any(x => x.Codigo == DestinoDBF.CODIGO))
+            //    {
+            //        var reg = mapper.Map<Destino>(DestinoDBF);
+            //        db.Destinos.Add(reg);
+            //    }
+            //    else
+            //    {
+            //        var reg = db.Destinos.Where(x => x.Codigo == DestinoDBF.CODIGO).FirstOrDefault();
+            //        if (reg != null)
+            //        {
+            //            mapper.Map(DestinoDBF, reg);
+            //        }
+            //    }
+            //    db.SaveChanges();
+            //    return Json(new { result = true }, JsonRequestBehavior.AllowGet);
+            //}
+            //catch (Exception)
+            //{
+            //    return Json(new { result = false }, JsonRequestBehavior.AllowGet);
+            //}
         }
 
         //public JsonResult GetDestino(string id)

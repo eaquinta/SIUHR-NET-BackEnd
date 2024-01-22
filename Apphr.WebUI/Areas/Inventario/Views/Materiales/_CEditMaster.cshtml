@@ -1,0 +1,12 @@
+﻿@model Apphr.Application.Materiales.DTOs.MaterialDTOCEdit
+
+@Html.AntiForgeryToken()
+@Html.HiddenFor(x => x.MaterialId)
+<div class="row">
+    <div class="col-md-12">@Html.EditorFor(x => x.Codigo)</div>
+    <div class="col-md-12">@Html.EditorFor(x => x.Descripcion)</div>
+    <div class="col-md-12">@Html.EditorFor(x => x.Precio)</div>
+    <div class="col-md-12">@Html.EditorFor(x => x.UnidadMedida)</div>
+    <div class="col-md-12">@Html.EditorFor(x => x.Minimo)</div>
+    <div class="col-md-12" @Html.EditorFor(x => x.SigesCodigo)</div>
+</div>

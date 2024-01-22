@@ -1,5 +1,5 @@
 ﻿using Apphr.Application.AjustesInventario.DTOs;
-using Apphr.Domain.Entities;
+using Apphr.WebUI.Models.Entities;
 using Apphr.Domain.Enums;
 using Apphr.WebUI.Common;
 using Apphr.WebUI.Controllers;
@@ -13,7 +13,6 @@ using System.Data.Entity.SqlServer;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 
 namespace Apphr.WebUI.Areas.Inventario.Controllers
@@ -27,14 +26,14 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
         {
             AjusteInventarioDetalleRep = new AjusteInventarioDetalleRepository(db);
         }
-        [AppAuthorization(Permit.View)]
-        public ActionResult Index() // GET
+        [Can("ajuste_inventario.ver")]        
+        public ActionResult Index()                                     // GET
         {
             return View();
         }
 
-        [AppAuthorization(Permit.View)]
-        public async Task<ActionResult> Details(string id) // GET
+        [Can("ajuste_inventario.ver")]
+        public async Task<ActionResult> Details(string id)              // GET
         {
 
             if (string.IsNullOrEmpty(id))
@@ -57,7 +56,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
             return View(dto);
         }
 
-        public async Task<ActionResult> CEdit(string id)  //GET
+        public async Task<ActionResult> CEdit(string id)                // GET
         {
             var dto = new AjusteInventarioDTOCEdit();
             if (!string.IsNullOrEmpty(id))
@@ -96,7 +95,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
         #region Js
 
         [ValidateAntiForgeryToken]
-        public ActionResult JsFilterIndex(string Buscar, int? page)
+        public ActionResult JsFilterIndex(string Buscar, int? page)     // GET
         {
             IQueryable<AjusteInventario> regs;
             int pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
@@ -119,8 +118,8 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
         [ValidateAntiForgeryToken]
         public async Task<JsonResult> JsSaveMaster(AjusteInventarioDTOCEdit dto)
         {
-            Permit[] permisosRequeridos = { Permit.Edit };
-            bool hasPermit = Utilidades.hasPermit(permisosRequeridos, ControllerContext, userName);
+            string[] permisosRequeridos = { "ajuste_inventario.editar" };
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
             if (!hasPermit)
             {
                 return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
@@ -175,15 +174,15 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = Resources.Msg.failure, messageEx = ex.Message, messageInner = ex.InnerException }, JsonRequestBehavior.DenyGet);
+                return Json(new { success = false, message = Resources.Msg.failure, messageEx = ex.Message, messageInner = ex.InnerException.InnerException.Message }, JsonRequestBehavior.DenyGet);
             }
         }
 
         [ValidateAntiForgeryToken]
         public async Task<JsonResult> JsSaveChild(AjusteInventarioDetalleDTOCEdit dto)
         {
-            Permit[] permisosRequeridos = { Permit.Edit };
-            bool hasPermit = Utilidades.hasPermit(permisosRequeridos, ControllerContext, userName);
+            string[] permisosRequeridos = { "ajuste_inventario.editar" };
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
             if (!hasPermit)
             {
                 return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
@@ -292,7 +291,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = Resources.Msg.failure, messageEx = ex.Message, messageInner = ex.InnerException });
+                return Json(new { success = false, message = Resources.Msg.failure, messageEx = ex.Message, messageInner = ex.InnerException.InnerException.Message });
             }
         }
 
@@ -301,8 +300,8 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> JsDeleteMaster(string id) // POST
         {
-            Permit[] permisosRequeridos = { Permit.Delete };
-            bool hasPermit = Utilidades.hasPermit(permisosRequeridos, ControllerContext, userName);
+            string[] permisosRequeridos = { "ajuste_inventario.eliminar" };
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
             if (!hasPermit)
             {
                 return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
@@ -336,7 +335,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = Resources.Msg.failure, exMessage = ex.Message, exInner = ex.InnerException }, JsonRequestBehavior.DenyGet);
+                return Json(new { success = false, message = Resources.Msg.failure, exMessage = ex.Message, exInner = ex.InnerException.InnerException.Message }, JsonRequestBehavior.DenyGet);
             }
         }
 
@@ -344,8 +343,8 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> JsDeleteChild(int? id)
         {
-            Permit[] permisosRequeridos = { Permit.Delete };
-            bool hasPermit = Utilidades.hasPermit(permisosRequeridos, ControllerContext, userName);
+            string[] permisosRequeridos = { "ajuste_inventario.eliminar" };
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
             if (!hasPermit)
             {
                 return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
@@ -375,7 +374,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = Resources.Msg.failure, exMessage = ex.Message, exInner = ex.InnerException }, JsonRequestBehavior.DenyGet);
+                return Json(new { success = false, message = Resources.Msg.failure, exMessage = ex.Message, exInner = ex.InnerException.InnerException.Message }, JsonRequestBehavior.DenyGet);
             }
         }
 
@@ -397,7 +396,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
                 dto.BodegaDescripcion = reg.Bodega.Descripcion;
                 dto.MaterialCodigo = reg.Material.Codigo;
                 dto.MaterialNombre = reg.Material.Descripcion;
-                dto.MaterialPrecio = reg.Material.Precio ?? 0;
+                dto.MaterialPrecio = reg.Material.Precio; // ?? 0;
                 dto.ProveedorNit = reg.Proveedor?.Nit ?? "";
                 dto.ProveedorNombre = reg.Proveedor?.Descripcion ?? "";
 
@@ -405,7 +404,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = Apphr.Resources.Msg.failure, exmessage = ex.Message, exinner = ex.InnerException }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = Apphr.Resources.Msg.failure, exmessage = ex.Message, exinner = ex.InnerException.InnerException.Message }, JsonRequestBehavior.AllowGet);
             }
 
         }

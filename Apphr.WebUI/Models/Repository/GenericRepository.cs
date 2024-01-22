@@ -1,5 +1,9 @@
-﻿using System;
+﻿using Apphr.Application;
+using Apphr.Infrastructure.Persistence.DBF;
+using AutoMapper;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
@@ -8,24 +12,26 @@ using System.Web;
 
 namespace Apphr.WebUI.Models.Repository
 {
-    public class GenericRepository<TEntity> where TEntity : class
+    public class GenericRepository<TEntity> : IDisposable where TEntity : class
     {
 
-        protected readonly ApphrDbContext db;
+        protected ApphrDbContext db;
+        protected DBFContext dbfContext;
         private readonly DbSet<TEntity> dbSet;
+        //protected string dbfPath = ConfigurationManager.AppSettings["SiahrPath"].ToString();
+        protected readonly IMapper mapper = AutoMapperConfig._mapper;
+        private bool disposedValue;
 
         public GenericRepository(ApphrDbContext context)
         {
             this.db = context;
             this.dbSet = context.Set<TEntity>();
+            dbfContext = new DBFContext();//dbfPath);
         }
 
-        //public ApphrDbContext db
+        //public void SetContext(ApphrDbContext context)
         //{
-        //    get
-        //    {
-        //        return db as ApphrDbContext;
-        //    }
+        //    this.db = context;
         //}
 
         public virtual IEnumerable<TEntity> GetAll(
@@ -98,6 +104,40 @@ namespace Apphr.WebUI.Models.Repository
         public IQueryable<TEntity> Queryable()
         {
             return dbSet;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: eliminar el estado administrado (objetos administrados)
+                    if (this.dbfContext != null)
+                    {
+                        this.dbfContext.Dispose();
+                        this.dbfContext = null;
+                    }
+                }
+
+                // TODO: liberar los recursos no administrados (objetos no administrados) y reemplazar el finalizador
+                // TODO: establecer los campos grandes como NULL
+                disposedValue = true;
+            }
+        }
+
+        // // TODO: reemplazar el finalizador solo si "Dispose(bool disposing)" tiene código para liberar los recursos no administrados
+        // ~GenericRepository()
+        // {
+        //     // No cambie este código. Coloque el código de limpieza en el método "Dispose(bool disposing)".
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // No cambie este código. Coloque el código de limpieza en el método "Dispose(bool disposing)".
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 

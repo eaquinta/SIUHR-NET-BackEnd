@@ -1,0 +1,9 @@
+﻿@model Apphr.WebUI.Application.AppPermissions.DTOs.AppPermissionDTOView
+@using Apphr.WebUI.CustomAttributes
+
+@Html.AntiForgeryToken()
+<div class="row">
+    <div class="col-12">        
+            @Html.DisplayFor(model => model.Name, "StringD")        
+    </div>    
+</div>

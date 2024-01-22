@@ -1,4 +1,4 @@
-﻿@model Apphr.Application.SolicitudesPedido.DTOs.SolicitudPedidoDTOBaseDT
+﻿@model Apphr.Application.SolicitudesPedido.DTOs.SolicitudPedidoDetalleDTOBase
 @{ Layout = null; }
 <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -9,13 +9,13 @@
         @using (Ajax.BeginForm("SaveDetalle", "SolicitudesPedido", new AjaxOptions
         {
             HttpMethod = "POST",
-            UpdateTargetId = "formLinea",
+            UpdateTargetId = "form-body-child",
             OnSuccess = "OnSuccess",
         }))
         {
-            <div class="modal-body" id="formLinea">
+            <div class="modal-body" id="form-body-child">
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                @Html.HiddenFor(model => model.SolicitudPedidoDTId)
+                @Html.HiddenFor(model => model.SolicitudPedidoDetalleId)
                 @Html.EditorFor(x => x.Cantidad)
             </div>
         }

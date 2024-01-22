@@ -1,4 +1,4 @@
-﻿using Apphr.Domain.Entities;
+﻿using Apphr.WebUI.Models.Entities;
 using System.Linq;
 
 namespace Apphr.WebUI.Models.Repository

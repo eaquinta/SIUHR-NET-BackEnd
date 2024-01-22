@@ -13,5 +13,9 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
         {
             return View();
         }
+        public ActionResult Siahad()
+        {
+            return View();
+        }
     }
 }

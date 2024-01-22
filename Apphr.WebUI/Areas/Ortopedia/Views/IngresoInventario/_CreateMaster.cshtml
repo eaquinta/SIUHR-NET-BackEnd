@@ -1,0 +1,15 @@
+﻿@model Apphr.Application.Ortopedia.IngresosInventario.DTOs.IngresoInventarioDTOCreate
+
+@Html.AntiForgeryToken()
+@Html.HiddenFor(x => x.IngresoInventarioId)
+@Html.HiddenFor(x => x.OrdenCompraId)
+@Html.HiddenFor(x => x.ProveedorId)
+
+
+<div class="row">
+    <div class="col-md-12">@Html.EditorFor(x => x.Fecha)</div>
+    <div class="col-md-4">@Html.EditorFor(x => x.NumeroOC)</div>
+    <div class="col-md-4">@Html.EditorFor(x => x.FechaOC)</div>
+    <div class="col-md-4">@Html.EditorFor(x => x.AnioOC)</div>
+    <div class="col-md-12">@Html.EditorFor(x => x.Observacion)</div>
+</div>

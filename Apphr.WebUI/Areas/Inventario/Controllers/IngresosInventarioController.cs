@@ -1,6 +1,6 @@
 ﻿using Apphr.Application.Common;
 using Apphr.Application.IngresosInventario.DTOs;
-using Apphr.Domain.Entities;
+using Apphr.WebUI.Models.Entities;
 using Apphr.Domain.Enums;
 using Apphr.WebUI.Common;
 using Apphr.WebUI.Controllers;
@@ -18,9 +18,10 @@ using System.Web.Mvc;
 namespace Apphr.WebUI.Areas.Inventario.Controllers
 {
     [Authorize]
-    public class IngresosInventarioController : DbController
+	[LogAction]
+	public class IngresosInventarioController : DbController
     {
-        [AppAuthorization(Permit.View)]
+        [Can("ingreso_inventario.ver")]
         public ActionResult Index(IngresoInventarioDTOIndex dto, int? page) //GET
 		{
 			IQueryable<IngresoInventario> regs;
@@ -57,7 +58,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 			return View(dto);
 		}
 
-        [AppAuthorization(Permit.View)]
+        [Can("ingreso_inventario.ver")]
         public async Task<ActionResult> Details(string id)
 		{
 			if (string.IsNullOrEmpty(id))
@@ -83,7 +84,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 			return View(dto);
 		}
 
-        [AppAuthorization(Permit.Edit)]
+        [Can("ingreso_inventario.editar")]
         public async Task<ActionResult> CEdit(string id)  //GET
 		{
 			var dto = new IngresoInventarioDTOCEdit();
@@ -129,8 +130,8 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<JsonResult> JsSaveMaster(IngresoInventarioDTOCEdit dto)
 		{
-            Permit[] permisosRequeridos = { Permit.Edit };
-            bool hasPermit = Utilidades.hasPermit(permisosRequeridos, ControllerContext, userName);
+            string[] permisosRequeridos = { "ingreso_inventario.editar" };
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
             if (!hasPermit)
             {
                 return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
@@ -185,14 +186,14 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Json(new { success = false, message = Resources.Msg.failure, messageEx = ex.Message, messageInner = ex.InnerException }, JsonRequestBehavior.DenyGet);
+				return Json(new { success = false, message = Resources.Msg.failure, messageEx = ex.Message, messageInner = ex.InnerException.InnerException.Message }, JsonRequestBehavior.DenyGet);
 			}
 		}
 		[ValidateAntiForgeryToken]
 		public async Task<JsonResult> JsSaveChild(IngresoInventarioDetalleDTOCEdit dto)
 		{
-            Permit[] permisosRequeridos = { Permit.Edit };
-            bool hasPermit = Utilidades.hasPermit(permisosRequeridos, ControllerContext, userName);
+            string[] permisosRequeridos = { "ingreso_inventario.editar" };
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
             if (!hasPermit)
             {
                 return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
@@ -294,7 +295,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Json(new { success = false, message = Resources.Msg.failure, messageEx = ex.Message, messageInner = ex.InnerException });
+				return Json(new { success = false, message = Resources.Msg.failure, messageEx = ex.Message, messageInner = ex.InnerException.InnerException.Message });
 			}
 		}
 
@@ -302,8 +303,8 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> JsDeleteMaster(string id) // POST
 		{
-            Permit[] permisosRequeridos = { Permit.Delete };
-            bool hasPermit = Utilidades.hasPermit(permisosRequeridos, ControllerContext, userName);
+            string[] permisosRequeridos = { "ingreso_inventario.eliminar" };
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
             if (!hasPermit)
             {
                 return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
@@ -337,7 +338,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Json(new { success = false, message = Resources.Msg.failure, exMessage = ex.Message, exInner = ex.InnerException }, JsonRequestBehavior.DenyGet);
+				return Json(new { success = false, message = Resources.Msg.failure, exMessage = ex.Message, exInner = ex.InnerException.InnerException.Message }, JsonRequestBehavior.DenyGet);
 			}
 		}
 
@@ -345,8 +346,8 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> JsDeleteChild(int? id)
 		{
-            Permit[] permisosRequeridos = { Permit.Delete };
-            bool hasPermit = Utilidades.hasPermit(permisosRequeridos, ControllerContext, userName);
+            string[] permisosRequeridos = { "ingreso_inventario.eliminar" };
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
             if (!hasPermit)
             {
                 return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
@@ -374,7 +375,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Json(new { success = false, message = Resources.Msg.failure, exMessage = ex.Message, exInner = ex.InnerException }, JsonRequestBehavior.DenyGet);
+				return Json(new { success = false, message = Resources.Msg.failure, exMessage = ex.Message, exInner = ex.InnerException.InnerException.Message }, JsonRequestBehavior.DenyGet);
 			}
 		}
 
@@ -391,7 +392,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 				// Special Map
 				dto.MaterialCodigo = reg.Material.Codigo;
 				dto.MaterialNombre = reg.Material.Descripcion;
-				dto.MaterialPrecio = reg.Material.Precio ?? 0;
+				dto.MaterialPrecio = reg.Material.Precio; // ?? 0;
 				dto.ProveedorNit = reg.Proveedor?.Nit ?? "";
 				dto.ProveedorNombre = reg.Proveedor?.Descripcion ?? "";
 
@@ -399,7 +400,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Json(new { success = false, message = Apphr.Resources.Msg.failure, exmessage = ex.Message, exinner = ex.InnerException }, JsonRequestBehavior.AllowGet);
+				return Json(new { success = false, message = Apphr.Resources.Msg.failure, exmessage = ex.Message, exinner = ex.InnerException.InnerException.Message }, JsonRequestBehavior.AllowGet);
 			}
 
 		}

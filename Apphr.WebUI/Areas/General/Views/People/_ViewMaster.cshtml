@@ -1,0 +1,100 @@
+﻿@model Apphr.Application.Personas.DTOs.PersonaDTOView
+@using Apphr.WebUI.CustomAttributes
+
+@Html.AntiForgeryToken()
+<div class="row">
+    <div class="col-lg-8">
+        @*@Html.DisplayFor(x => x.IsActive)*@
+        <div class="row">
+            @Html.DisplayFor(model => model.Name, "StringD")
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                @Html.DisplayFor(model => model.FirstName, "StringD")
+            </div>
+            <div class="col-md-4">
+                @Html.DisplayFor(model => model.MiddleName, "StringD")
+            </div>
+            <div class="col-md-4">
+                @Html.DisplayFor(model => model.ThirdName, "StringD")
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                @Html.DisplayFor(model => model.LastName, "StringD")
+            </div>
+            <div class="col-md-4">
+                @Html.DisplayFor(model => model.MatriName, "StringD")
+            </div>
+            <div class="col-md-4">
+                @Html.DisplayFor(model => model.MarriedName, "StringD")
+            </div>
+        </div>
+        <div class="mb-3">
+            <strong> @Apphr.Resources.Strings.Birth</strong>
+            <br />
+            @if (Model.Birth.HasValue)
+            {
+                int months = DateTime.Now.Month - Model.Birth.Value.Month;
+                int years = DateTime.Now.Year - Model.Birth.Value.Year;
+                if (DateTime.Now.Day < Model.Birth.Value.Day)
+                {
+                    months--;
+                }
+                if (months < 0)
+                {
+                    years--;
+                    months += 12;
+                }
+                int days = (DateTime.Now - Model.Birth.Value.AddMonths((years * 12) + months)).Days;
+                var _age = string.Format("{0} año{1}, {2} mes{3} y {4} día{5}",
+                                years, (years == 1) ? "" : "s",
+                                months, (months == 1) ? "" : "es",
+                                days, (days == 1) ? "" : "s");
+
+                @Model.Birth.Value.ToLongDateString()
+                <br class="d-lg-none" />
+                <small class="text-muted">@_age</small>
+            }
+        </div>
+        <div class="mb-3">
+            <dl>
+                <dt>@Apphr.Resources.Strings.Gender</dt>
+                <dd>
+                    @switch (Model.Gender)
+                    {
+                        case Apphr.Domain.Enums.Gender.Masculino:
+                            <span class="fa fa-male"></span> <small class="text-muted">Masculino</small>
+                            break;
+                        case Apphr.Domain.Enums.Gender.Femenino:
+                            <span class="fa fa-female"></span> <small class="text-muted">Femenino</small>
+                            break;
+                    }
+                </dd>
+            </dl>
+        </div>
+        <div class="mb-3">
+            <dl>
+                <dt>Estado Civil</dt>
+                <dd>
+                    <small class="text-muted">@Model.EstadoCivil.GetDisplayName()</small>
+                </dd>
+            </dl>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card border-secondary">
+            <div class="card-header bg-secondary text-light">
+                Foto&nbsp;<i class="fa fa-image"></i>
+            </div>
+            <div class="card-body">
+                <figure class="text-center figure d-block">
+                    <img src="@Url.Action("Image", new { id = Model.PersonId })" width="200" height="200" class="figure-img img-fluid" />
+                    <figcaption class="text-muted small figure-caption" title="Fecha Imagen">
+                        @(((DateTime?)(Model.ImageDate)).HasValue ? Model.ImageDate.Value.ToLongDateString() : "Sin Imagen")
+                    </figcaption>
+                </figure>
+            </div>
+        </div>
+    </div>
+</div>

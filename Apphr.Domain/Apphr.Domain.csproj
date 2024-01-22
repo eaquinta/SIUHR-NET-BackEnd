@@ -43,9 +43,33 @@
     <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.3\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.7\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -54,74 +78,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\AuditableEntity.cs" />
-    <Compile Include="Common\AutocompleteItem.cs" />
-    <Compile Include="Common\BaseDBF.cs" />
-    <Compile Include="Common\DBFReader.cs" />
-    <Compile Include="Common\LogIgnoreAttribute.cs" />
-    <Compile Include="EntitiesDBF\BodgaDBF.cs" />
-    <Compile Include="EntitiesDBF\ExistenciaBodega.cs" />
-    <Compile Include="EntitiesDBF\ExistenciaTotalDBF.cs" />
-    <Compile Include="EntitiesDBF\SolicitudDespachoDetalleDBF.cs" />
-    <Compile Include="EntitiesDBF\SolicitudDespachoDBF.cs" />
-    <Compile Include="EntitiesDBF\DestinoDBF.cs" />
-    <Compile Include="EntitiesDBF\MaterialDBF.cs" />
-    <Compile Include="EntitiesDBF\MovimientoInventarioDBF.cs" />
-    <Compile Include="EntitiesDBF\OrdenCompraDBF.cs" />
-    <Compile Include="EntitiesDBF\OrdenCompraDetalleDBF.cs" />
-    <Compile Include="EntitiesDBF\ProveedorDBF.cs" />
-    <Compile Include="EntitiesDBF\SolicitudPedidoDBF.cs" />
-    <Compile Include="EntitiesDBF\SolicitudPedidoDetalleDBF.cs" />
-    <Compile Include="Entities\AccessRule.cs" />
-    <Compile Include="Entities\AccessRulePermitAssignment.cs" />
-    <Compile Include="Entities\AccessRuleRoleAssignment.cs" />
-    <Compile Include="Entities\AjusteInventario.cs" />
-    <Compile Include="Entities\AppDefaults.cs" />
-    <Compile Include="Entities\Bodega.cs" />
-    <Compile Include="Entities\CierreInventario.cs" />
-    <Compile Include="Entities\Controlador.cs" />
-    <Compile Include="Entities\ControladorPermisos.cs" />
-    <Compile Include="Entities\ControladorRolAsignacion.cs" />
-    <Compile Include="Entities\AppRole.cs" />
-    <Compile Include="Entities\AppUser.cs" />
-    <Compile Include="Entities\AppUserClaim.cs" />
-    <Compile Include="Entities\AppUserLogin.cs" />
-    <Compile Include="Entities\AppUserRole.cs" />
-    <Compile Include="Entities\SolicitudMaterialSala.cs" />
-    <Compile Include="Entities\DespachoInventario.cs" />
-    <Compile Include="Entities\Destino.cs" />
-    <Compile Include="Entities\Empleado.cs" />
-    <Compile Include="Entities\Encargado.cs" />
-    <Compile Include="Entities\ExistenciaBodega.cs" />
-    <Compile Include="Entities\Facilitador.cs" />
-    <Compile Include="Entities\IngresoInventario.cs" />
-    <Compile Include="Entities\Material.cs" />
-    <Compile Include="Entities\ControlMaterialSala.cs" />
-    <Compile Include="Entities\Medico.cs" />
-    <Compile Include="Entities\MovimientosInventario.cs" />
-    <Compile Include="Entities\Paciente.cs" />
-    <Compile Include="Entities\PacienteEvento.cs" />
-    <Compile Include="Entities\PacienteEventoHistorial.cs" />
-    <Compile Include="Entities\PacienteEventoTraslado.cs" />
-    <Compile Include="Entities\Persona.cs" />
-    <Compile Include="Entities\Proveedor.cs" />
-    <Compile Include="Entities\RegistroMedico.cs" />
-    <Compile Include="Entities\Servicio.cs" />
-    <Compile Include="Entities\SolicitudDespacho.cs" />
-    <Compile Include="Entities\SoliciudPedido.cs" />
-    <Compile Include="Entities\TipoMovimientoInventario.cs" />
-    <Compile Include="Enums\Area.cs" />
-    <Compile Include="Enums\EstadoCivil.cs" />
-    <Compile Include="Enums\Etnia.cs" />
-    <Compile Include="Enums\Gender.cs" />
-    <Compile Include="Enums\PacienteEventoTipo.cs" />
-    <Compile Include="Enums\Permit.cs" />
-    <Compile Include="Enums\Religion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -27,7 +27,7 @@
     <!--BreadCrum-->
     <!-- Encablezado -->
     <h4 class="my-3">
-        @ViewBag.Title @ViewBag.Entidad @Html.Raw(ViewBag.Icon)
+        @ViewBag.Title @ViewBag.Entidad (@ViewBag.Anio) @Html.Raw(ViewBag.Icon)
         @*<a class="btn btn-success ms-3 float-end" href="@Url.Action("Create")">
             Adicionar <i class="fa fa-plus"></i>
         </a>
@@ -41,8 +41,8 @@
     @using (Html.BeginForm("IndexDBF", "Materiales", FormMethod.Get))
     {
         @Html.HiddenFor(x => x.F._Buscar)
-        <div class="card mb-3">
-            <div class="card-header">
+        <div class="card border-dark mb-3">
+            <div class="card-header background-siahr">
                 <a class="text-decoration-none" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
                     Filtro <i class="fa fa-filter"></i>
                 </a>
@@ -67,6 +67,7 @@
             <th style="width:65px;" class="text-center">Acción</th>
             <th>Código</th>
             <th>Decripción</th>
+            <th>Unidad</th>
         </tr>
 
         @if (Model.Result.Any())
@@ -75,19 +76,19 @@
             {
                 <tr>
                     <td class="text-center">
-                    @*<a href="@Url.Action("DetailsDBF",new { Area = "Inventario", id = item.CODIGO })"><i class="far fa-eye"></i></a>*@
-                    <div class="dropdown d-inline-block">
-                        <button class="btn btn-primary btn-sm" type="button" id="ddBtn" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="ddBtn">
-                            <li><a class="dropdown-item" href="@Url.Action("DetailsDBF",new { Area = "Inventario", id = item.CODIGO })"><i class="far fa-eye"></i> Ver</a></li>
-                            <li><a class="dropdown-item" data-id="@item.CODIGO" onclick="ImportMaterial(this);"><i class="fas fa-sync"></i> Importar</a></li>
-                        </ul>
-                    </div>
+                        <div class="dropdown d-inline-block">
+                            <button class="btn btn-primary btn-sm" type="button" id="ddBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="ddBtn">
+                                <li><a class="dropdown-item" href="@Url.Action("DetailsDBF",new { Area = "Inventario", id = item.CODIGO })"><i class="far fa-eye"></i> Ver</a></li>
+                                <li><a class="dropdown-item" data-id="@item.CODIGO" onclick="ImportMaterial(this);"><i class="fas fa-sync"></i> Importar</a></li>
+                            </ul>
+                        </div>
                     </td>
                     <td>@Html.DisplayFor(modelItem => item.CODIGO)</td>
                     <td>@Html.DisplayFor(modelItem => item.DESCRI)</td>                    
+                    <td>@Html.DisplayFor(modelItem => item.UNIMED)</td>                    
                 </tr>
             }
         }

@@ -1,0 +1,9 @@
+﻿@model Apphr.Application.Servicios.DTOs.ServicioDTOView
+<div class="row">
+    @Html.DisplayFor(x => x.Nombre, "StringD")
+    @*@Html.DisplayFor(x => x.Area.ToString(), "StringD")*@
+    <div class="mb-2">
+        @Html.LabelFor(x => x.Area, new { @class = "form-label", style = "font-weight:bold;" })
+        <input class="form-control" disabled="disabled" id="Area" name="Area" tabindex="-1" type="text" value="@Model.Area">
+    </div>   
+</div>

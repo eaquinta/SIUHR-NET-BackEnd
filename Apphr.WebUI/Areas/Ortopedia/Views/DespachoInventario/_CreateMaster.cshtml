@@ -1,0 +1,9 @@
+﻿@model Apphr.Application.Ortopedia.DespachosInventario.DTOs.DespachoInventarioDTOCreate
+
+@Html.AntiForgeryToken()
+@Html.HiddenFor(x => x.DespachoInventarioId)
+
+<div class="row">
+    <div class="col-md-12">@Html.EditorFor(x => x.Fecha)</div>
+    <div class="col-md-12">@Html.EditorFor(x => x.Observacion)</div>
+</div>

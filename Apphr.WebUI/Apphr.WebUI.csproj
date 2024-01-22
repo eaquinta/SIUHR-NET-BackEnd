@@ -57,6 +57,15 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="EPPlus, Version=6.2.6.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.6.2.6\lib\net462\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus.Interfaces, Version=6.1.1.0, Culture=neutral, PublicKeyToken=a694d7f3b0907a61, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.Interfaces.6.1.1\lib\net462\EPPlus.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus.System.Drawing, Version=6.1.1.0, Culture=neutral, PublicKeyToken=2308d35469c9bac0, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.System.Drawing.6.1.1\lib\net462\EPPlus.System.Drawing.dll</HintPath>
+    </Reference>
     <Reference Include="FluentValidation, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7de548da2fbae0f0, processorArchitecture=MSIL">
       <HintPath>..\packages\FluentValidation.9.5.4\lib\net461\FluentValidation.dll</HintPath>
     </Reference>
@@ -79,6 +88,9 @@
     <Reference Include="Microsoft.IdentityModel.Tokens, Version=6.25.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.IdentityModel.Tokens.6.25.0\lib\net472\Microsoft.IdentityModel.Tokens.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=1.4.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IO.RecyclableMemoryStream.1.4.1\lib\net46\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.IO.Redist, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.IO.Redist.6.0.0\lib\net472\Microsoft.IO.Redist.dll</HintPath>
     </Reference>
@@ -94,6 +106,7 @@
     <Reference Include="PagedList.Mvc, Version=4.5.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
       <HintPath>..\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="StarkbankEcdsa, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b2e6337a5d77bfbc, processorArchitecture=MSIL">
       <HintPath>..\packages\starkbank-ecdsa.1.3.3\lib\net452\StarkbankEcdsa.dll</HintPath>
     </Reference>
@@ -163,6 +176,7 @@
     <Reference Include="System.Text.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Text.Json.6.0.0\lib\net461\System.Text.Json.dll</HintPath>
     </Reference>
+    <Reference Include="System.Threading.Tasks" />
     <Reference Include="System.Threading.Tasks.Dataflow, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Dataflow.6.0.0\lib\net461\System.Threading.Tasks.Dataflow.dll</HintPath>
     </Reference>
@@ -290,6 +304,347 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Application\AccessRules\DTOs\AccessRuleDTOBase.cs" />
+    <Compile Include="Application\AccessRules\DTOs\AccessRuleDTOCreate.cs" />
+    <Compile Include="Application\AccessRules\DTOs\AccessRuleDTOEdit.cs" />
+    <Compile Include="Application\AccessRules\DTOs\AccessRuleDTOView.cs" />
+    <Compile Include="Application\AccessRules\MapperProfiles\AccessRuleProfile.cs" />
+    <Compile Include="Application\AjustesInventario\DTOs\AjusteInventarioDTOBase.cs" />
+    <Compile Include="Application\AjustesInventario\DTOs\AjusteInventarioDTOCEdit.cs" />
+    <Compile Include="Application\AjustesInventario\DTOs\AjusteInventarioDTOIxFilter.cs" />
+    <Compile Include="Application\AjustesInventario\Mapper\AjusteInventarioProfile.cs" />
+    <Compile Include="Application\AppAreas\DTOs\RootDTODashboard.cs" />
+    <Compile Include="Application\AppPermissions\DTOs\AppPermissionDTOBase.cs" />
+    <Compile Include="Application\AppPermissions\DTOs\AppPermissionDTOCEdit.cs" />
+    <Compile Include="Application\AppPermissions\DTOs\AppPermissionDTOView.cs" />
+    <Compile Include="Application\AppPermissions\DTOs\AppPermissionDTOAssign.cs" />
+    <Compile Include="Application\AppRoles\DTOs\AppRoleDTOBase.cs" />
+    <Compile Include="Application\AppRoles\DTOs\AppRoleDTOCEdit.cs" />
+    <Compile Include="Application\AppRoles\DTOs\AppRoleDTODataTable.cs" />
+    <Compile Include="Application\AppRoles\DTOs\AppRoleDTOPermit.cs" />
+    <Compile Include="Application\AppRoles\DTOs\AppRoleDTOView.cs" />
+    <Compile Include="Application\AutoMapperConfig.cs" />
+    <Compile Include="Application\Bodegas\DTOs\BodegaDTOACItem.cs" />
+    <Compile Include="Application\Bodegas\DTOs\BodegaDTOBase.cs" />
+    <Compile Include="Application\Bodegas\DTOs\BodegaDTOBaseDBF.cs" />
+    <Compile Include="Application\Bodegas\DTOs\BodegaDTOCEdit.cs" />
+    <Compile Include="Application\Bodegas\DTOs\BodegaDTOCEditDBF.cs" />
+    <Compile Include="Application\Bodegas\DTOs\BodegaDTOCreate.cs" />
+    <Compile Include="Application\Bodegas\DTOs\BodegaDTODelete.cs" />
+    <Compile Include="Application\Bodegas\DTOs\BodegaDTOIndex.cs" />
+    <Compile Include="Application\Bodegas\DTOs\BodegaDTOIndexDBF.cs" />
+    <Compile Include="Application\Bodegas\DTOs\BodegaDTOIxFilter.cs" />
+    <Compile Include="Application\Bodegas\DTOs\BodegaDTOIxFilterDBF.cs" />
+    <Compile Include="Application\Bodegas\DTOs\BodegaDTOIxGrid.cs" />
+    <Compile Include="Application\Bodegas\DTOs\BodegaDTOIxGridDBF.cs" />
+    <Compile Include="Application\Bodegas\DTOs\BodegaDTOView.cs" />
+    <Compile Include="Application\Bodegas\DTOs\BodegaDTOViewDBF.cs" />
+    <Compile Include="Application\Bodegas\Mapper\BodegaProfiles.cs" />
+    <Compile Include="Application\Common\AutocompleteItem.cs" />
+    <Compile Include="Application\Common\BreadCrum.cs" />
+    <Compile Include="Application\Common\Class1.cs" />
+    <Compile Include="Application\Common\DTOs\ActionResultListDTOBase.cs" />
+    <Compile Include="Application\Common\DTOs\ActionResultSingleDTOBase.cs" />
+    <Compile Include="Application\Common\DTOs\AuditableEntityDTOBase.cs" />
+    <Compile Include="Application\Common\DTOs\BaseDTODBF.cs" />
+    <Compile Include="Application\Common\DTOs\DTOAutocompleteItem.cs" />
+    <Compile Include="Application\Common\DTOs\DTOHojaGastoMaterial.cs" />
+    <Compile Include="Application\Common\DTOs\DTOIxFilterBodMat.cs" />
+    <Compile Include="Application\Common\DTOs\DTOJqueryDatatableParam.cs" />
+    <Compile Include="Application\Common\DTOs\DTOJsIxFilter.cs" />
+    <Compile Include="Application\Common\DTOs\DTOJsIxFilterDBF.cs" />
+    <Compile Include="Application\Common\DTOs\DTOSelect2.cs" />
+    <Compile Include="Application\Common\IxDataTable.cs" />
+    <Compile Include="Application\Common\IxFilter.cs" />
+    <Compile Include="Application\Common\LinkInfo.cs" />
+    <Compile Include="Application\Common\MaterialDTOAutocopleteItem.cs" />
+    <Compile Include="Application\Common\Models\Correlativo.cs" />
+    <Compile Include="Application\Common\Models\FieldPermission.cs" />
+    <Compile Include="Application\Common\Models\SADCPaciente.cs" />
+    <Compile Include="Application\Common\Models\TipoPrioridad.cs" />
+    <Compile Include="Application\Common\Models\ToastTemplate.cs" />
+    <Compile Include="Application\Common\Models\ViewConfig.cs" />
+    <Compile Include="Application\Common\Validations\NumericLessThanAttribute.cs" />
+    <Compile Include="Application\ControlAbastecimiento\DTOs\ControlAbastecimientoDTOEgresoDist.cs" />
+    <Compile Include="Application\ControlAbastecimiento\DTOs\ControlAbastecimientoDTOExistenciaInicial.cs" />
+    <Compile Include="Application\ControlAbastecimiento\DTOs\ControlAbastecimientoDTOIndex.cs" />
+    <Compile Include="Application\ControlAbastecimiento\DTOs\ControlAbastecimientoDTOIxFilter.cs" />
+    <Compile Include="Application\ControlAbastecimiento\DTOs\ControlAbastecimientoDTOListaEgresos.cs" />
+    <Compile Include="Application\ControlAbastecimiento\DTOs\ControlAbastecimientoDTOListaIngresos.cs" />
+    <Compile Include="Application\ControlAbastecimiento\DTOs\ControlAbastecimientoDTOMaterialesIxFilter.cs" />
+    <Compile Include="Application\ControlAbastecimiento\DTOs\ControlAbastecimientoDTORptExistencias.cs" />
+    <Compile Include="Application\ControlAbastecimiento\DTOs\ControllAbastecimientoDTOExistencias.cs" />
+    <Compile Include="Application\ControlAbastecimiento\DTOs\InicioAbastecimientoDTOIndex.cs" />
+    <Compile Include="Application\Controladores\DTOs\ControladorDTOBase.cs" />
+    <Compile Include="Application\Controladores\DTOs\ControladorDTOCEdit.cs" />
+    <Compile Include="Application\Controladores\DTOs\ControladorDTOCreate.cs" />
+    <Compile Include="Application\Controladores\DTOs\ControladorDTOIxFilter.cs" />
+    <Compile Include="Application\Controladores\DTOs\ControladorDTOIxGrid.cs" />
+    <Compile Include="Application\Controladores\DTOs\ControladorDTOView.cs" />
+    <Compile Include="Application\Controladores\DTOs\ControlladorDTOEdit.cs" />
+    <Compile Include="Application\Controladores\MapperProfiles\ControladorProfile.cs" />
+    <Compile Include="Application\ControlMaterialesSala\ControlMaterialSalaDTORpt.cs" />
+    <Compile Include="Application\ControlMovimientos\DTOs\ControlMovimientoDTOIndex.cs" />
+    <Compile Include="Application\ControlMovimientos\DTOs\ControlMovimientosDTOIxFilter.cs" />
+    <Compile Include="Application\DespachosInventario\DTOs\DespachoInventarioDTOBase.cs" />
+    <Compile Include="Application\DespachosInventario\DTOs\DespachoInventarioDTOCEdit.cs" />
+    <Compile Include="Application\DespachosInventario\DTOs\DespachoInventarioDTOCreate.cs" />
+    <Compile Include="Application\DespachosInventario\DTOs\DespachoInventarioDTODelete.cs" />
+    <Compile Include="Application\DespachosInventario\DTOs\DespachoInventarioDTODetails.cs" />
+    <Compile Include="Application\DespachosInventario\DTOs\DespachoInventarioDTOEditDF.cs" />
+    <Compile Include="Application\DespachosInventario\DTOs\DespachoInventarioDTOIndex.cs" />
+    <Compile Include="Application\DespachosInventario\DTOs\DespachoInventarioDTOIxFilter.cs" />
+    <Compile Include="Application\DespachosInventario\DTOs\DespachoInventarioDTOIxRow.cs" />
+    <Compile Include="Application\DespachosInventario\Mapper\DespachoInventarioProfile.cs" />
+    <Compile Include="Application\Destinos\DTOs\DestinoDTOBase.cs" />
+    <Compile Include="Application\Destinos\DTOs\DestinoDTOCreate.cs" />
+    <Compile Include="Application\Destinos\DTOs\DestinoDTODBF.cs" />
+    <Compile Include="Application\Destinos\DTOs\DestinoDTODelete.cs" />
+    <Compile Include="Application\Destinos\DTOs\DestinoDTODetails.cs" />
+    <Compile Include="Application\Destinos\DTOs\DestinoDTOEdit.cs" />
+    <Compile Include="Application\Destinos\DTOs\DestinoDTOIndex.cs" />
+    <Compile Include="Application\Destinos\DTOs\DestinoDTOIndexDBF.cs" />
+    <Compile Include="Application\Destinos\DTOs\DestinoDTOIxFilter.cs" />
+    <Compile Include="Application\Destinos\DTOs\DestinoDTOIxRow.cs" />
+    <Compile Include="Application\Destinos\Mapper\DestinoProfile.cs" />
+    <Compile Include="Application\EgresosAbastecimiento\DTOs\EgresoAbastecimientoDTOBase.cs" />
+    <Compile Include="Application\EgresosInventario\DTOs\EgresoInventarioDTOBase.cs" />
+    <Compile Include="Application\Encargados\DTOs\EncargadoDTOBase.cs" />
+    <Compile Include="Application\Encargados\DTOs\EncargadoDTOCreate.cs" />
+    <Compile Include="Application\Encargados\DTOs\EncargadoDTOEdit.cs" />
+    <Compile Include="Application\Encargados\DTOs\EncargadoDTOView.cs" />
+    <Compile Include="Application\Encargados\MapperProfiles\EncargadoProfile.cs" />
+    <Compile Include="Application\ExistenciasBodega\DTOs\ExistenciaBodegaDTOBase.cs" />
+    <Compile Include="Application\ExistenciasBodega\DTOs\ExistenciaBodegaDTOIndex.cs" />
+    <Compile Include="Application\ExistenciasBodega\DTOs\ExistenciaBodegaDTOIxFilter.cs" />
+    <Compile Include="Application\ExistenciasBodega\Mapper\ExistenciaBodegaProfile.cs" />
+    <Compile Include="Application\Facilitadores\DTOs\FacilitadorDTOBase.cs" />
+    <Compile Include="Application\Facilitadores\DTOs\FacilitadorDTOBuscarPersona.cs" />
+    <Compile Include="Application\Facilitadores\DTOs\FacilitadorDTOCreate.cs" />
+    <Compile Include="Application\Facilitadores\DTOs\FacilitadorDTODelete.cs" />
+    <Compile Include="Application\Facilitadores\DTOs\FacilitadorDTODetails.cs" />
+    <Compile Include="Application\Facilitadores\DTOs\FacilitadorDTOEdit.cs" />
+    <Compile Include="Application\Facilitadores\MapperProfiles\FacilitadorProfile.cs" />
+    <Compile Include="Application\IngresosAbastecimiento\DTOs\IngresoAbastecimientoDTOBase.cs" />
+    <Compile Include="Application\IngresosInventario\DTOs\IngresoInventarioDTOBase.cs" />
+    <Compile Include="Application\IngresosInventario\DTOs\IngresoInventarioDTOCEdit.cs" />
+    <Compile Include="Application\IngresosInventario\DTOs\IngresoInventarioDTODetails.cs" />
+    <Compile Include="Application\IngresosInventario\DTOs\IngresoInventarioDTOIndex.cs" />
+    <Compile Include="Application\IngresosInventario\DTOs\IngresoInventarioDTOIxRow.cs" />
+    <Compile Include="Application\IngresosInventario\Mapper\IngresoInventarioProfile.cs" />
+    <Compile Include="Application\InicialAbastecimiento\DTOs\InicialAbastecimientoDTOBase.cs" />
+    <Compile Include="Application\InicialAbastecimiento\DTOs\InicialAbastecimientoDTOCEdit.cs" />
+    <Compile Include="Application\Kardex\DTOs\KardexDTOBase.cs" />
+    <Compile Include="Application\Kardex\DTOs\KardexDTOCierre.cs" />
+    <Compile Include="Application\Kardex\DTOs\KardexDTOIxFilter.cs" />
+    <Compile Include="Application\Kardex\DTOs\KardexDTOKardexMaterial.cs" />
+    <Compile Include="Application\Kardex\DTOs\KardexDTOResumenMovimiento.cs" />
+    <Compile Include="Application\Kardex\DTOs\KardexDTOrptKardex.cs" />
+    <Compile Include="Application\Kardex\DTOs\KardexDTOSaldo.cs" />
+    <Compile Include="Application\Kardex\Mapper\KardexProfile.cs" />
+    <Compile Include="Application\Materiales\DTOs\MaterialDTOBase.cs" />
+    <Compile Include="Application\Materiales\DTOs\MaterialDTOBaseExt.cs" />
+    <Compile Include="Application\Materiales\DTOs\MaterialDTOCEdit.cs" />
+    <Compile Include="Application\Materiales\DTOs\MaterialDTOCreate.cs" />
+    <Compile Include="Application\Materiales\DTOs\MaterialDTODBF.cs" />
+    <Compile Include="Application\Materiales\DTOs\MaterialDTODelete.cs" />
+    <Compile Include="Application\Materiales\DTOs\MaterialDTOEdit.cs" />
+    <Compile Include="Application\Materiales\DTOs\MaterialDTOIndex.cs" />
+    <Compile Include="Application\Materiales\DTOs\MaterialDTOIndexDBF.cs" />
+    <Compile Include="Application\Materiales\DTOs\MaterialDTOIxFilter.cs" />
+    <Compile Include="Application\Materiales\DTOs\MaterialDTOIxRow.cs" />
+    <Compile Include="Application\Materiales\DTOs\MaterialDTOView.cs" />
+    <Compile Include="Application\Materiales\Mapper\MaterialProfile.cs" />
+    <Compile Include="Application\Medicos\DTOs\MedicoDTOBase.cs" />
+    <Compile Include="Application\Movimientos\DTOs\ExistenciaDBFDTOIxFilter.cs" />
+    <Compile Include="Application\Movimientos\DTOs\MovimientoDTOIxFilter.cs" />
+    <Compile Include="Application\OrdenesCompra\DTOs\OrdenCompraDetalleDTOBaseDBF.cs" />
+    <Compile Include="Application\OrdenesCompra\DTOs\OrdenCompraDetalleDTODetailsDBF.cs" />
+    <Compile Include="Application\OrdenesCompra\DTOs\OrdenCompraDTOBase.cs" />
+    <Compile Include="Application\OrdenesCompra\DTOs\OrdenCompraDTOBaseDBF.cs" />
+    <Compile Include="Application\OrdenesCompra\DTOs\OrdenCompraDTODetails.cs" />
+    <Compile Include="Application\OrdenesCompra\DTOs\OrdenCompraDTODetailsDBF.cs" />
+    <Compile Include="Application\OrdenesCompra\DTOs\OrdenCompraDTOIxFilter.cs" />
+    <Compile Include="Application\OrdenesCompra\Profiles\OrdenCompraProfile.cs" />
+    <Compile Include="Application\Ortopedia\AjustesInventario\DTOs\AjusteInventarioDTOBase.cs" />
+    <Compile Include="Application\Ortopedia\AjustesInventario\DTOs\AjusteInventarioDTOCEdit.cs" />
+    <Compile Include="Application\Ortopedia\AjustesInventario\DTOs\AjusteInventarioDTOCEditChild.cs" />
+    <Compile Include="Application\Ortopedia\AjustesInventario\DTOs\AjusteInventarioDTOCEditGrid.cs" />
+    <Compile Include="Application\Ortopedia\AjustesInventario\DTOs\AjusteInventarioDTOCreate.cs" />
+    <Compile Include="Application\Ortopedia\AjustesInventario\DTOs\AjusteInventarioDTOIxGrid.cs" />
+    <Compile Include="Application\Ortopedia\AjustesInventario\DTOs\AjusteInventarioDTOJsIxFilter.cs" />
+    <Compile Include="Application\Ortopedia\AjustesInventario\DTOs\AjusteInventarioDTOViewChild.cs" />
+    <Compile Include="Application\Ortopedia\AjustesInventario\DTOs\AjusteInventarioDTOViewMaster.cs" />
+    <Compile Include="Application\Ortopedia\Cirujano\DTOs\CirujanoDTOBase.cs" />
+    <Compile Include="Application\Ortopedia\Cirujano\DTOs\CirujanoDTOCEdit.cs" />
+    <Compile Include="Application\Ortopedia\Cirujano\DTOs\CirujanoDTOCreate.cs" />
+    <Compile Include="Application\Ortopedia\Cirujano\DTOs\CirujanoDTOIxGrid.cs" />
+    <Compile Include="Application\Ortopedia\Cirujano\DTOs\CirujanoDTOJsIxFilter.cs" />
+    <Compile Include="Application\Ortopedia\Cirujano\DTOs\CirujanoDTOView.cs" />
+    <Compile Include="Application\Ortopedia\Common\DTOOrdenCompraMaterialFull.cs" />
+    <Compile Include="Application\Ortopedia\Consultas\DTOs\ConsultaDTOBaseIxFilter.cs" />
+    <Compile Include="Application\Ortopedia\Consultas\DTOs\ConsultasDTODevolucionesGrid.cs" />
+    <Compile Include="Application\Ortopedia\Consultas\DTOs\ConsultasDTODevolucionesIxFilter.cs" />
+    <Compile Include="Application\Ortopedia\Consultas\DTOs\ConsultasDTOEgresoGrid.cs" />
+    <Compile Include="Application\Ortopedia\Consultas\DTOs\ConsultasDTOEgresoIxFilter.cs" />
+    <Compile Include="Application\Ortopedia\Consultas\DTOs\ConsultasDTOIngresoGrid.cs" />
+    <Compile Include="Application\Ortopedia\Consultas\DTOs\ConsultasDTOIngresoIxFilter.cs" />
+    <Compile Include="Application\Ortopedia\Consultas\DTOs\ConsultasDTOMovimientosGrid.cs" />
+    <Compile Include="Application\Ortopedia\Consultas\DTOs\ConsultasDTOMovimientosIxFilter.cs" />
+    <Compile Include="Application\Ortopedia\Consultas\DTOs\ConsultasDTOSaldoGridMaterial.cs" />
+    <Compile Include="Application\Ortopedia\Consultas\DTOs\ConsultasDTOSaldoGridProveedor.cs" />
+    <Compile Include="Application\Ortopedia\Consultas\DTOs\ConsultasDTOSaldoIxFilter.cs" />
+    <Compile Include="Application\Ortopedia\DespachosInventario\DTOs\DespachoInventarioDTOBase.cs" />
+    <Compile Include="Application\Ortopedia\DespachosInventario\DTOs\DespachoInventarioDTOCEdit.cs" />
+    <Compile Include="Application\Ortopedia\DespachosInventario\DTOs\DespachoInventarioDTOCEditChild.cs" />
+    <Compile Include="Application\Ortopedia\DespachosInventario\DTOs\DespachoInventarioDTOCEditGrid.cs" />
+    <Compile Include="Application\Ortopedia\DespachosInventario\DTOs\DespachoInventarioDTOCreate.cs" />
+    <Compile Include="Application\Ortopedia\DespachosInventario\DTOs\DespachoInventarioDTOIxGrid.cs" />
+    <Compile Include="Application\Ortopedia\DespachosInventario\DTOs\DespachoInventarioDTOJsIxFilter.cs" />
+    <Compile Include="Application\Ortopedia\DespachosInventario\DTOs\DespachoInventarioDTOViewChild.cs" />
+    <Compile Include="Application\Ortopedia\DespachosInventario\DTOs\DespachoInventarioDTOViewMaster.cs" />
+    <Compile Include="Application\Ortopedia\Devolucion\DTOs\DevolucionDTOBase.cs" />
+    <Compile Include="Application\Ortopedia\Devolucion\DTOs\DevolucionDTOCEdit.cs" />
+    <Compile Include="Application\Ortopedia\Devolucion\DTOs\DevolucionDTOCEditChild.cs" />
+    <Compile Include="Application\Ortopedia\Devolucion\DTOs\DevolucionDTOCEditGrid.cs" />
+    <Compile Include="Application\Ortopedia\Devolucion\DTOs\DevolucionDTOCreate.cs" />
+    <Compile Include="Application\Ortopedia\Devolucion\DTOs\DevolucionDTOJsIxFilter.cs" />
+    <Compile Include="Application\Ortopedia\Devolucion\DTOs\DevolucionDTOReporte.cs" />
+    <Compile Include="Application\Ortopedia\Devolucion\DTOs\DevolucionDTOViewMaster.cs" />
+    <Compile Include="Application\Ortopedia\HojaGasto\DTOs\HojaGastoDTOBase.cs" />
+    <Compile Include="Application\Ortopedia\HojaGasto\DTOs\HojaGastoDTOCEditChild.cs" />
+    <Compile Include="Application\Ortopedia\HojaGasto\DTOs\HojaGastoDTOCEditGrid.cs" />
+    <Compile Include="Application\Ortopedia\HojaGasto\DTOs\HojaGastoDTOCEditMaster.cs" />
+    <Compile Include="Application\Ortopedia\HojaGasto\DTOs\HojaGastoDTOCreate.cs" />
+    <Compile Include="Application\Ortopedia\HojaGasto\DTOs\HojaGastoDTOIxFilter.cs" />
+    <Compile Include="Application\Ortopedia\HojaGasto\DTOs\HojaGastoDTOIxGrid.cs" />
+    <Compile Include="Application\Ortopedia\HojaGasto\DTOs\HojaGastoDTOSelect.cs" />
+    <Compile Include="Application\Ortopedia\HojaGasto\DTOs\HojaGastoDTOSelectSingle.cs" />
+    <Compile Include="Application\Ortopedia\HojaGasto\DTOs\HojaGastoDTOViewChild.cs" />
+    <Compile Include="Application\Ortopedia\HojaGasto\DTOs\HojaGastoDTOViewMaster.cs" />
+    <Compile Include="Application\Ortopedia\IngresosInventario\DTOs\IngresoInventarioDTOBase.cs" />
+    <Compile Include="Application\Ortopedia\IngresosInventario\DTOs\IngresoInventarioDTOCEdit.cs" />
+    <Compile Include="Application\Ortopedia\IngresosInventario\DTOs\IngresoInventarioDTOCEditChild.cs" />
+    <Compile Include="Application\Ortopedia\IngresosInventario\DTOs\IngresoInventarioDTOCEditGrid.cs" />
+    <Compile Include="Application\Ortopedia\IngresosInventario\DTOs\IngresoInventarioDTOCreate.cs" />
+    <Compile Include="Application\Ortopedia\IngresosInventario\DTOs\IngresoInventarioDTOIxGrid.cs" />
+    <Compile Include="Application\Ortopedia\IngresosInventario\DTOs\IngresoInventarioDTOJsIxFilter.cs" />
+    <Compile Include="Application\Ortopedia\IngresosInventario\DTOs\IngresoInventarioDTOViewChild.cs" />
+    <Compile Include="Application\Ortopedia\IngresosInventario\DTOs\IngresoInventarioDTOViewMaster.cs" />
+    <Compile Include="Application\Ortopedia\OrdenesCompra\DTOs\OrdenCompraDTOAutocompleteItem.cs" />
+    <Compile Include="Application\Ortopedia\OrdenesCompra\DTOs\OrdenCompraDTOBase.cs" />
+    <Compile Include="Application\Ortopedia\OrdenesCompra\DTOs\OrdenCompraDTOCEdit.cs" />
+    <Compile Include="Application\Ortopedia\OrdenesCompra\DTOs\OrdenCompraDTOCEditChild.cs" />
+    <Compile Include="Application\Ortopedia\OrdenesCompra\DTOs\OrdenCompraDTOCreate.cs" />
+    <Compile Include="Application\Ortopedia\OrdenesCompra\DTOs\OrdenCompraDTODespachoDistribucion.cs" />
+    <Compile Include="Application\Ortopedia\OrdenesCompra\DTOs\OrdenCompraDTOIxGrid.cs" />
+    <Compile Include="Application\Ortopedia\OrdenesCompra\DTOs\OrdenCompraDTOJsIxFilter.cs" />
+    <Compile Include="Application\Ortopedia\OrdenesCompra\DTOs\OrdenCompraDTOStatus.cs" />
+    <Compile Include="Application\Ortopedia\OrdenesCompra\DTOs\OrdenCompraDTOView.cs" />
+    <Compile Include="Application\Ortopedia\OrdenesCompra\DTOs\OrdenCompraDTOViewChild.cs" />
+    <Compile Include="Application\Ortopedia\ORTMovimientos\DTOs\MovimientoDTOBase.cs" />
+    <Compile Include="Application\Ortopedia\ORTMovimientos\DTOs\MovimientoDTOExistencia.cs" />
+    <Compile Include="Application\Ortopedia\ORTMovimientos\DTOs\MovimientoDTOExistenciaMaterial.cs" />
+    <Compile Include="Application\Ortopedia\ORTMovimientos\DTOs\MovimientoDTOExistenciaProveedor.cs" />
+    <Compile Include="Application\Ortopedia\ORTMovimientos\DTOs\MovimientoDTOJsGrid.cs" />
+    <Compile Include="Application\Ortopedia\SolicitudesPedido\DTOs\SolicitudPedidoDTOAutocompleteItem.cs" />
+    <Compile Include="Application\Ortopedia\SolicitudesPedido\DTOs\SolicitudPedidoDTOBase.cs" />
+    <Compile Include="Application\Ortopedia\SolicitudesPedido\DTOs\SolicitudPedidoDTOCEditChild.cs" />
+    <Compile Include="Application\Ortopedia\SolicitudesPedido\DTOs\SolicitudPedidoDTOCreate.cs" />
+    <Compile Include="Application\Ortopedia\SolicitudesPedido\DTOs\SolicitudPedidoDTOEdit.cs" />
+    <Compile Include="Application\Ortopedia\SolicitudesPedido\DTOs\SolicitudPedidoDTOIxGrid.cs" />
+    <Compile Include="Application\Ortopedia\SolicitudesPedido\DTOs\SolicitudPedidoDTOJsIxFilter.cs" />
+    <Compile Include="Application\Ortopedia\SolicitudesPedido\DTOs\SolicitudPedidoDTOView.cs" />
+    <Compile Include="Application\PacienteEventos\DTOs\PacienteEventoDTOBase.cs" />
+    <Compile Include="Application\PacienteEventos\DTOs\PacienteEventoDTOCreate.cs" />
+    <Compile Include="Application\PacienteEventos\DTOs\PacienteEventoDTODetail.cs" />
+    <Compile Include="Application\PacienteEventos\DTOs\PacienteEventoDTODiagnostico.cs" />
+    <Compile Include="Application\PacienteEventos\DTOs\PacienteEventoDTOEdit.cs" />
+    <Compile Include="Application\PacienteEventos\DTOs\PacienteEventoDTOEgreso.cs" />
+    <Compile Include="Application\PacienteEventos\DTOs\PacienteEventoDTOIndex.cs" />
+    <Compile Include="Application\PacienteEventos\DTOs\PacienteEventoDTOIxFilter.cs" />
+    <Compile Include="Application\PacienteEventos\DTOs\PacienteEventoDTOTraslado.cs" />
+    <Compile Include="Application\PacienteEventos\MapperProfiles\PacienteEventoProfiles.cs" />
+    <Compile Include="Application\Pacientes\DTOs\PacienteDTOBase.cs" />
+    <Compile Include="Application\Pacientes\Profiles\PacienteProfile.cs" />
+    <Compile Include="Application\Personas\Commands\PersonaValidator.cs" />
+    <Compile Include="Application\Personas\DTOs\PersonaDTOBase.cs" />
+    <Compile Include="Application\Personas\DTOs\PersonaDTOCEdit.cs" />
+    <Compile Include="Application\Personas\DTOs\PersonaDTOCreate.cs" />
+    <Compile Include="Application\Personas\DTOs\PersonaDTOCreateUser.cs" />
+    <Compile Include="Application\Personas\DTOs\PersonaDTOEdit.cs" />
+    <Compile Include="Application\Personas\DTOs\PersonaDTOEmailConfirm.cs" />
+    <Compile Include="Application\Personas\DTOs\PersonaDTOFiltro.cs" />
+    <Compile Include="Application\Personas\DTOs\PersonaDTOView.cs" />
+    <Compile Include="Application\Personas\MapperProfiles\PersonaProfile.cs" />
+    <Compile Include="Application\Proveedores\Commands\ProveedorValidator.cs" />
+    <Compile Include="Application\Proveedores\DTOs\ProveedorDTOACItem.cs" />
+    <Compile Include="Application\Proveedores\DTOs\ProveedorDTOBase.cs" />
+    <Compile Include="Application\Proveedores\DTOs\ProveedorDTOCEdit.cs" />
+    <Compile Include="Application\Proveedores\DTOs\ProveedorDTOCreate.cs" />
+    <Compile Include="Application\Proveedores\DTOs\ProveedorDTOIndex.cs" />
+    <Compile Include="Application\Proveedores\DTOs\ProveedorDTOIndexDBF.cs" />
+    <Compile Include="Application\Proveedores\DTOs\ProveedorDTOIxFilter.cs" />
+    <Compile Include="Application\Proveedores\DTOs\ProveedorDTOIxGrid.cs" />
+    <Compile Include="Application\Proveedores\DTOs\ProveedorDTOReport.cs" />
+    <Compile Include="Application\Proveedores\DTOs\ProveedorDTOView.cs" />
+    <Compile Include="Application\Proveedores\MapperProfiles\ProveedorProfile.cs" />
+    <Compile Include="Application\RegistrosMedicos\DTOs\RegistroMedicoDTOBase.cs" />
+    <Compile Include="Application\RegistrosMedicos\DTOs\RegistroMedicoDTOCreate.cs" />
+    <Compile Include="Application\RegistrosMedicos\DTOs\RegistroMedicoDTOEdit.cs" />
+    <Compile Include="Application\RegistrosMedicos\DTOs\RegistroMedicoDTOView.cs" />
+    <Compile Include="Application\RegistrosMedicos\MapperProfiles\RegistroMedicoProfile.cs" />
+    <Compile Include="Application\Reports\Inventario\ReporteExistencias.cs" />
+    <Compile Include="Application\Roles\DTOs\AppRoleDTOBase.cs" />
+    <Compile Include="Application\Roles\DTOs\AppRoleDTOCreate.cs" />
+    <Compile Include="Application\Roles\DTOs\AppRoleDTODetails.cs" />
+    <Compile Include="Application\Roles\DTOs\AppRoleDTOEdit.cs" />
+    <Compile Include="Application\Roles\MapperProfiles\AppRoleMapperProfile.cs" />
+    <Compile Include="Application\Servicios\DTOs\ServicioDTOBase.cs" />
+    <Compile Include="Application\Servicios\DTOs\ServicioDTOCEdit.cs" />
+    <Compile Include="Application\Servicios\DTOs\ServicioDTOIxFilter.cs" />
+    <Compile Include="Application\Servicios\DTOs\ServicioDTOIxGrid.cs" />
+    <Compile Include="Application\Servicios\DTOs\ServicioDTOView.cs" />
+    <Compile Include="Application\Servicios\MapperProfiles\ServicioProfiles.cs" />
+    <Compile Include="Application\SiahadDespacho\DTOs\SiahadDespachoDTOCreate.cs" />
+    <Compile Include="Application\SiahadIngreso\DTOs\SiahadIngresoDTOCreate.cs" />
+    <Compile Include="Application\SolicitudesDespachos\DTOs\SolicitudDespachoDetalleDTOBaseDBF.cs" />
+    <Compile Include="Application\SolicitudesDespachos\DTOs\SolicitudDespachoDTOBase.cs" />
+    <Compile Include="Application\SolicitudesDespachos\DTOs\SolicitudDespachoDTOBaseDBF.cs" />
+    <Compile Include="Application\SolicitudesDespachos\DTOs\SolicitudDespachoDTOCEdit.cs" />
+    <Compile Include="Application\SolicitudesDespachos\DTOs\SolicitudDespachoDTOCEditMS.cs" />
+    <Compile Include="Application\SolicitudesDespachos\DTOs\SolicitudDespachoDTODetails.cs" />
+    <Compile Include="Application\SolicitudesDespachos\DTOs\SolicitudDespachoDTODetailsDBF.cs" />
+    <Compile Include="Application\SolicitudesDespachos\DTOs\SolicitudDespachoDTOIndex.cs" />
+    <Compile Include="Application\SolicitudesDespachos\DTOs\SolicitudDespachoDTOIxFilter.cs" />
+    <Compile Include="Application\SolicitudesDespachos\DTOs\SolicitudDespachoDTORpt.cs" />
+    <Compile Include="Application\SolicitudesDespachos\Mapper\SolicitudDespachoProfile.cs" />
+    <Compile Include="Application\SolicitudesPedido\DTOs\SolicitudPedidoDTOBase.cs" />
+    <Compile Include="Application\SolicitudesPedido\DTOs\SolicitudPedidoDTOCEdit.cs" />
+    <Compile Include="Application\SolicitudesPedido\DTOs\SolicitudPedidoDTODetails.cs" />
+    <Compile Include="Application\SolicitudesPedido\DTOs\SolicitudPedidoDTODetailsDBF.cs" />
+    <Compile Include="Application\SolicitudesPedido\DTOs\SolicitudPedidoDTOIndex.cs" />
+    <Compile Include="Application\SolicitudesPedido\DTOs\SolicitudPedidoDTOIndexDBF.cs" />
+    <Compile Include="Application\SolicitudesPedido\DTOs\SolicitudPedidoDTOIxDBFFilter.cs" />
+    <Compile Include="Application\SolicitudesPedido\DTOs\SolicitudPedidoDTORpt.cs" />
+    <Compile Include="Application\SolicitudesPedido\Mapper\SolicitudPedidoProfile.cs" />
+    <Compile Include="Application\SolicitudMaterialesSala\DTOs\SolicitudMaterialSalaDTOBase.cs" />
+    <Compile Include="Application\SolicitudMaterialesSala\DTOs\SolicitudMaterialSalaDTOCEdit.cs" />
+    <Compile Include="Application\SolicitudMaterialesSala\DTOs\SolicitudMaterialSalaDTODetails.cs" />
+    <Compile Include="Application\SolicitudMaterialesSala\DTOs\SolicitudMaterialSalaDTOIndex.cs" />
+    <Compile Include="Application\SolicitudMaterialesSala\DTOs\SolicitudMaterialSalaDTOIxFilter.cs" />
+    <Compile Include="Application\SolicitudMaterialesSala\DTOs\SolicitudMaterialSalaDTORpt.cs" />
+    <Compile Include="Application\SolicitudMaterialesSala\Mapper\ControlMaterialSalaProfile.cs" />
+    <Compile Include="Application\Usuarios\DTOs\UsuarioDTOAsignar.cs" />
+    <Compile Include="Application\Usuarios\DTOs\UsuarioDTOBase.cs" />
+    <Compile Include="Application\Usuarios\DTOs\UsuarioDTOCreate.cs" />
+    <Compile Include="Application\Usuarios\DTOs\UsuarioDTODetails.cs" />
+    <Compile Include="Application\Usuarios\DTOs\UsuarioDTOEdit.cs" />
+    <Compile Include="Application\Usuarios\DTOs\UsuarioDTOIndex.cs" />
+    <Compile Include="Application\Usuarios\DTOs\UsuarioDTOIxFilter.cs" />
+    <Compile Include="Application\Usuarios\DTOs\UsuarioDTOIxRow.cs" />
+    <Compile Include="Application\Usuarios\DTOs\UsuarioDTOSetPassword.cs" />
+    <Compile Include="Application\Usuarios\MapperProfiles\UsuarioProfiles.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
@@ -298,6 +653,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AccessRuleController.cs" />
+    <Compile Include="Areas\Admin\Controllers\AppPermissionController.cs" />
     <Compile Include="Areas\Admin\Controllers\ControladoresController.cs" />
     <Compile Include="Areas\Admin\Controllers\AppRoleController.cs" />
     <Compile Include="Areas\Admision\AdmisionAreaRegistration.cs" />
@@ -309,6 +665,10 @@
     <Compile Include="Areas\General\GeneralAreaRegistration.cs" />
     <Compile Include="Areas\Inventario\Controllers\AjustesInventarioController.cs" />
     <Compile Include="Areas\Inventario\Controllers\BodegasController.cs" />
+    <Compile Include="Areas\Inventario\Controllers\ControlAbastecimientoController.cs" />
+    <Compile Include="Areas\Inventario\Controllers\MovimientosController.cs" />
+    <Compile Include="Areas\Inventario\Controllers\SiahadController.cs" />
+    <Compile Include="Areas\Inventario\Controllers\SiahrController.cs" />
     <Compile Include="Areas\Inventario\Controllers\SolicitudMaterialesSalaController.cs" />
     <Compile Include="Areas\Inventario\Controllers\DespachosInventarioController.cs" />
     <Compile Include="Areas\Inventario\Controllers\DestinosController.cs" />
@@ -329,10 +689,52 @@
     <Compile Include="Areas\Nutricion\Controllers\HomeController.cs" />
     <Compile Include="Areas\General\Controllers\ServiciosController.cs" />
     <Compile Include="Areas\Nutricion\NutricionAreaRegistration.cs" />
+    <Compile Include="Areas\Ortopedia\Controllers\AjusteInventarioController.cs" />
+    <Compile Include="Areas\Ortopedia\Controllers\CirujanoController.cs" />
+    <Compile Include="Areas\Ortopedia\Controllers\ConsultasController.cs" />
+    <Compile Include="Areas\Ortopedia\Controllers\DespachoInventarioController.cs" />
+    <Compile Include="Areas\Ortopedia\Controllers\DevolucionController.cs" />
+    <Compile Include="Areas\Ortopedia\Controllers\HojasGastoController.cs" />
+    <Compile Include="Areas\Ortopedia\Controllers\IngresoInventarioController.cs" />
+    <Compile Include="Areas\Ortopedia\Controllers\OrdenCompraController.cs" />
+    <Compile Include="Areas\Ortopedia\Controllers\PacienteController.cs" />
+    <Compile Include="Areas\Ortopedia\Controllers\SolicitudPedidoController.cs" />
+    <Compile Include="Areas\Ortopedia\OrtopediaAreaRegistration.cs" />
     <Compile Include="Common\Utilidades.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AuditLogController.cs" />
     <Compile Include="Controllers\DbUoWController.cs" />
+    <Compile Include="Domain\Common\AuditableEntity.cs" />
+    <Compile Include="Domain\Common\AutocompleteItem.cs" />
+    <Compile Include="Domain\Common\BaseDBF.cs" />
+    <Compile Include="Domain\Common\DBFReader.cs" />
+    <Compile Include="Domain\Common\LogIgnoreAttribute.cs" />
+    <Compile Include="Domain\Common\ValidationAttributes\ExcludeCharAttribute.cs" />
+    <Compile Include="Domain\Common\ValidationAttributes\IncludeOnlyCharAttribute.cs" />
+    <Compile Include="Domain\DTOs\DTOMovimientosInventarioDBF.cs" />
+    <Compile Include="Domain\EntitiesDBF\BodgaDBF.cs" />
+    <Compile Include="Domain\EntitiesDBF\DestinoDBF.cs" />
+    <Compile Include="Domain\EntitiesDBF\ExistenciaBodega.cs" />
+    <Compile Include="Domain\EntitiesDBF\ExistenciaTotalDBF.cs" />
+    <Compile Include="Domain\EntitiesDBF\MaterialDBF.cs" />
+    <Compile Include="Domain\EntitiesDBF\MovimientoInventarioDBF.cs" />
+    <Compile Include="Domain\EntitiesDBF\OrdenCompraDBF.cs" />
+    <Compile Include="Domain\EntitiesDBF\OrdenCompraDetalleDBF.cs" />
+    <Compile Include="Domain\EntitiesDBF\ProveedorDBF.cs" />
+    <Compile Include="Domain\EntitiesDBF\ReporteExistenciasDBF.cs" />
+    <Compile Include="Domain\EntitiesDBF\SolicitudDespachoDBF.cs" />
+    <Compile Include="Domain\EntitiesDBF\SolicitudDespachoDetalleDBF.cs" />
+    <Compile Include="Domain\EntitiesDBF\SolicitudPedidoDBF.cs" />
+    <Compile Include="Domain\EntitiesDBF\SolicitudPedidoDetalleDBF.cs" />
+    <Compile Include="Domain\Enums\Area.cs" />
+    <Compile Include="Domain\Enums\EstadoCivil.cs" />
+    <Compile Include="Domain\Enums\Etnia.cs" />
+    <Compile Include="Domain\Enums\Gender.cs" />
+    <Compile Include="Domain\Enums\PacienteEventoTipo.cs" />
+    <Compile Include="Domain\Enums\Permit.cs" />
+    <Compile Include="Domain\Enums\Religion.cs" />
+    <Compile Include="Domain\Enums\SHDTipoMovimiento.cs" />
+    <Compile Include="Excel\Ortopedia\ExcelDTOConsultaIngresos.cs" />
     <Compile Include="Migrations\202210311204399_Inventario-29.cs" />
     <Compile Include="Migrations\202210311204399_Inventario-29.Designer.cs">
       <DependentUpon>202210311204399_Inventario-29.cs</DependentUpon>
@@ -345,14 +747,187 @@
     <Compile Include="Migrations\202211011755164_Inventario-31.Designer.cs">
       <DependentUpon>202211011755164_Inventario-31.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202211081256427_Inventario-32.cs" />
+    <Compile Include="Migrations\202211081256427_Inventario-32.Designer.cs">
+      <DependentUpon>202211081256427_Inventario-32.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202211081744211_Inventario-33.cs" />
+    <Compile Include="Migrations\202211081744211_Inventario-33.Designer.cs">
+      <DependentUpon>202211081744211_Inventario-33.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202211091351279_Inventario-34.cs" />
+    <Compile Include="Migrations\202211091351279_Inventario-34.Designer.cs">
+      <DependentUpon>202211091351279_Inventario-34.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202211091728355_Inventario-35.cs" />
+    <Compile Include="Migrations\202211091728355_Inventario-35.Designer.cs">
+      <DependentUpon>202211091728355_Inventario-35.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202211111615253_Inventario-36.cs" />
+    <Compile Include="Migrations\202211111615253_Inventario-36.Designer.cs">
+      <DependentUpon>202211111615253_Inventario-36.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202211111904029_Inventario-37.cs" />
+    <Compile Include="Migrations\202211111904029_Inventario-37.Designer.cs">
+      <DependentUpon>202211111904029_Inventario-37.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202211141411418_Inventario-38.cs" />
+    <Compile Include="Migrations\202211141411418_Inventario-38.Designer.cs">
+      <DependentUpon>202211141411418_Inventario-38.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202211181426143_Inventario-39.cs" />
+    <Compile Include="Migrations\202211181426143_Inventario-39.Designer.cs">
+      <DependentUpon>202211181426143_Inventario-39.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202211291710527_Inventario-40.cs" />
+    <Compile Include="Migrations\202211291710527_Inventario-40.Designer.cs">
+      <DependentUpon>202211291710527_Inventario-40.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202211301708019_Inventario-41.cs" />
+    <Compile Include="Migrations\202211301708019_Inventario-41.Designer.cs">
+      <DependentUpon>202211301708019_Inventario-41.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202212121253046_Inventario-42.cs" />
+    <Compile Include="Migrations\202212121253046_Inventario-42.Designer.cs">
+      <DependentUpon>202212121253046_Inventario-42.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202212131921277_Inventario-43.cs" />
+    <Compile Include="Migrations\202212131921277_Inventario-43.Designer.cs">
+      <DependentUpon>202212131921277_Inventario-43.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202302071449016_Inventario-44.cs" />
+    <Compile Include="Migrations\202302071449016_Inventario-44.Designer.cs">
+      <DependentUpon>202302071449016_Inventario-44.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202302101621498_Inventario-45.cs" />
+    <Compile Include="Migrations\202302101621498_Inventario-45.Designer.cs">
+      <DependentUpon>202302101621498_Inventario-45.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202303071954056_Inventario-46.cs" />
+    <Compile Include="Migrations\202303071954056_Inventario-46.Designer.cs">
+      <DependentUpon>202303071954056_Inventario-46.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202307261942393_Inventario-47.cs" />
+    <Compile Include="Migrations\202307261942393_Inventario-47.Designer.cs">
+      <DependentUpon>202307261942393_Inventario-47.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202312271433171_Inventario-48.cs" />
+    <Compile Include="Migrations\202312271433171_Inventario-48.Designer.cs">
+      <DependentUpon>202312271433171_Inventario-48.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Entities\AccessRule.cs" />
+    <Compile Include="Models\Entities\AccessRulePermitAssignment.cs" />
+    <Compile Include="Models\Entities\AccessRuleRoleAssignment.cs" />
+    <Compile Include="Models\Entities\AjusteInventario.cs" />
+    <Compile Include="Models\Entities\AppDefaults.cs" />
+    <Compile Include="Models\Entities\AppPermission.cs" />
+    <Compile Include="Models\Entities\AppRolePermissions.cs" />
+    <Compile Include="Models\Entities\AppRole.cs" />
+    <Compile Include="Models\Entities\AppUser.cs" />
+    <Compile Include="Models\Entities\AppUserClaim.cs" />
+    <Compile Include="Models\Entities\AppUserLogin.cs" />
+    <Compile Include="Models\Entities\AppUserRole.cs" />
+    <Compile Include="Models\Entities\AuditableEntit.cs" />
+    <Compile Include="Models\Entities\Bodega.cs" />
+    <Compile Include="Models\Entities\CierreInventario.cs" />
+    <Compile Include="Models\Entities\ControlAbastecimiento.cs" />
+    <Compile Include="Models\Entities\Controlador.cs" />
+    <Compile Include="Models\Entities\ControladorPermisos.cs" />
+    <Compile Include="Models\Entities\ControladorRolAsignacion.cs" />
+    <Compile Include="Models\Entities\ControlMaterialSala.cs" />
+    <Compile Include="Models\Entities\DespachoInventario.cs" />
+    <Compile Include="Models\Entities\Destino.cs" />
+    <Compile Include="Models\Entities\EgresoAbastecimiento.cs" />
+    <Compile Include="Models\Entities\Empleado.cs" />
+    <Compile Include="Models\Entities\Encargado.cs" />
+    <Compile Include="Models\Entities\ExistenciaBodega.cs" />
+    <Compile Include="Models\Entities\Facilitador.cs" />
+    <Compile Include="Models\Entities\IngresoAbastecimiento.cs" />
+    <Compile Include="Models\Entities\IngresoInventario.cs" />
+    <Compile Include="Models\Entities\InicialAbastecimiento.cs" />
+    <Compile Include="Models\Entities\Material.cs" />
+    <Compile Include="Models\Entities\Medico.cs" />
+    <Compile Include="Models\Entities\MovimientoAbastecimiento.cs" />
+    <Compile Include="Models\Entities\MovimientosInventario.cs" />
+    <Compile Include="Models\Entities\OrdenCompra.cs" />
+    <Compile Include="Models\Entities\Ortopedia\ORTAjusteInventario.cs" />
+    <Compile Include="Models\Entities\Ortopedia\ORTCirujano.cs" />
+    <Compile Include="Models\Entities\Ortopedia\ORTDespachoInventario.cs" />
+    <Compile Include="Models\Entities\Ortopedia\ORTDevolucionInventario.cs" />
+    <Compile Include="Models\Entities\Ortopedia\ORTHojaGasto.cs" />
+    <Compile Include="Models\Entities\Ortopedia\ORTIngresoInventario.cs" />
+    <Compile Include="Models\Entities\Ortopedia\ORTMovimientos.cs" />
+    <Compile Include="Models\Entities\Ortopedia\ORTOrdenCompra.cs" />
+    <Compile Include="Models\Entities\Ortopedia\ORTPaciente.cs" />
+    <Compile Include="Models\Entities\Ortopedia\ORTProveedor.cs" />
+    <Compile Include="Models\Entities\Ortopedia\ORTSolicitudPedido.cs" />
+    <Compile Include="Models\Entities\Paciente.cs" />
+    <Compile Include="Models\Entities\PacienteEvento.cs" />
+    <Compile Include="Models\Entities\PacienteEventoHistorial.cs" />
+    <Compile Include="Models\Entities\PacienteEventoTraslado.cs" />
+    <Compile Include="Models\Entities\Persona.cs" />
+    <Compile Include="Models\Entities\Proveedor.cs" />
+    <Compile Include="Models\Entities\RegistroMedico.cs" />
+    <Compile Include="Models\Entities\Servicio.cs" />
+    <Compile Include="Models\Entities\SHDAdministracion.cs" />
+    <Compile Include="Models\Entities\SHDBodega.cs" />
+    <Compile Include="Models\Entities\SHDContador.cs" />
+    <Compile Include="Models\Entities\SHDExistenciaBodega.cs" />
+    <Compile Include="Models\Entities\SHDExistenciaLote.cs" />
+    <Compile Include="Models\Entities\SHDExistenciaTotal.cs" />
+    <Compile Include="Models\Entities\SHDMovimientoInventario.cs" />
+    <Compile Include="Models\Entities\SHRDestino.cs" />
+    <Compile Include="Models\Entities\SHRMaterial.cs" />
+    <Compile Include="Models\Entities\SolicitudDespacho.cs" />
+    <Compile Include="Models\Entities\SolicitudMaterialSala.cs" />
+    <Compile Include="Models\Entities\SolicitudPedido.cs" />
+    <Compile Include="Models\Entities\TipoMovimientoInventario.cs" />
     <Compile Include="Models\Repository\AjusteInventarioDetalleRepository.cs" />
     <Compile Include="Models\Repository\AjusteInventarioRepository.cs" />
     <Compile Include="Models\Repository\BodegaRepository.cs" />
+    <Compile Include="Models\Repository\ControlAbastecimientoRepository.cs" />
+    <Compile Include="Models\Repository\DestinoRepository.cs" />
+    <Compile Include="Models\Repository\EgresoAbastecimientoRepositoy.cs" />
+    <Compile Include="Models\Repository\MovimientosAbastecimientoRepository.cs" />
+    <Compile Include="Models\Repository\OrdenCompraRepository.cs" />
+    <Compile Include="Models\Repository\OrtopediaRepository.cs" />
+    <Compile Include="Models\Repository\ProveedorRepository.cs" />
+    <Compile Include="Models\Repository\SHDContadorRepository.cs" />
+    <Compile Include="Models\Repository\SHDMovimientoInventarioRepository.cs" />
+    <Compile Include="Models\Repository\SHRMaterialRepository.cs" />
     <Compile Include="Models\Repository\SolicitudMaterialSalaRepository.cs" />
     <Compile Include="Models\Repository\DespachoInventarioRepository.cs" />
     <Compile Include="Models\Repository\GenericRepository.cs" />
     <Compile Include="Models\Repository\SolicitudDespachoRepository.cs" />
+    <Compile Include="Models\Repository\SolicitudPedidoRepository.cs" />
     <Compile Include="Models\Repository\UnitOfWork.cs" />
+    <Compile Include="Persistence\Configuration\PersonaMap.cs" />
+    <Compile Include="Persistence\Configuration\PersonEntityConfiguration.cs" />
+    <Compile Include="Persistence\Configuration\ProveedorEntityConfiguration.cs" />
+    <Compile Include="Persistence\Configuration\SupplierEntityConfiguration.cs" />
+    <Compile Include="Persistence\DBF\DBFContext.cs" />
+    <Compile Include="Persistence\DBF\DBFEngine.cs" />
+    <Compile Include="Reportes\Inventario\rptAbastecimientoExistencia.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>rptAbastecimientoExistencia.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reportes\Inventario\rptReporteExistencias.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>rptReporteExistencias.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reportes\Ortopedia\rptDevolucionProveedor.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>rptDevolucionProveedor.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Security\TokenGenerator.cs" />
     <Compile Include="Controllers\DbApiController.cs" />
     <Compile Include="Controllers\DbController.cs" />
@@ -571,6 +1146,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>rptKardexResumen.rpt</DependentUpon>
       <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Reportes\Inventario\rptOrdenCompra.cs">
       <AutoGen>True</AutoGen>
@@ -601,9 +1177,11 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AppUploadImages\unknow-person.jpg" />
     <Content Include="Content\aos-2.3.1\aos.css" />
     <Content Include="Content\aos-2.3.1\aos.js" />
     <Content Include="Content\apphr\AjusteInventario\CEdit.js" />
+    <Content Include="Content\apphr\CustomValidator\Common.js" />
     <Content Include="Content\apphr\SolicitudMaterialesSala\CEdit.js" />
     <Content Include="Content\apphr\DespachosInventario\CEdit.js" />
     <Content Include="Content\apphr\IngresoInventario\CEdit.js" />
@@ -639,6 +1217,10 @@
     <Content Include="Content\bootstrap-5.1.3\js\bootstrap.min.js" />
     <Content Include="Content\bootstrap-responsive-1.0\bootstrap5.responsive.css" />
     <Content Include="Content\bootstrap-responsive-1.0\bootstrap5.responsive.js" />
+    <Content Include="Content\bootstrap-table-1.21.1\bootstrap-table.css" />
+    <Content Include="Content\bootstrap-table-1.21.1\bootstrap-table.js" />
+    <Content Include="Content\bootstrap-table-1.21.1\bootstrap-table.min.css" />
+    <Content Include="Content\bootstrap-table-1.21.1\bootstrap-table.min.js" />
     <Content Include="Content\filepond-plugin-file-encode\dist\filepond-plugin-file-encode.esm.js" />
     <Content Include="Content\filepond-plugin-file-encode\dist\filepond-plugin-file-encode.esm.min.js" />
     <Content Include="Content\filepond-plugin-file-encode\dist\filepond-plugin-file-encode.js" />
@@ -711,7 +1293,9 @@
     <Content Include="Content\imgs\icons\cama-de-hospital.png" />
     <Content Include="Content\imgs\Login-bg.jpg" />
     <Content Include="Content\imgs\Login-bg2.jpg" />
+    <Content Include="Content\imgs\logo-mspas.png" />
     <Content Include="Content\imgs\logo-mspas.svg" />
+    <Content Include="Content\imgs\preLoad2.gif" />
     <Content Include="Content\jquery-3.6.0\jquery-3.6.0.js" />
     <Content Include="Content\jquery-3.6.0\jquery-3.6.0.min.js" />
     <Content Include="Content\jquery-confirm-2.5.1\jquery-confirm.min.css" />
@@ -722,13 +1306,17 @@
     <Content Include="Content\jquery-datatable-1.12.1\dataTables.bootstrap5.min.js" />
     <Content Include="Content\jquery-datatable-1.12.1\dataTables.responsive.js" />
     <Content Include="Content\jquery-datatable-1.12.1\dataTables.responsive.min.js" />
+    <Content Include="Content\jquery-datatable-1.12.1\datetime.js" />
     <Content Include="Content\jquery-datatable-1.12.1\jquery.dataTables.js" />
     <Content Include="Content\jquery-datatable-1.12.1\jquery.dataTables.min.js" />
+    <Content Include="Content\jquery-datatable-1.12.1\plugins\ellipsis.js" />
     <Content Include="Content\jquery-datatable-1.12.1\responsive.bootstrap5.css" />
     <Content Include="Content\jquery-datatable-1.12.1\responsive.bootstrap5.js" />
     <Content Include="Content\jquery-datatable-1.12.1\responsive.bootstrap5.min.css" />
     <Content Include="Content\jquery-datatable-1.12.1\responsive.bootstrap5.min.js" />
     <Content Include="Content\jquery-filepond\filepond.jquery.js" />
+    <Content Include="Content\jquery-loading-overlay\loadingoverlay.js" />
+    <Content Include="Content\jquery-loading-overlay\loadingoverlay.min.js" />
     <Content Include="Content\jquery-ui-1.13.1\AUTHORS.txt" />
     <Content Include="Content\jquery-ui-1.13.1\external\jquery\jquery.js" />
     <Content Include="Content\jquery-ui-1.13.1\images\ui-icons_444444_256x240.png" />
@@ -2446,6 +3034,8 @@
     <Content Include="Content\notify\notify.js" />
     <Content Include="Content\notify\notify.min.js" />
     <Content Include="Content\PagedList.css" />
+    <Content Include="Content\popper-2.10.2\popper.js" />
+    <Content Include="Content\popper-2.10.2\popper.min.js" />
     <Content Include="Content\select2-4.0.13\css\select2.css" />
     <Content Include="Content\select2-4.0.13\css\select2.min.css" />
     <Content Include="Content\select2-4.0.13\js\i18n\af.js" />
@@ -2541,7 +3131,7 @@
     </Content>
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\Errorx.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
@@ -2708,9 +3298,66 @@
     <EmbeddedResource Include="Migrations\202211011755164_Inventario-31.resx">
       <DependentUpon>202211011755164_Inventario-31.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Reportes\Inventario\rptKardexResumen.rpt">
+    <EmbeddedResource Include="Migrations\202211081256427_Inventario-32.resx">
+      <DependentUpon>202211081256427_Inventario-32.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202211081744211_Inventario-33.resx">
+      <DependentUpon>202211081744211_Inventario-33.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202211091351279_Inventario-34.resx">
+      <DependentUpon>202211091351279_Inventario-34.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202211091728355_Inventario-35.resx">
+      <DependentUpon>202211091728355_Inventario-35.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202211111615253_Inventario-36.resx">
+      <DependentUpon>202211111615253_Inventario-36.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202211111904029_Inventario-37.resx">
+      <DependentUpon>202211111904029_Inventario-37.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202211141411418_Inventario-38.resx">
+      <DependentUpon>202211141411418_Inventario-38.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202211181426143_Inventario-39.resx">
+      <DependentUpon>202211181426143_Inventario-39.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202211291710527_Inventario-40.resx">
+      <DependentUpon>202211291710527_Inventario-40.cs</DependentUpon>
+    </EmbeddedResource>
+    <Content Include="Reportes\Inventario\rptAbastecimientoExistencia.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>rptAbastecimientoExistencia.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <EmbeddedResource Include="Migrations\202211301708019_Inventario-41.resx">
+      <DependentUpon>202211301708019_Inventario-41.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202212121253046_Inventario-42.resx">
+      <DependentUpon>202212121253046_Inventario-42.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202212131921277_Inventario-43.resx">
+      <DependentUpon>202212131921277_Inventario-43.cs</DependentUpon>
+    </EmbeddedResource>
+    <Content Include="Reportes\Inventario\rptKardexResumen.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>rptKardexResumen.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <EmbeddedResource Include="Migrations\202302071449016_Inventario-44.resx">
+      <DependentUpon>202302071449016_Inventario-44.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202302101621498_Inventario-45.resx">
+      <DependentUpon>202302101621498_Inventario-45.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202303071954056_Inventario-46.resx">
+      <DependentUpon>202303071954056_Inventario-46.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202307261942393_Inventario-47.resx">
+      <DependentUpon>202307261942393_Inventario-47.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202312271433171_Inventario-48.resx">
+      <DependentUpon>202312271433171_Inventario-48.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Inventario\rptOrdenCompra.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
@@ -2721,9 +3368,18 @@
       <LastGenOutput>rptSolicitudDespacho.cs</LastGenOutput>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Reportes\Inventario\rptReporteExistencias.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>rptReporteExistencias.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reportes\Ortopedia\rptDevolucionProveedor.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>rptDevolucionProveedor.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="AppUploadImages\" />
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Views\Shared\" />
     <Folder Include="Areas\Admision\Data\" />
@@ -2732,15 +3388,21 @@
     <Folder Include="Areas\General\Data\" />
     <Folder Include="Areas\General\Views\Shared\" />
     <Folder Include="Areas\Inventario\Data\" />
+    <Folder Include="Areas\Inventario\Views\Bodegas\Sql\" />
     <Folder Include="Areas\Inventario\Views\Shared\" />
+    <Folder Include="Areas\Inventario\Views\Siahr\" />
     <Folder Include="Areas\Medica\Data\" />
     <Folder Include="Areas\Medica\Views\Pacientes\" />
     <Folder Include="Areas\Medica\Views\SADC\" />
     <Folder Include="Areas\Medica\Views\Shared\" />
     <Folder Include="Areas\Nutricion\Data\" />
     <Folder Include="Areas\Nutricion\Views\Shared\" />
-    <Folder Include="Content\apphr\NewFolder1\" />
+    <Folder Include="Areas\Ortopedia\Data\" />
+    <Folder Include="Areas\Ortopedia\Views\Paciente\" />
+    <Folder Include="Areas\Ortopedia\Views\Shared\" />
+    <Folder Include="Domain\Entities\" />
     <Folder Include="Img\" />
+    <Folder Include="Resources\" />
     <Folder Include="Views\Error\" />
     <Folder Include="Views\Servicios\" />
   </ItemGroup>
@@ -2795,10 +3457,6 @@
     <Content Include="Content\filepond\LICENSE" />
     <Content Include="Content\jquery-filepond\LICENSE" />
     <Content Include="Areas\Nutricion\Views\web.config" />
-    <Content Include="Areas\General\Views\Servicios\Create.cshtml" />
-    <Content Include="Areas\General\Views\Servicios\Delete.cshtml" />
-    <Content Include="Areas\General\Views\Servicios\Details.cshtml" />
-    <Content Include="Areas\General\Views\Servicios\Edit.cshtml" />
     <Content Include="Areas\General\Views\Servicios\Index.cshtml" />
     <Content Include="Areas\Nutricion\Views\Home\Index.cshtml" />
     <Content Include="Areas\Nutricion\Views\Encargados\Create.cshtml" />
@@ -2872,7 +3530,7 @@
     <Content Include="Areas\General\Views\People\_ConfirmEmail.cshtml" />
     <Content Include="Areas\General\Views\Usuarios\SetPassword.cshtml" />
     <Content Include="Areas\Inventario\Views\web.config" />
-    <Content Include="Areas\Inventario\Views\Bodegas\IndexDBF.cshtml" />
+    <Content Include="Areas\Inventario\Views\Bodegas\Dbf\Index.cshtml" />
     <Content Include="Areas\Inventario\Views\SolicitudesPedido\IndexDBF.cshtml" />
     <Content Include="Areas\Inventario\Views\SolicitudesPedido\DetailsDBF.cshtml" />
     <Content Include="Areas\Inventario\Views\Bodegas\Index.cshtml" />
@@ -2960,6 +3618,140 @@
     <Content Include="Areas\Inventario\Views\SolicitudMaterialesSala\Details.cshtml" />
     <Content Include="Areas\Inventario\Views\SolicitudesDespacho\CEditMS.cshtml" />
     <Content Include="Areas\Admision\Views\PacienteEventos\Delete.cshtml" />
+    <Content Include="Areas\Inventario\Views\ControlAbastecimiento\Index.cshtml" />
+    <Content Include="Areas\Inventario\Views\OrdenesCompra\Details.cshtml" />
+    <Content Include="Areas\Inventario\Views\ControlAbastecimiento\_IndexGrid.cshtml" />
+    <Content Include="Content\popper-2.10.2\popper.js.map" />
+    <Content Include="Content\popper-2.10.2\popper.min.js.map" />
+    <Content Include="Areas\Inventario\Views\ControlAbastecimiento\_Ingresos.cshtml" />
+    <Content Include="Areas\Inventario\Views\ControlAbastecimiento\_CEditIngreso.cshtml" />
+    <Content Include="Areas\Inventario\Views\ControlAbastecimiento\_Egresos.cshtml" />
+    <Content Include="Areas\Inventario\Views\ControlAbastecimiento\InicialMateriales.cshtml" />
+    <Content Include="Areas\Inventario\Views\ControlAbastecimiento\_IndexMaterialGrid.cshtml" />
+    <Content Include="Areas\Inventario\Views\ControlAbastecimiento\_CEditInicial.cshtml" />
+    <Content Include="Areas\Inventario\Views\SolicitudMaterialesSala\_CEditIni.cshtml" />
+    <Content Include="Areas\Inventario\Views\ControlAbastecimiento\_CEditIni.cshtml" />
+    <Content Include="Areas\Inventario\Views\ControlAbastecimiento\_CEditEgreso.cshtml" />
+    <Content Include="Areas\Inventario\Views\SolicitudesPedido\_IndexDBFGrid.cshtml" />
+    <Content Include="Areas\Inventario\Views\SolicitudesPedido\_DetailsDBF.cshtml" />
+    <Content Include="Areas\Inventario\Views\OrdenesCompra\_DetailsDBF.cshtml" />
+    <Content Include="Areas\Inventario\Views\ControlAbastecimiento\_AddInicial.cshtml" />
+    <Content Include="Areas\Inventario\Views\ControlAbastecimiento\_Iniciales.cshtml" />
+    <Content Include="Areas\Inventario\Views\Movimientos\IndexDBF.cshtml" />
+    <Content Include="Areas\Inventario\Views\Movimientos\_IndexDBFGrid.cshtml" />
+    <Content Include="Areas\Inventario\Views\Movimientos\ExistenciasDBF.cshtml" />
+    <Content Include="Areas\Inventario\Views\Movimientos\_ExistenciasDBFGrid.cshtml" />
+    <Content Include="Areas\Inventario\Views\Siahad\Ingresos.cshtml" />
+    <Content Include="Areas\Inventario\Views\Siahad\ImportMateriales.cshtml" />
+    <Content Include="Areas\Inventario\Views\Home\Siahad.cshtml" />
+    <Content Include="Areas\Inventario\Views\Siahad\Despachos.cshtml" />
+    <Content Include="Areas\Inventario\Views\Materiales\ImportMateriales.cshtml" />
+    <Content Include="Areas\Inventario\Views\Materiales\_IndexGrid.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\web.config" />
+    <Content Include="Areas\Ortopedia\Views\SolicitudPedido\Index.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\SolicitudPedido\_IndexGrid.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\SolicitudPedido\_CreateMaster.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\SolicitudPedido\CEdit.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\SolicitudPedido\_CEditChild.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\SolicitudPedido\_CEditGrid.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\SolicitudPedido\_View.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\AjusteInventario\Index.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\DespachoInventario\Index.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\IngresoInventario\Index.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\AjusteInventario\_IndexGrid.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\DespachoInventario\_IndexGrid.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\IngresoInventario\_IndexGrid.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\IngresoInventario\_CreateMaster.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\DespachoInventario\_CreateMaster.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\AjusteInventario\_CreateMaster.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\AjusteInventario\CEdit.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\DespachoInventario\CEdit.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\IngresoInventario\CEdit.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\IngresoInventario\_CEditGrid.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\DespachoInventario\_CEditGrid.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\AjusteInventario\_CEditGrid.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\DespachoInventario\_CEditChild.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\IngresoInventario\_CEditChild.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\OrdenCompra\Index.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\OrdenCompra\_IndexGrid.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\OrdenCompra\_CreateMaster.cshtml" />
+    <Content Include="Areas\Inventario\Views\Proveedores\ImportProveedores.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\OrdenCompra\CEdit.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\OrdenCompra\_CEditGrid.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\OrdenCompra\_CEditChild.cshtml" />
+    <Content Include="Areas\Inventario\Views\Bodegas\ImportBodegas.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\AjusteInventario\_CEditChild.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\OrdenCompra\_ViewMaster.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\IngresoInventario\_View.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\Cirujano\Index.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\Cirujano\_IndexGrid.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\Cirujano\_CreateMaster.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\Cirujano\_CEditMaster.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\Cirujano\_ViewMaster.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\DespachoInventario\_ViewMaster.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\DespachoInventario\_ViewChild.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\OrdenCompra\_ViewChild.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\AjusteInventario\_ViewMaster.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\AjusteInventario\_ViewChild.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\Consultas\Ingresos.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\Consultas\Egresos.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\Consultas\Saldos.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\Consultas\Devoluciones.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\Consultas\_IngresosGrid.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\Consultas\_EgresosGrid.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\Consultas\_DevolucionesGrid.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\Consultas\_SaldosGridMaterial.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\Consultas\_SaldosGridProveedor.cshtml" />
+    <Content Include="Areas\Inventario\Views\Materiales\_CEditMaster.cshtml" />
+    <Content Include="Areas\Inventario\Views\Bodegas\_IndexGrid.cshtml" />
+    <Content Include="Areas\Admin\Views\Controladores\_IndexGrid.cshtml" />
+    <Content Include="Areas\Inventario\Views\Proveedores\_IndexGrid.cshtml" />
+    <Content Include="Areas\Inventario\Views\Materiales\_ViewMaster.cshtml" />
+    <Content Include="Areas\Inventario\Views\Bodegas\_ViewMaster.cshtml" />
+    <Content Include="Areas\Inventario\Views\Proveedores\_ViewMaster.cshtml" />
+    <Content Include="Areas\Admin\Views\Controladores\_ViewMaster.cshtml" />
+    <Content Include="Areas\Inventario\Views\Proveedores\_CreateMaster.cshtml" />
+    <Content Include="Areas\Inventario\Views\Proveedores\_CEditMaster.cshtml" />
+    <Content Include="Areas\Admin\Views\Controladores\_CreateMaster.cshtml" />
+    <Content Include="Areas\Admin\Views\Controladores\_CEditMaster.cshtml" />
+    <Content Include="Areas\Inventario\Views\Bodegas\_CEditMaster.cshtml" />
+    <Content Include="Areas\Inventario\Views\Bodegas\_CreateMaster.cshtml" />
+    <Content Include="Areas\General\Views\Servicios\_IndexGrid.cshtml" />
+    <Content Include="Areas\General\Views\Servicios\_CEditMaster.cshtml" />
+    <Content Include="Areas\General\Views\Servicios\_ViewMaster.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\HojasGasto\Index.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\HojasGasto\_IndexGrid.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\HojasGasto\_CreateMaster.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\HojasGasto\CEdit.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\HojasGasto\_ViewChild.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\HojasGasto\_ViewMaster.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\HojasGasto\_CEditGrid.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\HojasGasto\_CEditChild.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\IngresoInventario\_ViewChild.cshtml" />
+    <Content Include="Areas\Inventario\Views\Bodegas\CEditDBF.cshtml" />
+    <Content Include="Areas\Inventario\Views\Bodegas\Dbf\_IndexGrid.cshtml" />
+    <Content Include="Areas\Inventario\Views\Bodegas\Dbf\_ViewMaster.cshtml" />
+    <Content Include="Areas\Inventario\Views\Bodegas\Dbf\_CEditMaster.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\Consultas\Movimientos.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\Consultas\_MovimientosGrid.cshtml" />
+    <Content Include="Areas\General\Views\People\_ViewMaster.cshtml" />
+    <Content Include="Areas\General\Views\People\_CEditMaster.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\Devolucion\Index.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\Devolucion\_CreateMaster.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\Devolucion\_ViewMaster.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\Devolucion\CEditMaster.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\Devolucion\_CEditGrid.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\Devolucion\_CEditChild.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\HojasGasto\_SelectHojaGasto.cshtml" />
+    <Content Include="Areas\Ortopedia\Views\HojasGasto\_SelectHojaGastoSingle.cshtml" />
+    <Content Include="Content\jquery-loading-overlay\loadingoverlay.min.js.map" />
+    <Content Include="Areas\Admin\Views\AppPermission\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\AppPermission\_CEditMaster.cshtml" />
+    <Content Include="Areas\Admin\Views\AppPermission\_ViewMaster.cshtml" />
+    <Content Include="Areas\Admin\Views\AppRole\_CEditMaster.cshtml" />
+    <Content Include="Areas\Admin\Views\AppRole\_ViewMaster.cshtml" />
+    <Content Include="Areas\Admin\Views\AppRole\_AssignPermits.cshtml" />
+    <Content Include="Areas\Inventario\Views\Movimientos\_ExistenciasDBFGridDetalle.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Shared\_AppLayout.cshtml" />
@@ -2991,8 +3783,6 @@
     <Content Include="Views\Shared\DisplayTemplates\StringPerp.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\DatePrep.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Int32.cshtml" />
-    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
-    <None Include="Properties\PublishProfiles\IIS-AppHR.pubxml" />
     <Content Include="Views\Shared\DisplayTemplates\StringP.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\DateD.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Int32D.cshtml" />
@@ -3021,10 +3811,21 @@
     <Content Include="Views\Shared\EditorTemplates\_TemplateBase.cshtml" />
     <Content Include="Views\Shared\_NavPartialMedica.cshtml" />
     <Content Include="Views\Shared\_AppJsMessages.cshtml" />
-    <None Include="Properties\PublishProfiles\IIS-Pruebas.pubxml" />
-    <None Include="Properties\PublishProfiles\SIUHR-fisico.pubxml" />
-    <None Include="Properties\PublishProfiles\SIUHRF.pubxml" />
+    <None Include="Properties\PublishProfiles\Ort-Prod-Local.pubxml" />
+    <None Include="Properties\PublishProfiles\Ort-Prod-Web.pubxml" />
     <Content Include="Views\Shared\EditorTemplates\Boolean.cshtml" />
+    <Content Include="Views\Shared\_ErrorSiahr.cshtml" />
+    <Content Include="Views\Shared\_NavPartialSiahad.cshtml" />
+    <Content Include="Views\Shared\_NavPartialGenerales.cshtml" />
+    <Content Include="Views\Shared\_ChildModal.cshtml" />
+    <Content Include="Views\Shared\_ReportModal.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Int64.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Int64D.cshtml" />
+    <Content Include="Views\Shared\_RegisterNotFound.cshtml" />
+    <Content Include="Views\Shared\ErrorSiahr.cshtml" />
+    <Content Include="Views\Shared\CommonForms\_PermitsForm.cshtml" />
+    <Content Include="Views\Shared\RegisterNotFound.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\DropDownBtn.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Apphr.Application\Apphr.Application.csproj">

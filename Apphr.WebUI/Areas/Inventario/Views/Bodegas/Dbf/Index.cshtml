@@ -1,0 +1,305 @@
+﻿@model Apphr.Application.Bodegas.DTOs.BodegaDTOIxFilterDBF
+@using Newtonsoft.Json
+@using Apphr.Resources
+
+@{
+    ViewBag.Pagina = "Índice";
+    ViewBag.Entidad = "Bodegas SIAHR";
+    ViewBag.Icon = "<i class=\"far fa-list-alt\"></i>";
+    ViewBag.Title = ViewBag.Pagina + " de " + ViewBag.Entidad;
+    ViewBag.Anio = Model.Anio;
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+
+@Html.Partial("_PartialAdvSiahr")
+
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area = "Inventario" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <span>Índice</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Encablezado -->
+    <!-- Encablezado -->
+    <div class="row">
+        <div class="col-md-6 align-self-center">
+            <h4 class="mb-0">
+                @ViewBag.Title @Html.Raw(ViewBag.Icon)
+            </h4>
+        </div>
+        <div class="col-md-6 text-center">
+            @*<a class="btn btn-success float-md-end" onclick="entity.create();">Adicionar <i class="fa fa-plus"></i></a>*@
+        </div>
+    </div>
+    <hr class="my-2" />    
+    <!-- Encablezado -->
+    <!-- Permisos -->
+    @Html.Partial("CommonForms/_PermitsForm")
+    <!-- Permisos -->
+    <!-- Filtro -->
+    @using (Ajax.BeginForm("JsFilterIndexDBF", "Bodegas", new { Area = "Inventario" }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnBegin = "filter.begin",
+        OnSuccess = "filter.success",
+        OnFailure = "filter.failure"
+    }, new { id = "form-filter" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.Page)
+        @Html.HiddenFor(x => x.Anio)
+        <div class="card border border-dark mb-3">
+            <div class="card-header background-siahr">
+                Filtro
+                <a data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true" aria-controls="collapseExample">
+                    <i class="fa fa-chevron-up fa-pull-right" style="margin-top: 5px;"></i>
+                </a>
+            </div>
+            @* add class *@
+            <div class="collapse show" id="collapseExample">
+                <div class="card-body">
+                    @Html.EditorFor(x => x.Buscar, "StringP", new { placeholder = "#Código, Descripción" })
+                    <div class="form-group">
+                        <div class="float-end mb-3">
+                            <button id="btn-filter" type="submit" class="btn btn-info"><i class="fa fa-filter"></i> Aplicar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>}
+    <!-- Filtro -->
+    <!-- Tabla -->
+    <div id="grid-1"></div>
+    <!-- Tabla -->
+    <!-- Child-Modal -->
+    @using (Ajax.BeginForm("JsSaveMasterDBF", "Bodegas", new { Anio = ViewBag.Anio }, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnBegin = "child.begin",
+        OnSuccess = "child.success",
+        OnFailure = "child.failure"
+    }, new { id = "form-child" }))
+    {
+        @Html.Partial("_ChildModal")}
+    <!-- Child-Modal -->
+    <!-- Report-Modal -->
+    @Html.Partial("_ReportModal")
+    <!-- Report-Modal -->
+
+</div>
+
+@section Scripts{
+    <script>
+         let urls = @Html.Raw(JsonConvert.SerializeObject(new
+              {
+                  //CEdit = Url.Action("CEdit"),
+              }));
+        let permissions = @Html.Raw(JsonConvert.SerializeObject(ViewBag.Permissions));
+        let SinPrivilegios = '@Msg.privileges_none';
+    </script>
+    <script>
+                var filter = {};
+        var entity = {};
+        var child = {};
+        var Anio = @ViewBag.Anio;
+
+        @* entity.sync = function (o){
+            var BodegaId = $(o).data("id");
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("JsSyncBodega", "Bodegas")',
+                data: { id: BodegaId },
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    if (response.result) {
+                        toastr.success('Importado satisfactoriamente', 'Sincronizacion');
+                    }
+                    else {
+                        toastr.error('Error');
+                    }
+                },
+                failure: function (response) {
+                    jshelper.failure();
+                    //console.log(response);
+                }
+
+            });
+        }*@
+        filter.form = $('#form-filter');
+        filter.btn = $('#btn-filter');
+        filter.begin = function () {
+            filter.btn.prop('disabled', true);
+        }
+        filter.success = function (d) {
+            $('#grid-1').html(d);
+            filter.bindPaged();
+            filter.end();
+        }
+        filter.end = function () {
+            filter.btn.prop('disabled', false);
+        }
+        filter.failure = function () {
+            jshelper.failure();
+            filter.end();
+        }
+        filter.bindPaged = function () {
+            $(".pagination a").click(function () {
+                if (event.preventDefault) {
+                    event.preventDefault();
+                    //console.log('detenido');
+                    //console.log($(this).attr('href'));
+                    $('#Page').val($(this).attr('href'));
+                    filter.btn.trigger('click');
+                }
+            });
+        }
+
+        entity.view         = function (o) {
+            if (!permissions.View) {
+                jshelper.error(SinPrivilegios);
+                return;
+            }
+            let id = $(o).data("model-id");
+            let anio = $(o).data("model-anio");
+            
+            jshelper.get('@Url.Action("JsViewMasterDBF")', { id: id, anio: anio }, function (r) {
+                $('#modalLabel').html('Ver Bodega');
+                $('#form-body-child').html(r);
+                $('#child-modal > .modal-dialog > .modal-content .modal-footer').hide();
+                $('#child-modal').modal('show');
+            });   
+        }
+        entity.create       = function (o) {
+            if (!permissions.Create) {
+                jshelper.error(SinPrivilegios);
+                return;
+            }
+
+            jshelper.get('@Url.Action("JsCEditMasterDBF")', { anio: Anio, mode: 'INS' }, function (r) {
+                //console.log(r);
+                if (r.success == false) {
+                    //alert(r.message);
+                    jshelper.error(r.message);
+                }
+                else {
+                    $('#form-body-child').html(r);
+                    $('#modalLabel').text('Crear Bodega');
+                    let modalForm = $("#form-child");
+                    jshelper.bindValidation(modalForm);
+                    //childInicial.init();
+                    $('#child-modal > .modal-dialog > .modal-content .modal-footer').show();
+                    $('#child-modal').modal('show');
+                }
+            });
+        }
+        entity.update = function (o) {
+            event.preventDefault();
+
+            if (!permissions.Edit) {
+                jshelper.error(SinPrivilegios);
+                return;
+            }
+
+            let id = $(o).data("model-id");
+            let anio = $(o).data("model-anio");
+
+            jshelper.get('@Url.Action("JsCEditMasterDBF")', { id: id, anio: anio, mode: 'UPD' }, function (r) {
+                //console.log(r);
+                if (r.success == false) {
+                    //alert(r.message);
+                    jshelper.error(r.message);
+                }
+                else {
+                    $('#modalLabel').text('Editar Bodega');
+                    $('#form-body-child').html(r);
+                    let modalForm = $("#form-child");
+                    jshelper.bindValidation(modalForm);
+                    //childInicial.init();
+                    $('#child-modal > .modal-dialog > .modal-content .modal-footer').show();
+                    $('#child-modal').modal('show');
+                }
+            });
+        }
+        entity.delete = function (o) {
+            if (!permissions.Delete) {
+                jshelper.error(SinPrivilegios);
+                return;
+            }
+            let id = $(o).data("model-id");
+            let anio = $(o).data("model-anio");
+            let nombre = $(o).data("model-nombre");
+            jshelper.deleteConfirm(function () {
+                jshelper.deleteAjax('@Url.Action("JsDeleteMasterDBF")',
+                    { id: id, anio: anio },
+                    function () { filter.form.submit(); }
+                );
+            },
+                'Se eliminará la <strong>Bodega: ' + nombre + '</strong> con todo su detalle, esta acción es irreversible !'
+            );
+        }
+
+        child.btnSave = $('#btn-save-modal');
+        child.modal = $('#child-modal');
+        child.begin = function () {
+            child.btnSave.prop('disabled', true);
+        };
+        child.end = function () {
+            child.btnSave.prop('disabled', false);
+        };
+        child.success = function (r) {
+            //console.log(r);
+            jshelper.showAlert(r.success, r.message);
+            if (r.success) {
+                child.modal.modal('hide');
+                // Un solo nivel
+                filter.form.submit();
+                // Dos niveles
+                //window.location.replace(urls.CEdit + '/' + r.data.CirujanoId);
+            }
+            child.end();
+        };
+        child.failure = function () {
+            jshelper.failure();
+            child.end();
+        };
+
+        $(function () {
+            jshelper.showPermissions();
+            filter.form.submit();
+        });
+        @*function ImportBodega(t) {
+            var id = $(t).data("id");
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("JsImportBodega", "Bodegas", new { Area = "Inventario" })',
+                data: { CODIGO: id },
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    if (response.result) {
+                        toastr.success('Sincronizado satisfactoriamente', 'Sincronizacion');
+                    } else {
+                        toastr.error(appMessages.failure);
+                    }
+                },
+                failure: function (response) {
+                    jshelper.failure();
+                   // console.log(response);
+                }
+            });
+        }*@
+    </script>
+}

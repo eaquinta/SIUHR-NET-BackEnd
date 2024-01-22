@@ -23,6 +23,6 @@
             <i class="ms-1 fa fa-@ViewData["prependIcon"]"></i>
         }
     </span>
-    @Html.DropDownListFor(x => x, _optionList, new { @class = "form-control" })
+    @Html.DropDownListFor(x => x, _optionList, new { @class = "form-select" + (ViewData["class"] != null ? " " + ViewData["class"] : "") })
     @Html.ValidationMessageFor(x => x, null, new { @class = "text-danger" })
 </div>

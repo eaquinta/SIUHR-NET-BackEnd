@@ -1,0 +1,18 @@
+﻿@model Apphr.Application.Proveedores.DTOs.ProveedorDTOCreate
+
+@Html.AntiForgeryToken()
+@Html.HiddenFor(x => x.ProveedorId)
+@Html.EditorFor(x => x.IsActive)
+@Html.EditorFor(x => x.Nit)
+@Html.EditorFor(x => x.Descripcion)
+@Html.EditorFor(x => x.Direccion)
+@Html.EditorFor(x => x.Contacto)
+@Html.EditorFor(x => x.Telefono)
+<div class="col-md-6">@Html.EditorFor(x => x.Email, new { htmlAttributes = new { @class = "form-control" } })</div>
+<div class="col-md-6">@Html.EditorFor(x => x.DiasCredito, new { htmlAttributes = new { @class = "form-control" } })</div>
+<div class="col-md-6">@Html.EditorFor(x => x.Banco1, new { htmlAttributes = new { @class = "form-control" } })</div>
+<div class="col-md-6">@Html.EditorFor(x => x.Cuenta1, new { htmlAttributes = new { @class = "form-control" } })</div>
+<div class="col-md-6">@Html.EditorFor(x => x.Banco2, new { htmlAttributes = new { @class = "form-control" } })</div>
+<div class="col-md-6">@Html.EditorFor(x => x.Cuenta2, new { htmlAttributes = new { @class = "form-control" } })</div>
+<div class="col-md-6">@Html.EditorFor(x => x.Banco3, new { htmlAttributes = new { @class = "form-control" } })</div>
+<div class="col-md-6">@Html.EditorFor(x => x.Cuenta3, new { htmlAttributes = new { @class = "form-control" } })</div>

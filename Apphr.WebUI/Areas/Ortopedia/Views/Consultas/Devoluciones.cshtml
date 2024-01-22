@@ -1,0 +1,225 @@
+﻿@model Apphr.Application.Ortopedia.Consultas.DTOs.ConsultasDTODevolucionesIxFilter
+@using Newtonsoft.Json
+@{
+    ViewBag.Title = "Consulta Devoluciones";
+    ViewBag.Icon = "<i class=\"far fa-eye\"></i>";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<style>
+    .select2-container {
+        width: 100% !important;
+    }
+</style>
+
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area = "Inventario" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item aos-init" data-aos="fade-left">
+                <span>Consulta @ViewBag.Title</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <h4 class="my-3">
+        @ViewBag.Title @ViewBag.Entidad @Html.Raw(ViewBag.Icon)
+        @*<a class="btn btn-success ms-3 float-end" href="@Url.Action("Create")">
+                Adicionar <i class="fa fa-plus"></i>
+            </a>
+            <a class="btn btn-default float-end" href="@Url.Action("IndexDBF")">
+                SIAHR <i class="fas fa-link"></i>
+            </a>*@
+    </h4>
+    <div class="clearfix"></div>
+    <!-- Encablezado -->
+    <!-- Filtro -->
+    @using (Ajax.BeginForm("JsFilterDevoluciones", "Consultas", "Ortopedia", new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnBegin = "filter.begin",
+        OnSuccess = "filter.success",
+        OnFailure = "filter.failure"
+    }, new { id = "form-filter" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.Page)
+        @*@Html.HiddenFor(x => x.BodegaId)
+            @Html.HiddenFor(x => x.MaterialId)*@
+        <div class="card border border-dark mb-3">
+            <div class="card-header background-inventory">
+                Filtro
+                <a class="" data-bs-toggle="collapse" href="#collapseFilter" role="button" aria-expanded="true" aria-controls="collapseFilter">
+                    <i class="fa fa-chevron-up fa-pull-right" style="margin-top: 5px;"></i>
+                </a>
+            </div>
+            @* add class show *@
+            <div class="collapse show" id="collapseFilter">
+                <div class="card-body" id="filterForm">
+                    <div class="row">
+                        <div class="col-md-6">@Html.EditorFor(x => x.MaterialId, new { optionsList = ViewBag.MaterialId })</div>
+                        <div class="col-md-6">@Html.EditorFor(x => x.ProveedorId, new { optionsList = ViewBag.ProveedorId })</div>
+                        @*<div class="col-md-12">@Html.EditorFor(x => x.Buscar)</div>*@
+                        @*<div class="col-md-8">@Html.EditorFor(x => x.BodegaDescripcion)</div>
+                            <div class="col-md-4">@Html.EditorFor(x => x.MaterialCodigo)</div>
+                            <div class="col-md-8">@Html.EditorFor(x => x.MaterialNombre)</div>
+                            <div class="col-12">@Html.EditorFor(x => x.TipoExistencia, new { optionsList = ViewBag.TipoExistencia })</div>*@
+                    </div>
+                    <div class="form-group">
+                        <div class="float-end mb-3">
+                            <button id="btnFilter" type="submit" class="btn btn-info"><i class="fa fa-filter"></i> Aplicar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <!-- Filtro -->
+    <!-- Tabla -->
+    <div id="Grid1"></div>
+    <!-- Tabla -->
+</div>
+
+@section scripts{
+    <script>
+        let urls = @Html.Raw(JsonConvert.SerializeObject(new
+              {
+                  //FindBodegas = Url.Action("JsGetByFilter", "Bodegas"),
+                  //FindMateriales = Url.Action("JsGetByFilter", "Materiales"),
+                  //GetBodega = Url.Action("JsGetBodegaByNombre", "Bodegas"),
+                  //GetMaterial = Url.Action("JsGetByCodigo", "Materiales")
+              }));
+    </script>
+    <script>
+        var filter = {};
+
+        filter.btn = $('#btnFilter');
+        filter.grid = $('#Grid1');
+        filter.form = $('#form-filter');
+        filter.begin = function () {
+            filter.grid.fadeTo(0, 0.4);
+            filter.btn.prop('disabled', true);
+        }
+        filter.success = function (data) {
+            filter.grid.html(data);
+            filter.bindPaged();
+            filter.end();
+        }
+        filter.failure = function () {
+            jshelper.failure();
+            filter.end();
+        }
+        filter.end = function () {
+            filter.grid.fadeTo('slow', 1);
+            filter.btn.prop('disabled', false);
+        }
+        filter.init = function () {
+            $('#MaterialNombre, #BodegaDescripcion').attr('readonly', 'readonly').attr('tabindex', '-1');
+        }
+        filter.bindPaged = function () {
+            $(".pagination a").click(function () {
+                if (event.preventDefault) {
+                    event.preventDefault();
+                    //console.log('detenido');
+                    //console.log($(this).attr('href'));
+                    $('#Page').val($(this).attr('href'));
+                    filter.btn.trigger('click');
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            filter.init();
+            filter.form.submit();
+
+            // Autocomplete
+            $('#MaterialId').select2({
+                theme: "bootstrap-5",
+                allowClear: true,
+                //dropdownParent: $('#form-body-child'),
+                placeholder: "Seleccionar Material",
+                language: "es",
+                ajax: {
+                    url: '@Url.Action("JsGetByFilter", "Materiales", new { Area = "Inventario"})',
+                    dataType: 'json',
+                    data: function (p) {
+                        return {
+                            f: p.term,
+                            tipo: 'S',
+                        };
+                    },
+                    processResults: function (r) {
+                        return {
+                            results: $.map(r.data, function (item) {
+                                return {
+                                    id: item.id,
+                                    text: item.text.trim(),
+                                    html: item.html
+                                }
+                            })
+                        };
+                    }
+                },
+                escapeMarkup: function (markup) {
+                    return markup;
+                },
+                templateResult: function (data) {
+                    return data.html;
+                },
+                templateSelection: function (data) {
+                    //$('#ProveedorId').val(data.id);
+                    return data.text;
+                },
+            });
+            $('#ProveedorId').select2({
+                theme: "bootstrap-5",
+                allowClear: true,
+                //dropdownParent: $('#form-body-child'),
+                placeholder: "Seleccionar Proveedor",
+                language: "es",
+                ajax: {
+                    url: '@Url.Action("JsGetByFilter","Proveedores", new {Area = "Inventario"})',
+                    dataType: 'json',
+                    data: function (p) {
+                        return {
+                            f: p.term,
+                            tipo: 'S',
+                        };
+                    },
+                    processResults: function (r) {
+                        return {
+                            results: $.map(r.data, function (item) {
+                                return {
+                                    text: item.text.trim(),
+                                    id: item.id,
+                                    html: item.html
+                                }
+                            })
+                        };
+                    }
+                },
+                escapeMarkup: function (markup) {
+                    return markup;
+                },
+                templateResult: function (data) {
+                    return data.html;
+                },
+                templateSelection: function (data) {
+                    $('#ProveedorId').val(data.id);
+                    return data.text;
+                },
+            });
+
+            // Blur
+
+        });
+    </script>
+}

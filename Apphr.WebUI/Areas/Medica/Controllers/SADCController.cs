@@ -26,32 +26,25 @@ namespace Apphr.WebUI.Areas.Medica.Controllers
             }           
         }
 
+        public async Task<List<SADCPacienteDTOBase>> GetPacientesLikeHCA(string f)
+        {
+            using (var db = new SADCDbContext())
+            {
+                string query = "SELECT TOP 50 pa.Pac_NumHC,pa.Pac_NumHCAntiguo,pe.Per_PrimerNombre,pe.Per_SegundoNombre,pe.Per_TercerNombre,pe.Per_PrimerApellido,pe.Per_SegundoApellido,pe.Per_ApellidoCasada,pe.Per_FechaNacimiento FROM dbo.SAD_Paciente AS pa INNER JOIN dbo.ERP_Persona AS pe ON pa.Pac_Persona =pe.Per_Persona WHERE CONVERT (VARCHAR (18),pa.Pac_NumHCAntiguo) LIKE '%' + @f + '%' AND pa.Pac_Estado = 1";
+                var p = new List<SqlParameter>();
+                p.Add(new SqlParameter("@f", f));
+                return await db.Database.SqlQuery<SADCPacienteDTOBase>(query, p.ToArray()).ToListAsync();
+            }
+        }
+
         public SADCPacienteDTOBase GetPacienteByHCA(string rm)
         {
             using (var db = new SADCDbContext())
             {
-                string query = "SELECT pa.Pac_NumHC,pa.Pac_NumHCAntiguo,pe.Per_PrimerNombre,pe.Per_SegundoNombre,pe.Per_TercerNombre,pe.Per_PrimerApellido,pe.Per_SegundoApellido,pe.Per_ApellidoCasada,pe.Per_FechaNacimiento FROM dbo.SAD_Paciente AS pa INNER JOIN dbo.ERP_Persona AS pe ON pa.Pac_Persona =pe.Per_Persona WHERE pa.Pac_NumHCAntiguo = @rm AND pa.Pac_Estado = 1";
+                string query = "SELECT CAST (pa.Pac_NumHC AS bigint) AS Pac_NumHC,CAST (pa.Pac_NumHCAntiguo AS bigint) AS Pac_NumHCAntiguo,pe.Per_PrimerNombre,pe.Per_SegundoNombre,pe.Per_TercerNombre,pe.Per_PrimerApellido,pe.Per_SegundoApellido,pe.Per_ApellidoCasada,pe.Per_FechaNacimiento FROM dbo.SAD_Paciente AS pa INNER JOIN dbo.ERP_Persona AS pe ON pa.Pac_Persona =pe.Per_Persona WHERE pa.Pac_NumHCAntiguo = @rm AND pa.Pac_Estado = 1";
                 var p = new List<SqlParameter>();
                 p.Add(new SqlParameter("@rm", int.Parse(rm)));
                 return db.Database.SqlQuery<SADCPacienteDTOBase>(query, p.ToArray()).FirstOrDefault();
-
-                //var p = new List<SqlParameter>();
-                //p.Add(new SqlParameter("@donador", int.Parse("0")));
-                //p.Add(new SqlParameter("@opcion", int.Parse("0")));
-                //p.Add(new SqlParameter("@primerapellido", "0"));
-                //p.Add(new SqlParameter("@segundoapellido", "0"));
-                //p.Add(new SqlParameter("@primernombre", "0"));
-                //p.Add(new SqlParameter("@segundonombre", "0"));
-                //p.Add(new SqlParameter("@fechanac", "0"));
-                //p.Add(new SqlParameter("@histoclinic", "0"));
-                //p.Add(new SqlParameter("@histoclinicAnti", rm));
-                //p.Add(new SqlParameter("@pacienteXX", "0"));
-                //p.Add(new SqlParameter("@cedula", "0"));
-
-               //return db.Database.SqlQuery<SADCPacienteDTOBase>(
-               //     "sp_SAD_BusquedaPaciente @primerapellido, @segundoapellido, @primernombre, @segundonombre, @fechanac, @histoclinic, @histoclinicAnti, @pacienteXX, @cedula, @opcion, @donador",
-               //     p.ToArray()
-               //     ).FirstOrDefault();                
             }
         }
     }

@@ -1,0 +1,16 @@
+﻿@*<div class="modal fade" id="child-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" data-bs-backdrop="static" data-bs-keyboard="false">*@
+<div class="modal fade" id="@(ViewData["id"] != null ? ViewData["id"] : "child-modal")" tabindex="-1" role="dialog" aria-labelledby="modalLabel" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header @(ViewData["classHeader"] != null ? ViewData["classHeader"] : "")">
+                <h5 id="@(ViewData["id"] != null ? ViewData["id"]+"-label" : "modalLabel")" class="modal-title">Agregar Material</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="@(ViewData["id"] != null ? ViewData["id"]+"-body" : "form-body-child")">
+            </div>
+            <div class="modal-footer">
+                <input type="submit" id="btn-save-modal" class="btn btn-primary" value="Guardar" />
+            </div>
+        </div>
+    </div>
+</div>

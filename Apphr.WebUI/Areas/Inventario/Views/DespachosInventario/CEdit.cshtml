@@ -93,7 +93,7 @@
 
 
     <div class="col-md-12 mt-2 onUpd">
-        <a class="btn btn-outline-dark btnReturn" href="">Regresar</a>
+        <a class="btn btn-outline-dark btnReturn" href=""><i class="fas fa-chevron-left"></i>&nbsp;Regresar</a>
         <div class="float-end">
             <a class="btn btn-outline-danger btn-eliminar" href="#"><i class="fas fa-trash"></i>&nbsp;Eliminar</a>
         </div>
@@ -116,7 +116,7 @@
                         <h5 id="myModalLabel" class="modal-title">Agregar Material</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body" id="formLinea">
+                    <div class="modal-body" id="form-body-child">
                         @Html.Partial("_CEditChild", Model.Child)
                     </div>
                     <div class="modal-footer">
@@ -134,12 +134,12 @@
         let urls = @Html.Raw(JsonConvert.SerializeObject(new
               {
                   FindDestinos = Url.Action("JsGetDestinosByFilter", "Destinos"),
-                  FindBodegas = Url.Action("JsGetBodegasByFilter", "Bodegas"),
-                  FindMateriales = Url.Action("JsGetMaterialesByFilter", "Materiales"),
-                  FindProveedores = Url.Action("JsGetProveedoresByFilter", "Proveedores"),
+                  FindBodegas = Url.Action("JsGetByFilter", "Bodegas"),
+                  FindMateriales = Url.Action("JsGetByFilter", "Materiales"),
+                  FindProveedores = Url.Action("JsGetByFilter", "Proveedores"),
                   GetDestino = Url.Action("JsGetDestinoByCodigo", "Destinos"),
                   GetBodega = Url.Action("JsGetBodegaByNombre", "Bodegas"),
-                  GetMaterial = Url.Action("JsGetMaterialByCodigo", "Materiales"),
+                  GetMaterial = Url.Action("JsGetByCodigo", "Materiales"),
                   GetMaterialSD = Url.Action("JsGetMaterialesInSDByFilter"),
                   GetMaterialSM = Url.Action("JsGetMaterialesInSMByFilter"),
                   GetProveedor = Url.Action("JsGetProveedorByNit", "Proveedores"),

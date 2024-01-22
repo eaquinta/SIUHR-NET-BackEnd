@@ -1,0 +1,98 @@
+﻿@model List<Apphr.Application.ControlAbastecimiento.DTOs.ControlAbastecimientoDTOIndex>
+    <style>
+        th:first-child, td:first-child {
+            position: sticky;
+            left: 0px;
+            background-color: whitesmoke;
+        }
+    </style>
+<div class="table-responsive text-nowrap">
+    <table id="table" class="table table-sm table-striped table-hover nowrap table-bordered" width="100%" data-toggle="table">
+        <thead>
+            <tr>
+                @*<th style="width:75px;">Acciones</th>*@
+                <th class="text-center">Código</th>
+                <th>Material</th>
+                <th class="text-center text-wrap tg-sp">Código Finanzas</th>
+                <th class="text-center text-wrap">Solicitud de Pedido No.</th>
+                <th class="text-center text-wrap tg-sp">Tipo Compra</th>
+                <th class="text-center text-wrap tg-sp">Fecha Solicitud</th>
+                <th class="text-end text-wrap">Cantida Solicitada</th>
+                <th class="text-end text-wrap tg-sp">Precio Unitario</th>
+                <th class="text-end text-wrap tg-sp">Monto Total</th>
+                <th class="text-wrap text-center">Orden de Compra No.</th>
+                <th>Proveedor</th>
+                <th class="text-center text-wrap tg-sp">Fecha Orden</th>                
+                <th class="text-center text-wrap" colspan="2">Cantidad Ingreso</th>
+                <th class="text-center text-wrap">Fecha Ingreso</th>
+                <th class="text-end text-wrap">Pendiente de Ingreso</th>
+                <th class="text-end text-wrap" colspan="2">Egresos</th>
+                <th class="text-end text-wrap">Existencia</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+            <tr>
+                @*<td></td>*@
+                <td class="align-middle">@item.MaterialCodigo</td>
+                <td class="align-middle ellipsis">
+                    <div class="popper" data-bs-container="body" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="@item.MaterialDescripcion">@item.MaterialDescripcion</div>
+                </td>
+                <td class="align-middle text-center tg-sp">@item.MaterialCodigoSiges</td>
+                <td class="align-middle text-center table-danger" data-field="SolicitudPedidoId">@item.SolicitudPedidoId</td>
+                <td class="align-middle text-center tg-sp" data-field="TipoCompra">@item.TipoCompra</td>
+                <td class="align-middle text-center tg-sp" data-field="FechaSolicitud">@(item.FechaSolicitud.HasValue ? item.FechaSolicitud.Value.ToString("d") : "")</td>
+                <td class="align-middle text-end" data-field="CantidadSolicitada">@item.CantidadSolicitado</td>
+                <td class="align-middle text-end tg-sp" data-field="PrecioUnitario">@item.PrecioUnitario</td>
+                <td class="align-middle text-end tg-sp" data-field="MontoTotal">@item.ValorTotal</td>
+                <td class="align-middle text-center  table-danger">@item.OrdenCompraId</td>
+                <td class="align-middle">@item.ProveedorNombre</td>
+                <td class="align-middle text-center tg-sp">@(item.FechaOrden.HasValue ? item.FechaOrden.Value.ToString("d"): "")</td>
+                <td style="width: 32px;">
+                    <div class="dropdown d-inline-block">
+                        <button class="btn btn-sm" type="button" id="ddBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="ddBtn">
+                            <li><a class="dropdown-item" data-m="@item.MaterialId" data-oc="@item.OrdenCompraId" data-p="@item.ProveedorId" onclick="addIngreso(this);"><i class="fas fa-plus"></i> Agregar Ingreso</a></li>
+                            <li><a class="dropdown-item" data-m="@item.MaterialId" data-oc="@item.OrdenCompraId" onclick="verIngresos(this);"><i class="far fa-eye"></i> Ver Ingresos</a></li>
+                        </ul>
+                    </div>
+                </td>
+                <td class="align-middle text-end">@item.CantidadIngreso</td>
+                <td class="align-middle text-center">@(item.FechaIngresoAlmacen.HasValue ? item.FechaIngresoAlmacen.Value.ToString("d") : "")</td>
+                <td class="align-middle text-end">@item.CantidadPendienteIngreso</td>
+                <td style="width: 32px;">
+                    <div class="dropdown d-inline-block">
+                        <button class="btn btn-sm" type="button" id="ddBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="ddBtn">                            
+                            <li><a class="dropdown-item" data-m="@item.MaterialId" data-oc="@item.OrdenCompraId" data-p="@item.ProveedorId" onclick="addEgreso(this);"><i class="fas fa-plus"></i> Agregar Egresos</a></li>
+                            <li><a class="dropdown-item" data-m="@item.MaterialId" data-oc="@item.OrdenCompraId" onclick="verEgresos(this);"><i class="far fa-eye"></i> Ver Egresos</a></li>
+                        </ul>
+                    </div>
+                </td>
+                <td class="align-middle text-end">@item.CantidadEgreso</td>
+                <td class="align-middle text-end">@item.Existencia</td>
+            </tr>
+                }
+            }
+            else
+            {
+                <!--Sin registros-->
+                <tr>
+                    <td class="text-center" colspan="19">@Apphr.Resources.Strings.NoRegister</td>
+                </tr>
+                <!--Sin registros-->
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    
+</script>

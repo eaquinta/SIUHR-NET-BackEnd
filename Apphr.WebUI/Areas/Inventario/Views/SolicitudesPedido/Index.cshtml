@@ -2,9 +2,11 @@
 @using PagedList.Mvc
 
 @{
-    ViewBag.Title = "Índice";
+    ViewBag.Accion = "Índice";
     ViewBag.Entidad = "Solicitud Pedidos";
     ViewBag.Icon = "<i class=\"far fa-list-alt\"></i>";
+
+    ViewBag.Title = ViewBag.Accion + " de " + ViewBag.Entidad;
     Layout = "~/Views/Shared/_AppLayout.cshtml";
 }
 
@@ -28,13 +30,13 @@
     <!--BreadCrum-->
     <!-- Encablezado -->
     <h4 class="my-3">
-        @ViewBag.Title @ViewBag.Entidad @Html.Raw(ViewBag.Icon)
+        @ViewBag.Title @Html.Raw(ViewBag.Icon)
         <a class="btn btn-success ms-3 float-end" href="@Url.Action("CEdit")">
             Adicionar <i class="fa fa-plus"></i>
         </a>
-        @*<a class="btn btn-default float-end" href="@Url.Action("IndexDBF")">
+        <a class="btn btn-default float-end" href="@Url.Action("IndexDBF")">
                 SIAHR <i class="fas fa-link"></i>
-            </a>*@
+        </a>
     </h4>
     <div class="clearfix"></div>
     <!-- Encablezado -->
@@ -42,10 +44,10 @@
     @using (Html.BeginForm())
     {
         @Html.HiddenFor(x => x.F._Buscar)
-        <div class="card mb-3">
-            <div class="card-header">
+        <div class="card border border-dark mb-3">
+            <div class="card-header background-inventory">
                 Filtro
-                <a class="@*collapsed*@" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true" aria-controls="collapseExample">
+                <a data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true" aria-controls="collapseExample">
                     <i class="fa fa-chevron-up fa-pull-right" style="margin-top: 5px;"></i>
                 </a>
             </div>

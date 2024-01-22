@@ -1,5 +1,11 @@
 ﻿$(document).ready(function () {
+    toastr.options = {
+        "closeButton": true,
+    }
     AOS.init();
+    // inicia los AOS en los modals
+    $(window).on("shown.bs.modal", function () { AOS.init({ disable: true }); });
+    $(window).on("hidden.bs.modal", function () { AOS.init({ disable: false }); });
     // Inicia los Select with Search    
     $('.select2find').select2({
         theme: "bootstrap-5",
@@ -27,4 +33,21 @@
             $('#back-to-top').fadeOut();
         }
     });
+
+
+    
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+    
+
 });
+
+// PopOvers & Tooltips
+function enablePopover() {
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl)
+    });
+}

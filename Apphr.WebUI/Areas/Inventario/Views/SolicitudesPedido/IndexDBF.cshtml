@@ -1,14 +1,18 @@
 ﻿@using PagedList.Mvc
-@model Apphr.Application.SolicitudesPedido.DTOs.SolicitudPedidoDTOIndexDBF
+
+@model Apphr.Application.SolicitudesPedido.DTOs.SolicitudPedidoDTOIxDBFFilter
+
 @{
-    ViewBag.Title = "Índice";
-    ViewBag.Entidad = "Solicitudes de Pedido";
+    ViewBag.Title = "Índice Solicitudes de Pedido SIAHR";
     ViewBag.Icon = "<i class=\"far fa-list-alt\"></i>";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
+    var _anioList = (IEnumerable<SelectListItem>)ViewData["AnioList"];
 }
+
 <link href="~/Content/PagedList.css" rel="stylesheet" />
 
 @Html.Partial("_PartialAdvSiahr")
+
 <div class="container-lg">
     <!--BreadCrum-->
     <nav aria-label="breadcrumb">
@@ -27,33 +31,36 @@
     <!--BreadCrum-->
     <!-- Encablezado -->
     <h4 class="my-3">
-        @ViewBag.Title @ViewBag.Entidad @Html.Raw(ViewBag.Icon)
-        @*<a class="btn btn-success ms-3 float-end" href="@Url.Action("Create")">
-            Adicionar <i class="fa fa-plus"></i>
-        </a>
-        <a class="btn btn-default float-end" href="@Url.Action("Index")">
-            SIAHR <i class="fas fa-link"></i>
-        </a>*@
+        @ViewBag.Title @Html.Raw(ViewBag.Icon)
     </h4>
     <div class="clearfix"></div>
     <!-- Encablezado -->
     <!-- Filtro -->
-    @using (Html.BeginForm("IndexDBF", "SolicitudesPedido", FormMethod.Get))
+    @using (Ajax.BeginForm("JsFilterDBFIndex", "AjustesInventario", new AjaxOptions
     {
-        @Html.HiddenFor(x => x.F._Buscar)
-        <div class="card mb-3">
-            <div class="card-header">
-                <a class="text-decoration-none" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-                    Filtro <i class="fa fa-filter"></i>
+        HttpMethod = "POST",
+        OnBegin = "filter.begin",
+        OnSuccess = "filter.success",
+        OnFailure = "filter.failure"
+    }, new { id = "form-filter" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.Page)
+
+        <div class="card border border-dark mb-3">
+            <div class="card-header background-siahr">
+                Filtro
+                <a class="@*collapsed*@" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true" aria-controls="collapseExample">
+                    <i class="fa fa-chevron-up fa-pull-right" style="margin-top: 5px;"></i>
                 </a>
             </div>
-            @*<div id="collapse1" class="panel-collapse collapse">*@
             <div class="collapse show" id="collapseExample">
                 <div class="card-body">
-                    @Html.EditorFor(x => x.F.Buscar, "StringP", new { placeholder = "#Solicitud, Fecha, Depto." })
+                    @Html.EditorFor(x => x.Buscar, "StringP", new { placeholder = "#Solicitud, Fecha, Depto." })
+                    @Html.EditorFor(x => x.Anio, "DropDownP", new { optionsList = _anioList, placeholder = "Año" })
                     <div class="form-group">
                         <div class="float-end mb-3">
-                            <button type="submit" class="btn btn-info"><i class="fa fa-filter"></i> Aplicar</button>
+                            <button id="btnFilter" type="submit" class="btn btn-info"><i class="fa fa-filter"></i> Aplicar</button>
                         </div>
                     </div>
                 </div>
@@ -61,34 +68,148 @@
         </div>
     }
     <!-- Filtro -->
-    <!-- Paged Result -->
-    <table class="table table-hover table-bordered">
-        <tr class="table-dark">
-            <th style="width:65px;">Acción</th>
-            <th>Solicitud</th>
-            <th>Fecha</th>
-            <th>Departamento Solicitante</th>
-        </tr>
-
-        @if (Model.Result.Any())
-        {
-            foreach (var item in Model.Result)
-            {
-                <tr>
-                    <td class="text-center"><a href="@Url.Action("DetailsDBF",new { Area = "Inventario", id = item.NUMSOL })"><i class="far fa-eye"></i></a> </td>
-                    <td>@Html.DisplayFor(modelItem => item.NUMSOL)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Fecha)</td>
-                    <td>@Html.DisplayFor(modelItem => item.DEPSOL)</td>
-                </tr>
-            }
-        }
-    </table>
-
-    <!-- Table Paged Navigation-->
-    <div class="row">
-        <div class="col-12 text-center">@Html.PagedListPager(Model.Result, page => Url.Action("IndexDBF", new { page }) + "&F.Buscar=" + Model?.F?.Buscar + "&F._Buscar=" + Model?.F?._Buscar, PagedListRenderOptions.OnlyShowFivePagesAtATime)</div>
-        <div class="text-center">Página @(Model.Result.PageCount < Model.Result.PageNumber ? 0 : Model.Result.PageNumber) de @Model.Result.PageCount</div>
+    <!-- Tabla -->
+    <div id="Grid1"></div>
+    <!-- Tabla -->
+    <!-- Modal -->
+    <div class="modal fade" id="child-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="modalLabel" class="modal-title">Agregar Material</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="form-body-child">
+                </div>
+                @*<div class="modal-footer">
+                        <input type="submit" id="btnSaveDTmodal" class="btn btn-primary" value="Guardar" />
+                    </div>*@
+            </div>
+        </div>
     </div>
-    <!-- Table Paged Navigation-->
-    <!-- Paged Result -->
+    <!-- Modal -->
+    <!-- Report Modal -->
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-fullscreen-lg-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Solicitud de Pedido SIAHR</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <object type="application/pdf" data="@*@Url.Action("Print", new { id = Model.Solicitud })*@" width="100%" height="500" style="height: 85vh;">No Support</object>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Report Modal -->
 </div>
+
+@section Scripts{
+    <script>
+        function ImportSolicitudPedido(t) {
+            let id = $(t).data("id");
+            let year = $(t).data("year");
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("JsImportSolicitudPedido", "SolicitudesPedido", new { Area = "Inventario" })',
+                data: { CODIGO: id, year: year },
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    //console.log(r.result);
+                    if (r.result) {
+                        toastr.success('Sincronizado satisfactoriamente','Sincronizacion');
+                    }
+                },
+                failure: function (response) {
+                    jshelper.failure();
+                   // console.log(response);
+                }
+            });
+        }
+
+        function Details(t) {
+            let id = $(t).data("id");
+            let year = $(t).data("year");
+            $('#modalLabel').html('Solicitud Pedido SIAHR');
+
+            jshelper.get('@Url.Action("JsDetailsDBF")', {id: id, year: year}, function (response) {
+                $('#form-body-child').html(response);
+
+                //let form = $("#form-child"); //.closest("form");
+                //form.removeData('validator');
+                //form.removeData('unobtrusiveValidation');
+                //$.validator.unobtrusive.parse(form);
+
+
+                //$('#IngresoAbastecimientoId').val('0');
+                //$('#Cantidad').val('');
+                //$('#form-child #MaterialId').val(MaterialId);
+                //$('#OrdenCompraId').val(OrdenCompraId);
+            });
+            $('#child-modal').modal('show');
+        }
+
+        var filter = {};
+        filter.form = $('#form-filter');
+        filter.btn = $('#btnFilter');
+        filter.grid = $('#Grid1');
+        filter.begin = function () {
+            $('#spinner-div').show();
+            filter.grid.fadeTo(0, 0.4);
+            filter.btn.prop('disabled', true);
+        }
+        filter.success = function (data) {
+            filter.grid.html(data);
+            filter.bindPaged();
+            filter.end();
+        }
+        filter.end = function () {
+            $('#spinner-div').hide();
+            filter.grid.fadeTo('slow', 1);
+            filter.btn.prop('disabled', false);
+        }
+        filter.bindPaged = function () {
+            $(".pagination a").click(function () {
+                if (event.preventDefault) {
+                    event.preventDefault();
+                    $('#Page').val($(this).attr('href'));
+                    filter.btn.trigger('click');
+                }
+            });
+        }
+
+        $(function () {
+            // alert slide up
+            $('#siahr-bsalert').delay(5000).slideUp(500, function () {
+                $(this).remove();
+            });
+            // auto fill
+            filter.form.submit();
+            // reset page
+            filter.form.on('keyup change paste', 'input, select, textarea', function () {
+                $('#page').val("");
+            });
+        });
+        
+        function Print(t) {
+            event.preventDefault();
+            let id = $(t).data("id");
+            let year = $(t).data("year");
+
+            let url = '@Url.Action("Print")'; 
+
+            var objElem = $('<object id="rptObject" type="application/pdf" data="" width="100%" height="500" style="height: 75vh;">No Support</object>');
+            var urlReport = url + '?id=' + id + '&year=' + year;
+            $('#reportModal .modal-body').html(objElem);
+            $('#rptObject').attr('data', urlReport);
+           
+            $('#reportModal').modal('show');
+                    
+        }
+    </script>
+}

@@ -22,8 +22,9 @@
             <tr>
                 @*<th style="width:75px;">Acciones</th>*@
                 <th>Material</th>
-                <th>Cantidad</th>
-                <th>Precio</th>
+                <th class="text-end">Cantidad</th>
+                <th class="text-end">Precio</th>
+                <th class="text-end">Valor</th>
             </tr>
         </thead>
         <tbody>
@@ -31,21 +32,11 @@
             {
                 foreach (var item in Model.Detalle)
                 {
-            <tr>
-                <!-- Acciones -->
-                @*<td class="text-center">
-                    <a class="btn btn-sm btn-info" href="@Url.Action("Details", new { id = item.BodegaId })"><i class="fa fa-eye" aria-hidden="true"></i></a>
-                </td>*@
-                <!-- Acciones -->
-                <td>
-                    [@item.Material.Codigo] @item.Material.Descripcion
-                </td>
-                <td>
-                    @item.Cantidad
-                </td>
-                <td>
-                    @item.Precio
-                </td>
+            <tr>                
+                <td>[@item.Material.Codigo] @item.Material.Descripcion</td>
+                <td>@string.Format("{0:N2}", item.Cantidad)</td>
+                <td>@string.Format("{0:N2}", item.Precio)</td>
+                <td>@string.Format("{0:N2}", item.Valor)</td>
             </tr>
                 }
             }

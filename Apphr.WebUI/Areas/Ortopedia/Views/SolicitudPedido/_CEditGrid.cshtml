@@ -1,0 +1,56 @@
+﻿@model IEnumerable<Apphr.Application.Ortopedia.ORTMovimientos.DTOs.MovimientoDTOJsGrid>
+
+<div class="card border border-dark">
+    <div class="card-header background-inventory">
+        Detalle
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="mb-0 table table-striped table-hover nowrap" width="100%">
+                <thead>
+                    <tr>
+                        <th style="width:75px;">Acciones</th>
+                        <th>Material</th>
+                        <th class="text-end">Cantidad</th>
+                        <th class="text-end">Precio U.</th>
+                        <th class="text-end">Valor</th>
+                    </tr>
+                </thead>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                <div class="dropdown d-inline-block">
+                                    <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" data-model-id="@item.MovimientoId" onclick="child.rowView(this);"><i class="far fa-eye"></i> Ver</a></li>
+                                        <li><a class="dropdown-item" data-model-id="@item.MovimientoId" onclick="child.rowEdit(this);"><i class="far fa-edit"></i> Editar</a></li>
+                                        <li><a class="dropdown-item" data-model-id="@item.MovimientoId" data-model-material="[@item.Material.Codigo] @item.Material.Descripcion" onclick="child.rowDelete(this);"><i class="fas fa-trash-alt"></i> Eliminar</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                            <td>[@item.Material.Codigo] @item.Material.Descripcion</td>
+                            <td class="text-end">@string.Format("{0:N2}", item.Cantidad)</td>
+                            <td class="text-end">@string.Format("{0:N2}", item.Precio)</td>
+                            <td class="text-end">@string.Format("{0:N2}", item.Valor)</td>
+                        </tr>
+                    }
+
+                }
+                else
+                {
+                    <!--Sin registros-->
+                    <tr>
+                        <td class="text-center" colspan="5">@Apphr.Resources.Strings.NoRegister</td>
+                    </tr>
+                    <!--Sin registros-->
+                }
+
+            </table>
+        </div>
+    </div>
+</div>

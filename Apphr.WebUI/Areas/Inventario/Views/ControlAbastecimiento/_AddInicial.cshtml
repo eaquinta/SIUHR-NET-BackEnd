@@ -1,0 +1,23 @@
+﻿@model Apphr.Application.InicialAbastecimiento.DTOs.InicialAbastecimientoDTOCEdit
+
+@using (Ajax.BeginForm("JsCEditInicial", "ControlAbastecimiento", new AjaxOptions
+{
+    HttpMethod = "POST",
+    OnBegin = "inicial.begin",
+    OnSuccess = "inicial.success",
+    OnFailure = "inicial.failure"
+},
+new { id = "modal-inicial-form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.MaterialId)
+    @Html.HiddenFor(x => x.ProveedorId)
+    <div class="row">
+        <div class="col-md-4">@Html.EditorFor(x => x.MaterialCodigo)</div>
+        <div class="col-md-8">@Html.EditorFor(x => x.MaterialNombre)</div>
+        <div class="col-md-4">@Html.EditorFor(x => x.ProveedorNit)</div>
+        <div class="col-md-8">@Html.EditorFor(x => x.ProveedorNombre)</div>
+        <div class="col-md-12">@Html.EditorFor(x => x.Cantidad)</div>
+    </div>
+    <input type="submit" id="btnSaveChildInicial" class="btn btn-primary float-end" value="Guardar" />
+}

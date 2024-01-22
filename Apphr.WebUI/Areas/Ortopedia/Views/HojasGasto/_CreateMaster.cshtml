@@ -1,0 +1,21 @@
+﻿@model Apphr.Application.Ortopedia.HojaGasto.DTOs.HojaGastoDTOCreate
+
+@Html.AntiForgeryToken()
+@Html.HiddenFor(x => x.HojaGastoId)
+@Html.HiddenFor(x => x.PacienteId)
+
+<div class="row">
+    <div class="col-md-6">@Html.EditorFor(x => x.HojaControlSala)</div>
+    <div class="col-md-6">@Html.EditorFor(x => x.Fecha)</div>
+
+    <div class="col-md-4">@Html.EditorFor(x => x.PacienteRM)</div>
+    <div class="col-md-8">@Html.EditorFor(x => x.PacienteNombreCompleto)</div>
+
+    <div class="col-md-4">@Html.EditorFor(x => x.ServicioId, new { optionsList = ViewBag.ServicioId, btnId = "add-servicio-btn" })</div>
+    <div class="col-md-4">@Html.EditorFor(x => x.Cama)</div>
+    <div class="col-md-4">@Html.EditorFor(x => x.FechaOperacion)</div>
+    <div class="col-md-12">@Html.EditorFor(x => x.CirujanoId, new { optionsList = ViewBag.CirujanoId, btnId = "add-cirujano-btn" })</div>
+    <div class="col-md-12">@Html.EditorFor(x => x.AuxiliarEnfermeriaInstrumentista)</div>
+    <div class="col-md-12">@Html.EditorFor(x => x.AuxiliarEnfermeriaCirculante)</div>
+    <div class="col-md-12">@Html.EditorFor(x => x.Observacion)</div>
+</div>

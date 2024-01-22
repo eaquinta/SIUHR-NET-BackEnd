@@ -1,206 +1,414 @@
 ﻿using Apphr.Application.Bodegas.DTOs;
-using Apphr.Domain.Entities;
+using Apphr.Application.Common.DTOs;
+using Apphr.Domain.EntitiesDBF;
+using Apphr.Domain.Enums;
+using Apphr.WebUI.Common;
 using Apphr.WebUI.Controllers;
+using Apphr.WebUI.CustomAttributes;
+using Apphr.WebUI.Models.Entities;
+using Apphr.WebUI.Models.Repository;
+using PagedList;
+using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using PagedList;
-using System;
-using System.Net;
-using System.Data.Entity;
-using System.Collections.Generic;
-using Apphr.Domain.Enums;
-using Apphr.WebUI.Common;
-using Apphr.WebUI.CustomAttributes;
 
 namespace Apphr.WebUI.Areas.Inventario.Controllers
 {
     [Authorize]
+    [LogAction]
     public class BodegasController : DbController
     {
-        [AppAuthorization(Permit.View)]
-        public ActionResult Index(BodegaDTOIndex dto, int? page) //GET
+        private MaterialRepository MaterialRep;
+        private BodegaRepository BodegaRep;
+
+        public BodegasController()
         {
-            IQueryable<Bodega> regs;
-
-            int pageIndex = 1;
-            if (dto?.F == null) dto.F = new BodegaDTOIxFilter();
-            if (dto.F.Buscar != dto.F._Buscar)
-            {
-                page = 1;
-                dto.F._Buscar = dto.F.Buscar;
-            }
-
-            pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
-            //            BodegaDTOIndex dto = new BodegaDTOIndex();
-
-
-            regs = (from p in db.Bodegas select p);
-            if (dto.F != null)
-            {
-                if (!string.IsNullOrEmpty(dto.F.Buscar))
-                    regs = regs.Where(x => x.Nombre.Contains(dto.F.Buscar) || x.Descripcion.Contains(dto.F.Buscar));
-            }
-
-
-                dto.Result = regs.OrderBy(x => x.Nombre).ToPagedList(pageIndex, pageSize);
-            return View(dto);
+            MaterialRep = new MaterialRepository(db);
+            BodegaRep = new BodegaRepository(db);
         }
 
-
-
-        [AppAuthorization(Permit.View)]
-        public async Task<ActionResult> Details(int? id)
+        #region SQL
+        [Can("bodega.ver")]
+        public ActionResult Index()                                                         //GET
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Bodega reg = await db.Bodegas.FindAsync(id);
-            if (reg == null)
-            {
-                return HttpNotFound();
-            }
-
-            BodegaDTODetails dto = mapper.Map<BodegaDTODetails>(reg);
-
-            return View(dto);
-        }
-
-
-
-        [AppAuthorization(Permit.Edit)]
-        public async Task<ActionResult> Edit(int? id) // GET
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Bodega reg = await db.Bodegas.FindAsync(id);
-            if (reg == null)
-            {
-                return HttpNotFound();
-            }
-
-            BodegaDTOEdit dto = mapper.Map<BodegaDTOEdit>(reg);
-            return View(dto);
-        }
-        [AppAuthorization(Permit.Edit)]
-        [HttpPost, ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "BodegaId,Nombre,Descripcion")] BodegaDTOEdit dto) // POST
-        {
-            if (ModelState.IsValid)
-            {
-                var reg = mapper.Map<Bodega>(dto);
-                db.Entry(reg).State = EntityState.Modified;
-                await db.SaveChangesAsync();
-                return RedirectToAction("Details", new { id = dto.BodegaId, Toast = "success.edit" });
-            }
-            return View(dto);
-        }
-
-
-        [AppAuthorization(Permit.Edit)]
-        public ActionResult Create()  //GET
-        {            
+            ViewBag.Permissions = Utilidades.GetPermissions(ControllerContext, userName);
             return View();
         }
-        [AppAuthorization(Permit.Edit)]
+
+        [ValidateAntiForgeryToken]
+        public ActionResult JsFilterIndex(string Buscar, int? page)                         // GET
+        {
+            IQueryable<Bodega> regs;
+            int pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
+
+            regs = (from p in db.Bodegas select p);
+
+            if (!string.IsNullOrEmpty(Buscar))
+                regs = regs.Where(x => x.Nombre.Contains(Buscar) || x.Descripcion.Contains(Buscar));
+
+            regs = regs.OrderBy(x => x.Nombre);
+
+            var rows = regs.Select(x => new BodegaDTOIxGrid
+            {
+                BodegaId = x.BodegaId,
+                Nombre = x.Nombre,
+                Descripcion = x.Descripcion,
+            }).ToList();
+
+            //var rows = mapper.Map<List<BodegaDTOIxGrid>>(regs.ToList());
+            var dto = (PagedList<BodegaDTOIxGrid>)rows.ToPagedList(pageIndex, pageSize);
+
+            ViewBag.PLROpions = PagedListOptions;
+            return PartialView("_IndexGrid", dto);
+        }
+
+        public async Task<ActionResult> JsViewMaster(int? id)                               // GET 
+        {
+            var reg = await db.Bodegas
+                .Where(x => x.BodegaId == id)
+                .FirstOrDefaultAsync();
+            if (reg == null)
+            {
+                return PartialView("_RegisterNotFound");
+            }
+
+            var dto = new BodegaDTOView()
+            {
+                Descripcion = reg.Descripcion,
+                Nombre = reg.Nombre,
+                Procedencia = reg.Procedencia,
+            };
+
+            return PartialView("_ViewMaster", dto);
+        }
+        public async Task<ActionResult> JsCEditMaster(int? id)                              // GE 
+        {
+            string[] permisosRequeridos = { "bodega.editar" };
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
+            if (!hasPermit)
+            {
+                return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.AllowGet);
+            }
+            if (id == null)
+            {
+                return PartialView("_CEditMaster", new BodegaDTOCEdit { BodegaId = 0 });
+            }
+            var reg = await db.Bodegas.Where(x => x.BodegaId == id).FirstOrDefaultAsync();
+            if (reg == null)
+            {
+                return PartialView("_RegisterNotFound");
+            }
+            var dto = new BodegaDTOCEdit()
+            {
+                BodegaId = reg.BodegaId,
+                Nombre = reg.Nombre,
+                Descripcion = reg.Descripcion,
+            };
+            return PartialView("_CEditMaster", dto);
+        }
+
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(BodegaDTOCreate dto) //POST
+        public async Task<JsonResult> JsSaveMaster(BodegaDTOCEdit dto)                      // POST 
         {
-            if (ModelState.IsValid)
+            List<string> ListPermit = new List<string>();
+
+            if (dto.BodegaId == 0)
+                ListPermit.Add("bodega.crear");
+            else
+                ListPermit.Add("bodega.editar");
+
+            bool hasPermit = await Utilidades.Can(ListPermit.ToArray(), userId);
+            if (!hasPermit)
             {
-                Bodega reg = new Bodega();
-             
-                mapper.Map(dto, reg);
-
-                db.Bodegas.Add(reg);
-                await db.SaveChangesAsync();
-
-                return RedirectToAction("Index");
-
+                return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
             }
-            return View(dto);
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return Json(new { success = false, message = Resources.Msg.failure_model_invalid });
+                }
+                if (dto.BodegaId == 0)
+                {
+                    // INSERT
+                    // Validación Adicional
+                    if (db.Bodegas.Any(x => x.Nombre == dto.Nombre))                    
+                        return Json(new { success = false, message = "Esta Bodega ya esta registrada." });
+                    
+
+                    var reg = new Bodega()
+                    {
+                        Nombre = dto.Nombre,
+                        Descripcion = dto.Descripcion,
+                    };
+
+                    db.Bodegas.Add(reg);
+                    await db.SaveChangesAsync();
+                    return Json(new { success = true, message = Resources.Msg.success_create, data = reg }, JsonRequestBehavior.DenyGet);
+                }
+                else
+                {
+                    // UPDATE
+                    var reg = await db.Bodegas
+                        .Where(x => x.BodegaId == dto.BodegaId)
+                        .FirstOrDefaultAsync();
+
+                    reg.Nombre = dto.Nombre;
+                    reg.Descripcion = dto.Descripcion;
+
+                    await db.SaveChangesAsync();
+                    return Json(new { success = true, message = Resources.Msg.success_edit, data = reg }, JsonRequestBehavior.DenyGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = Resources.Msg.failure, messageEx = ex.Message, messageInner = ex.InnerException }, JsonRequestBehavior.DenyGet);
+            }
         }
-
-        //public async Task<ActionResult> Delete(int? id) //GET
-        //{
-        //    if (id == null)
-        //    {
-        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-        //    }
-        //    Bodega reg = await db.Bodegas.FindAsync(id);
-        //    if (reg == null)
-        //    {
-        //        return HttpNotFound();
-        //    }
-
-        //    BodegaDTODelete dto = mapper.Map<BodegaDTODelete>(reg);
-        //    return View(dto);
-        //}
-
-        //[HttpPost, ValidateAntiForgeryToken, ActionName("Delete")]        
-        //public async Task<ActionResult> DeleteConfirmed(int id) // POST
-        //{
-        //    Bodega reg = await db.Bodegas.FindAsync(id);
-        //    db.Bodegas.Remove(reg);
-        //    await db.SaveChangesAsync();
-        //    return RedirectToAction("Index", new { Toast = "success.delete" });
-        //}
-
-        public ActionResult IndexDBF(BodegaDTOIndexDBF dto, string currentFilter, string searchString, int? page) // GET
+        [HttpPost]
+        public async Task<JsonResult> JsDeleteMaster(int id)                            // POST 
         {
-            int pageIndex = 1;
-            if (dto?.F == null) dto.F = new Application.Common.IxFilter();
-            if (dto.F.Buscar != dto.F._Buscar)
+            string[] permisosRequeridos = { "bodega.eliminar" };
+            
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
+            if (!hasPermit)
             {
-                page = 1;
-                dto.F._Buscar = dto.F.Buscar;
+                return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
             }
-
-            pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
-
-            var regs = this.dbfContext.GetBodegas();
-
-            if (!String.IsNullOrEmpty(dto?.F?.Buscar))
+            try
             {
-                regs = regs.Where(s =>
-                s.CODIGO.Contains(dto?.F?.Buscar) ||
-                s.DESCRI.ToUpper().Contains(dto?.F?.Buscar.ToUpper())
-                ).ToList();
+                using (DbContextTransaction t = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var reg = await db.Bodegas
+                            .Where(x => x.BodegaId == id)
+                            .FirstOrDefaultAsync();
+
+
+                        db.Bodegas.Remove(reg);
+
+                        await db.SaveChangesAsync();
+                        t.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        t.Rollback();
+                        throw;
+                    }
+                }
+                return Json(new { success = true, message = Resources.Msg.success_delete }, JsonRequestBehavior.DenyGet);
             }
-
-            dto.Result = regs.ToPagedList(pageIndex, pageSize);
-            return View(dto);
-
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = Resources.Msg.failure, exMessage = ex.Message, exInner = ex.InnerException }, JsonRequestBehavior.DenyGet);
+            }
         }
+        #endregion
 
-        public ActionResult DetailsDBF(string id)
+        #region DBF
+        [Can("bodega.ver")]
+        public ActionResult IndexDBF(int? Anio)                                             // GET
         {
+            var dto = new BodegaDTOIxFilterDBF { Anio = (Anio == null) ? AnioActual : Anio.Value };
+            ViewBag.Permissions = Utilidades.GetPermissions(ControllerContext, userName);
+            return View("Dbf/Index",dto);
+        }
+        [ValidateAntiForgeryToken]
+        public ActionResult JsFilterIndexDBF(string Buscar, int Anio, int? Page)                      // GET 
+        {
+            //IQueryable<Servicio> regs;
+            int pageIndex = Page.HasValue ? Convert.ToInt32(Page) : 1;
+            dbfContext.SetYear(Anio);
+            var regs = dbfContext.GetBodegas();
+            if (regs == null)
+                return View("ErrorSiahr");
+
+            if (!string.IsNullOrEmpty(Buscar))
+                regs = regs.Where(s => s.CODIGO.ToUpper().Contains(Buscar.ToUpper()) || s.DESCRI.ToUpper().Contains(Buscar.ToUpper()))
+                    .ToList();
+            else
+                regs = regs.ToList();
+            var regso = regs.OrderBy(x => x.CODIGO);
+
+            var rows = regso.Select(x => new BodegaDTOIxGridDBF
+            {
+                CODIGO = x.CODIGO,
+                DESCRI = x.DESCRI,
+            }).ToList();
+
+            var dto = (PagedList<BodegaDTOIxGridDBF>)rows.ToPagedList(pageIndex, pageSize);
+
+            ViewBag.PLROpions = PagedListOptions;
+            ViewBag.Anio = Anio;
+            return PartialView("Dbf/_IndexGrid", dto);
+        }
+        public ActionResult JsViewMasterDBF(string id, int Anio)                            // GET 
+        {
+            dbfContext.SetYear(Anio);
+            var reg = this.dbfContext.GetBodega(id).FirstOrDefault();
+            if (reg == null)
+                return PartialView("_RegisterNotFound");
+
+            var dto = new BodegaDTOViewDBF()
+            {
+                CODIGO = reg.CODIGO,
+                DESCRI = reg.DESCRI,
+                PROCED = reg.PROCED,
+                BODMAT = reg.BODMAT,
+            };
+
+            return PartialView("Dbf/_ViewMaster", dto);
+        }
+        public ActionResult JsCEditMasterDBF(string id, int Anio, string Mode)                          // GET 
+        {
+            dbfContext.SetYear(Anio);
+
             if (string.IsNullOrEmpty(id))
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            {   // INSERT
+                return PartialView("Dbf/_CEditMaster", new BodegaDTOCEditDBF { _Mode = Mode});
             }
-            var dto = this.dbfContext.GetBodega(id).FirstOrDefault();
-            if (dto == null)
+            else
             {
-                return HttpNotFound();
+                var reg = this.dbfContext.GetBodega(id).FirstOrDefault();
+                if (reg == null)
+                    return PartialView("_RegisterNotFound");
+
+                var dto = new BodegaDTOCEditDBF
+                {
+                    _Mode = Mode,
+                    BODMAT = reg.BODMAT,
+                    CODIGO = reg.CODIGO,
+                    DESCRI = reg.DESCRI,
+                    PROCED = reg.PROCED,
+                };
+
+                return PartialView("Dbf/_CEditMaster", dto);
             }
-            return View(dto);
         }
+
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> JsDeleteMasterDBF(string id, int Anio)                                      // POST 
+        {
+            string[] permisosRequeridos = { "bodega.eliminar" };
+            bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
+            if (!hasPermit)
+            {
+                return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
+            }
+            try
+            {
+                dbfContext.SetYear(Anio);
+                dbfContext.DltBodega(new BodegaDBF { CODIGO = id });
+                return Json(new { success = true, message = Resources.Msg.success_delete }, JsonRequestBehavior.DenyGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = Resources.Msg.failure, exMessage = ex.Message, exInner = ex.InnerException }, JsonRequestBehavior.DenyGet);
+            }
+        }
+
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> JsSaveMasterDBF(BodegaDTOCEditDBF dto, int Anio)                            // POST 
+        {
+            List<string> ListPermit = new List<string>();
+
+            if (string.IsNullOrEmpty(dto.CODIGO))
+                ListPermit.Add("bodega.crear");
+            else
+                ListPermit.Add("bodega.editar");
+
+            bool hasPermit = await Utilidades.Can(ListPermit.ToArray(), userId);
+            if (!hasPermit)
+            {
+                return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
+            }
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return Json(new { success = false, message = Resources.Msg.failure_model_invalid });
+                }
+                dbfContext.SetYear(Anio);
+                if (dto._Mode == "INS")
+                {
+                    // INSERT
+                    // Validación Adicional
+                    //if (db.ORTSolicitudesPedido.Any(x => x.Anio == dto.Fecha.Year && x.Numero == dto.Numero))
+                    //{
+                    //    return Json(new { success = false, message = "Esta Solicitud de Pedido ya esta registrada." });
+                    //}
+
+                    var reg = new BodegaDBF()
+                    {
+                        CODIGO = dto.CODIGO,
+                        DESCRI = dto.DESCRI,
+                        PROCED = dto.PROCED,
+                        BODMAT = dto.BODMAT
+                    };
+
+                    dbfContext.AddBodega(reg);
+
+                    return Json(new { success = true, message = Resources.Msg.success_create, data = reg }, JsonRequestBehavior.DenyGet);
+                }
+                else
+                {
+                    // UPDATE
+                    var reg = new BodegaDBF()
+                    {
+                        CODIGO = dto.CODIGO,
+                        DESCRI = dto.DESCRI,
+                        PROCED = dto.PROCED,
+                        BODMAT = dto.BODMAT
+                    };
+
+                    dbfContext.UpdBodega(reg);
+                    return Json(new { success = true, message = Resources.Msg.success_edit, data = reg }, JsonRequestBehavior.DenyGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = Resources.Msg.failure, messageEx = ex.Message, messageInner = ex.InnerException }, JsonRequestBehavior.DenyGet);
+            }
+        }
+
+        public JsonResult JsGetBodegasFilterDBF(string f, string tipo, int? anio)
+        {
+            Object res = null;
+
+            dbfContext.SetYear(anio);
+            var regs = dbfContext.GetBodegas();
+
+            if (!string.IsNullOrEmpty(f))
+                regs = regs.Where(x => x.CODIGO.ToUpper().Contains(f.ToUpper()));
+
+            regs = regs.Take(autoCompleteSize);
+
+            if (tipo == "AC")
+            {
+                res = regs.Select(p => new DTOAutocompleteItem { id = p.CODIGO, text = p.DESCRI })
+                    .ToList();
+            }
+            if (tipo == "S")
+            {
+                res = regs.Select(s => new DTOSelect2
+                {
+                    id = s.CODIGO,
+                    text = s.DESCRI,
+                    html = "<div style=\"font-weight: bold;\">" + s.CODIGO + "</div><div style=\"font-size: 0.75em;\">" + s.DESCRI + "</div>"
+                })
+                .ToList();
+            }
+
+            return Json(new { data = res }, JsonRequestBehavior.AllowGet);
+        }
+        #endregion
 
         #region Js
-        //public JsonResult GetBodega(string id)
-        //{
-        //    Bodega result = null;
-        //    if (!string.IsNullOrEmpty(id))
-        //    {
-        //        result = db.Bodegas.Where(x => x.Nombre == id).FirstOrDefault();
-        //    }
-        //    return Json(new { data = result }, JsonRequestBehavior.AllowGet);
-        //}
 
         [HttpPost]
         public JsonResult JsNombreExist(string codigo)
@@ -227,39 +435,53 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 
         }
 
-        public  JsonResult JsGetBodegasByFilter(string val)
+        public JsonResult JsGetByFilter(string f, string tipo = "AC")
         {
-            var result = new List<BodegaDTOACItem>();
-            if (!string.IsNullOrEmpty(val))
+            Object res = null;
+            var regs = from r in db.Bodegas select r;
+
+            if (!string.IsNullOrEmpty(f))
+                regs = regs.Where(x => x.Nombre.Contains(f) || x.Descripcion.Contains(f));
+
+            regs = regs.Take(autoCompleteSize);
+
+            if (tipo == "AC")
             {
-                result = db.Bodegas.Where(x => x.Nombre.Contains(val) || x.Descripcion.Contains(val))
-                   .Take(autoCompleteSize)
-                   .Select(p => new BodegaDTOACItem { Value = p.Nombre, Text = p.Descripcion })
+                res = regs.Select(p => new BodegaDTOACItem { Value = p.Nombre, Text = p.Descripcion })
                    .ToList();
             }
-            return Json(new { data = result }, JsonRequestBehavior.AllowGet);
-        }
-        
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> JsDelete(int? id)
-        {
-            Permit[] permisosRequeridos = { Permit.Delete };
-            bool hasPermit = Utilidades.hasPermit(permisosRequeridos, ControllerContext, userName);
-            if (!hasPermit)
+            if ( tipo == "S")
             {
-                return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
+                res = regs.Select(p => new DTOSelect2 {
+                    id = p.BodegaId.ToString(),
+                    text = p.Nombre,
+                    html = "<div style=\"font-weight: bold;\">" + p.Nombre + "</div><div style=\"font-size: 0.75em;\">" + p.Descripcion + "</div>"
+                });
             }
+                
+            //var result = new List<BodegaDTOACItem>();
+            //if (!string.IsNullOrEmpty(val))
+            //{
+            //    result = db.Bodegas.Where(x => x.Nombre.Contains(val) || x.Descripcion.Contains(val))
+            //       .Take(autoCompleteSize)
+            //       .Select(p => new BodegaDTOACItem { Value = p.Nombre, Text = p.Descripcion })
+            //       .ToList();
+            //}
+            return Json(new { data = res }, JsonRequestBehavior.AllowGet);
+        }
+
+        public async Task<JsonResult> JsGetById(int id)
+        {
             try
             {
                 var reg = await db.Bodegas.FindAsync(id);
-                db.Bodegas.Remove(reg);
-                await db.SaveChangesAsync();
-                return Json(new { success = true, message = Resources.Msg.success_delete }, JsonRequestBehavior.DenyGet);
+                return Json(new { success = true, result = true, data = reg }, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.DenyGet);
+                return Json(new { success = false, result = false }, JsonRequestBehavior.AllowGet);
             }
+
         }
 
 
@@ -314,8 +536,215 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
             }
         }
 
+
+        public ActionResult ImportBodegas(bool? update)
+        {
+            if (update == null)
+            {
+                update = false;
+            }
+            dbfContext.SetYear(DateTime.Now.Year);
+            var dbf = dbfContext.GetBodegas().ToList();
+            //db.Database.ExecuteSqlCommand($"DELETE FROM Bodegas");
+            //db.Database.ExecuteSqlCommand($"DBCC CHECKIDENT ('[dbo].[Bodegas]', RESEED, 0)");
+            foreach (var item in dbf)
+            {
+                try
+                {
+                    if (!db.Bodegas.Any(x => x.Nombre == item.CODIGO))
+                    {
+                        Bodega reg = new Bodega()
+                        {
+                            Nombre = item.CODIGO,
+                            Descripcion = item.DESCRI,
+                            Procedencia = item.PROCED
+                        };
+                        db.Bodegas.Add(reg);
+                    }
+                    else
+                    {
+                        if (update.Value)
+                        {
+                            var upd = db.Bodegas.Where(x => x.Nombre == item.CODIGO).FirstOrDefault();
+                            upd.Nombre = item.CODIGO;
+                            upd.Descripcion = item.DESCRI;
+                            upd.Procedencia = item.PROCED;
+                        }
+                    }
+                    db.SaveChanges();
+                }
+                catch (Exception)
+                {
+                    Console.Write(item.CODIGO);
+                    //throw;
+                }
+            }
+            ViewBag.Registros = db.Bodegas.Count();
+            return View();
+        }
+
+        public async Task<JsonResult> JsGetByCodigo(string id, int? BodegaId)
+        {
+            try
+            {
+                var reg = await MaterialRep.GetMaterialByCodigoAsync(id);   //db.Materiales.Where(x => x.Codigo == id).FirstOrDefault();
+                if (reg == null)
+                {
+                    throw new ArgumentException("");
+                }
+
+                var dto = new
+                {
+                    MaterialId = reg.MaterialId,
+                    Codigo = reg.Codigo,
+                    Descripcion = reg.Descripcion,
+                    UnidadMedida = reg.UnidadMedida,
+                    Precio = reg.Precio,
+                    Minimo = reg.Minimo ?? 0,
+                    Existencia = BodegaRep.GetExistencia(BodegaId ?? 0, reg.MaterialId)
+                };
+
+                return Json(new { success = true, data = dto }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, exeptionmessage = ex.Message, innerexeption = ex.InnerException.InnerException.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         #endregion
 
+
+
+
+
+
+
+
+
+
+
+
+
+        //[Can(.".ver")]
+        //public async Task<ActionResult> Details(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    Bodega reg = await db.Bodegas.FindAsync(id);
+        //    if (reg == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+
+        //    BodegaDTOView dto = mapper.Map<BodegaDTOView>(reg);
+
+        //    return View(dto);
+        //}
+
+
+
+        //[Can(.".editar")]
+        //public async Task<ActionResult> Edit(int? id) // GET
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    Bodega reg = await db.Bodegas.FindAsync(id);
+        //    if (reg == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+
+        //    BodegaDTOCEdit dto = mapper.Map<BodegaDTOCEdit>(reg);
+        //    return View(dto);
+        //}
+        //[Can(.".editar")]
+        //[HttpPost, ValidateAntiForgeryToken]
+        //public async Task<ActionResult> Edit([Bind(Include = "BodegaId,Nombre,Descripcion")] BodegaDTOCEdit dto) // POST
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var reg = mapper.Map<Bodega>(dto);
+        //        db.Entry(reg).State = EntityState.Modified;
+        //        await db.SaveChangesAsync();
+        //        return RedirectToAction("Details", new { id = dto.BodegaId, Toast = "success.edit" });
+        //    }
+        //    return View(dto);
+        //}
+
+
+        //[Can(.".editar")]
+        //public ActionResult Create()  //GET
+        //{            
+        //    return View();
+        //}
+        //[Can(.".editar")]
+        //[HttpPost, ValidateAntiForgeryToken]
+        //public async Task<ActionResult> Create(BodegaDTOCreate dto) //POST
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        Bodega reg = new Bodega();
+
+        //        mapper.Map(dto, reg);
+
+        //        db.Bodegas.Add(reg);
+        //        await db.SaveChangesAsync();
+
+        //        return RedirectToAction("Index");
+
+        //    }
+        //    return View(dto);
+        //}
+        //[ValidateAntiForgeryToken]
+        //public async Task<ActionResult> JsDelete(int? id)
+        //{
+        //    string[] permisosRequeridos = { .".eliminar" };
+        //    bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
+        //    if (!hasPermit)
+        //    {
+        //        return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
+        //    }
+        //    try
+        //    {
+        //        var reg = await db.Bodegas.FindAsync(id);
+        //        db.Bodegas.Remove(reg);
+        //        await db.SaveChangesAsync();
+        //        return Json(new { success = true, message = Resources.Msg.success_delete }, JsonRequestBehavior.DenyGet);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.DenyGet);
+        //    }
+        //}
+
+
+
+        //public ActionResult DetailsDBF(string id)
+        //{
+        //    if (string.IsNullOrEmpty(id))
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    var dto = this.dbfContext.GetBodega(id).FirstOrDefault();
+        //    if (dto == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(dto);
+        //}
+
+        //[ValidateAntiForgeryToken]
+        //public JsonResult JsSaveDBF(BodegaDTOCEditDBF dto)
+        //{
+        //    dbfContext.SetYear(dto.Anio);
+        //    //var No = dbfContext.ExecNoQuery(dto.CmdUpdate());
+        //    return Json(new { No },JsonRequestBehavior.DenyGet);
+        //}
 
     }
 }

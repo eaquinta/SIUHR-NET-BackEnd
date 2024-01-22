@@ -1,0 +1,312 @@
+﻿@using PagedList.Mvc
+@using Newtonsoft.Json
+@model Apphr.Application.ControlAbastecimiento.DTOs.ControlAbastecimientoDTOMaterialesIxFilter
+@{
+    ViewBag.Title = "Índice Inicial Materiales";
+    ViewBag.Entidad = "Índice Materiales";
+    ViewBag.Icon = "<i class=\"far fa-list-alt\"></i>";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area = "Inventario" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <span>Índice</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Encablezado -->
+    <h4 class="my-3">
+        @ViewBag.Title @Html.Raw(ViewBag.Icon)
+        <a class="btn btn-success ms-3 float-end" onclick="CreateInicial();">
+            Adicionar <i class="fa fa-plus"></i>
+        </a>
+        @*<a class="btn btn-default float-end" href="@Url.Action("IndexDBF")">
+                SIAHR <i class="fas fa-link"></i>
+            </a>*@
+    </h4>
+    <div class="clearfix"></div>
+    <!-- Encablezado -->
+    @using (Ajax.BeginForm("JsFilterInicialMaterialesIndex", "ControlAbastecimiento", new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnBegin = "filter.begin",
+        OnSuccess = "filter.success",
+        OnFailure = "jshelper.failure"
+    }, new { id = "form-filter" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.Page)
+        <div class="card border border-dark mb-3">
+            <div class="card-header background-inventory">
+                Filtro
+                <a class="@*collapsed*@" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true" aria-controls="collapseExample">
+                    <i class="fa fa-chevron-up fa-pull-right" style="margin-top: 5px;"></i>
+                </a>
+            </div>
+            @*<div id="collapse1" class="panel-collapse collapse">*@
+            <div class="collapse show" id="collapseExample">
+                <div class="card-body">
+                    @Html.EditorFor(x => x.Buscar, "StringP", new { placeholder = "Código, Nombre" })
+                    <div class="form-group">
+                        <div class="float-end mb-3">
+                            <button id="btnFilter" type="submit" class="btn btn-info"><i class="fa fa-filter"></i> Aplicar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <!-- Filtro -->
+    <!-- Tabla -->
+    <div id="Grid1"></div>
+    <!-- Tabla -->
+    <!-- Modal -->
+    <div class="modal fade" id="child-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="modalLabel" class="modal-title">Agregar Material</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="form-body-child">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+
+</div>
+
+@section scripts{
+    <script>
+        let urls = @Html.Raw(JsonConvert.SerializeObject(new {
+                  FindMaterial = Url.Action("JsGetByFilter", "Materiales"),
+                  FindProveedor = Url.Action("JsGetByFilter", "Proveedores"),
+                  GetMatByCod = Url.Action("JsGetByCodigo", "Materiales"),
+                  GetProveedor = Url.Action("JsGetProveedorByNit", "Proveedores"),
+              }));
+
+    </script>
+    <script>
+        function EliminarInicial(t) {
+            let MaterialId = $(t).data('m');
+            let ProveedorId = $(t).data('p');
+            jshelper.deleteConfirm(function () {                
+                jshelper.deleteAjax(
+                    '@Url.Action("JsDeleteInicial")',
+                    { MaterialId: MaterialId, ProveedorId: ProveedorId },
+                    function () {
+                        filter.form.submit();
+                        $('#child-modal').modal('hide');
+                    }
+                );
+            });
+        }
+        function EditarInicial(t) {
+            let MaterialId = $(t).data('m');
+            let DestinoId = $(t).data('d');
+            $('#modalLabel').text('Modificar Inventario Inicial');
+            jshelper.get('@Url.Action("JsGetInicial", "ControlAbastecimiento")', { MaterialId: MaterialId, DestinoId: DestinoId }, function (response) {
+
+                //if (response.success) {
+                //    childInicial.init();
+                //    childInicial.fill(response.result);
+                //    childInicial.modal.modal('show');
+                //} else {
+                //    jshelper.error(response.message);
+                //}
+            });
+        }
+
+        function CreateInicial(obj) {
+            $('#modalLabel').text('Crear Inventario Inicial');
+            jshelper.get('@Url.Action("JsGetInicialForm", "ControlAbastecimiento")', {}, function (response) {
+                $('#form-body-child').html(response);
+                childInicial.init();
+                $('#child-modal').modal('show');
+            });
+        }
+
+        var childInicial = {};
+        childInicial.modal = $('#child-modal');
+        childInicial.btn = $('#btnSaveChildInicial');
+        childInicial.form = $('#childInicial-form');
+        childInicial.begin = function () {
+            childInicial.btn.prop('disabled', true);
+        }
+        childInicial.init = function () {
+            $('#MaterialNombre, #ProveedorNombre').attr('readonly', 'readonly').attr('tabindex', '-1');
+            bindOnBlur();
+            bindAutocomplete();
+        }
+        childInicial.fill = function (data) {
+            console.log(data);
+            $('#DestinoId').val(data.DestinoId);
+            $('#MaterialId').val(data.MaterialId);
+            $('#MaterialCodigo').val(data.Material.Codigo);
+            $('#MaterialDescripcion').val(data.Material.Descripcion);
+            $('#Inicial').val(data.Inicial);
+        }
+        childInicial.success = function (data) {
+            jshelper.showAlert(data.success, data.message);
+            filter.form.submit();
+            childInicial.end();
+        }
+        childInicial.end = function () {
+            childInicial.modal.modal('hide');
+            childInicial.btn.prop('disabled', false);
+        }
+
+        var filter = {};
+        filter.btn = $('#btnFilter');
+        filter.grid = $('#Grid1');
+        filter.form = $('#form-filter');
+        filter.begin = function () {
+            filter.grid.fadeTo(0, 0.4);
+            filter.btn.prop('disabled', true);
+        }
+        filter.success = function (data) {
+            filter.grid.html(data);
+            filter.bindPaged();
+            filter.end();
+        }
+        filter.end = function () {
+            filter.grid.fadeTo('slow', 1);
+            filter.btn.prop('disabled', false);
+        }
+        filter.init = function () {
+            //$('#MaterialNombre, #BodegaDescripcion').attr('readonly', 'readonly');
+        }
+        filter.bindPaged = function () {
+            $(".pagination a").click(function () {
+                if (event.preventDefault) {
+                    event.preventDefault();
+                    //console.log('detenido');
+                    //console.log($(this).attr('href'));
+                    $('#Page').val($(this).attr('href'));
+                    filter.btn.trigger('click');
+                }
+            });
+        }
+
+        function bindAutocomplete() {
+            // AutoComplete
+            $("#MaterialCodigo").autocomplete({
+                maxShowItems: 5,
+                //widthContainer: '#form-body-child',
+                source: function (request, response) {
+                    $.ajax({
+                        url: urls.FindMaterial,
+                        dataType: "json",
+                        data: "f=" + request.term,
+                        success: function (resp) {
+                            response($.map(resp.data, function (item) {
+                                //console.log(item);
+                                return {
+                                    label: item.id,
+                                    value: item.id,
+                                    desc: item.text
+                                };
+                            }));
+                        }
+                    });
+                },
+                appendTo: "#form-body-child"
+            }).data("ui-autocomplete")._renderItem = jshelper.ACRenderItem;
+            $("#ProveedorNit").autocomplete({
+                maxShowItems: 5,
+                source: function (request, response) {
+                    $.ajax({
+                        url: urls.FindProveedor,
+                        dataType: "json",
+                        data: "val=" + request.term,
+                        success: function (resp) {
+                            response($.map(resp.data, function (item) {
+                                //console.log(item);
+                                return {
+                                    label: item.Value,
+                                    value: item.Value,
+                                    desc: item.Text
+                                };
+                            }));
+                        }
+                    });
+                },
+                appendTo: "#form-body-child"
+            }).data("ui-autocomplete")._renderItem = jshelper.ACRenderItem;            
+        }
+
+        function bindOnBlur() {
+            // Onblur
+            $('#ProveedorNit').on('blur', function () {
+                $.ajax({
+                    type: "GET",
+                    url: urls.GetProveedor,
+                    data: { val: $("#ProveedorNit").val() },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        //console.log(response);
+                        if (response.success) {
+                            $('#ProveedorNombre').val(response.data.Descripcion);
+                            $('#ProveedorId').val(response.data.ProveedorId);
+                        }
+                        else {
+                            $('#ProveedorNombre').val('');
+                            $('#ProveedorId').val('');
+                        }
+                    },
+                    failure: function (response) {
+                        console.log(response);
+                        jshelper.failure();
+                    }
+                });
+            });
+            $('#MaterialCodigo').on('blur', function () {
+                jshelper.get(
+                    urls.GetMatByCod,
+                    { id: $("#MaterialCodigo").val() },
+                    function (response) {
+                        if (response.success) {
+                            console.log(response.data);
+                            if (response.data != null) {
+                                $('#MaterialId').val(response.data.MaterialId);
+                                $('#MaterialNombre').val(response.data.Descripcion);
+                                //$('#MaterialUM').val(response.data.UnidadMedida);
+                                //$('#MaterialPrecio').val(response.data.Precio);
+                                //$('#MaterialExistencia').val(response.data.Existencia);
+                                //$('#MaterialMinimo').val(response.data.Minimo);
+                                //$('#Cantidad').focus();
+                            } else {
+                                $('#MaterialId').val('');
+                                $('#MaterialNombre').val('');
+                                //$('#MaterialUM').val('');
+                                //$('#MaterialPrecio').val('');
+                                //$('#MaterialExistencia').val('');
+                                //$('#MaterialMinimo').val('');
+                            }
+                        }
+                    }
+                );
+            });
+        }
+
+        $(document).ready(() => {
+            filter.form.submit();
+        });
+    </script>
+}
+

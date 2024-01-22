@@ -15,24 +15,23 @@ using System.Web.Mvc;
 namespace Apphr.WebUI.Controllers
 {
     public class DbUoWController : Controller
-    {
-        //protected ApphrDbContext db;
+    {        
         protected UnitOfWork uow = new UnitOfWork();
         protected DBFContext dbfContext;
         protected string userName;
-        protected string dbfPath = ConfigurationManager.AppSettings["SiahrPath"].ToString();
-        protected int pageSize = Convert.ToInt32(ConfigurationManager.AppSettings["PageSize"].ToString()); // 10;
-        protected int autoCompleteSize = Convert.ToInt32(ConfigurationManager.AppSettings["AutocompleteSize"].ToString()); // 10;
-        protected readonly IMapper mapper = AutoMapperConfig._mapper;
-        protected Dictionary<string, ToastTemplate> DTT = new Dictionary<string, ToastTemplate>();
-        protected ViewConfig C = new ViewConfig();
+        //protected string dbfPath = ConfigurationManager.AppSettings["SiahrPath"].ToString();
+        protected int pageSize                              = Convert.ToInt32(ConfigurationManager.AppSettings["PageSize"].ToString()); 
+        protected int autoCompleteSize                      = Convert.ToInt32(ConfigurationManager.AppSettings["AutocompleteSize"].ToString()); 
+        protected readonly IMapper mapper                   = AutoMapperConfig._mapper;
+        protected Dictionary<string, ToastTemplate> DTT     = new Dictionary<string, ToastTemplate>();
+        protected ViewConfig C                              = new ViewConfig();
         protected PagedListRenderOptions PagedListOptions;
         public DbUoWController() //(ApphrDbContext _db)
         {
             //db = new ApphrDbContext(System.Web.HttpContext.Current.User.Identity.Name);
-            dbfContext = new DBFContext(dbfPath);
-            userName = System.Web.HttpContext.Current.User.Identity.GetUserName();
-            PagedListOptions = new PagedListRenderOptions
+            dbfContext                                      = new DBFContext(); 
+            userName                                        = System.Web.HttpContext.Current.User.Identity.GetUserName();
+            PagedListOptions                                = new PagedListRenderOptions
             {
                 MaximumPageNumbersToDisplay = 5,
                 DisplayEllipsesWhenNotShowingAllPageNumbers = false,
@@ -84,10 +83,7 @@ namespace Apphr.WebUI.Controllers
         {
             string actionName = this.ControllerContext.RouteData.Values["action"].ToString();
             string controllerName = this.ControllerContext.RouteData.Values["controller"].ToString();
-            string areaName = this.ControllerContext.RouteData.DataTokens["area"].ToString();
-            //if (Action == Actions.Edit && this.StatusEnum != Statuses.Open)
-            //    return false;
-            //[...some simmilar code for other actions here...]
+            string areaName = this.ControllerContext.RouteData.DataTokens["area"].ToString();           
             return false;
         }
         protected override void Dispose(bool disposing)

@@ -120,6 +120,9 @@
   <data name="Bodega_NotExist" xml:space="preserve">
     <value>Debe ser una Bodega válida.</value>
   </data>
+  <data name="Destino_NotExist" xml:space="preserve">
+    <value>Debe ser un Departamento / Servicio válido.</value>
+  </data>
   <data name="DocumentRef_NotValid" xml:space="preserve">
     <value>Debe ser un documento de referencia válido.</value>
   </data>
@@ -132,11 +135,17 @@
   <data name="Material_NotExist" xml:space="preserve">
     <value>Debe ser un Material válido.</value>
   </data>
+  <data name="OrdenCompra_NotExist" xml:space="preserve">
+    <value>Debe ser una Orden de Compra válida.</value>
+  </data>
   <data name="PacienteRM_NotExist" xml:space="preserve">
     <value>Debe ser un RM Válido.</value>
   </data>
   <data name="privileges_none" xml:space="preserve">
     <value>Privielegios insuficientes para realizar esta acción.</value>
+  </data>
+  <data name="Proveedor_NotExist" xml:space="preserve">
+    <value>Debe ser un Nit de Proveedor válido.</value>
   </data>
   <data name="success_create" xml:space="preserve">
     <value>Creado con éxito.</value>

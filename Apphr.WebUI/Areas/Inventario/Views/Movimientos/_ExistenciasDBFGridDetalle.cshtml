@@ -1,0 +1,25 @@
+﻿@model List<Apphr.Domain.EntitiesDBF.ReporteExistenciasDBF>
+
+<div class="table-responsive">
+    <table class="table table-hover table-bordered">
+        <tr class="table-dark">
+            <th class="text-center">Código</th>
+            <th class="">Lote</th>
+            <th class="">Descripción</th>
+            <th class="text-end">Existencia</th>
+            <th class="text-end">Costo Unitario</th>
+            <th class="text-end">Total</th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td style="width:195px;">@item.CODIGO (@item.CODIGI)</td>
+                <td>@item.VENCE</td>
+                <td>@item.DESCRI</td>
+                <td class="text-end">@item.CANMOV</td>
+                <td class="text-end">@item.CostoUnitario</td>
+                <td class="text-end">@item.VALMOV</td>
+            </tr>
+        }
+    </table>
+</div>

@@ -1,9 +1,113 @@
-﻿
+﻿@using PagedList.Mvc
+@model Apphr.Application.OrdenesCompra.DTOs.OrdenCompraDTOIxFilter
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Índice";
+    ViewBag.Entidad = "Ordenes de Compra";
+    ViewBag.Icon = "<i class=\"far fa-list-alt\"></i>";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
 }
 
-<div class="container-lg">
+<link href="~/Content/PagedList.css" rel="stylesheet" />
 
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index","Home", new { Area = "Inventario" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <span>Índice</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Encablezado -->
+    <h4 class="my-3">
+        @ViewBag.Title @ViewBag.Entidad @Html.Raw(ViewBag.Icon)
+        @*<a class="btn btn-success ms-3 float-end" href="@Url.Action("Create")">
+                Adicionar <i class="fa fa-plus"></i>
+            </a>
+            <a class="btn btn-default float-end" href="@Url.Action("Index")">
+                SIAHR <i class="fas fa-link"></i>
+            </a>*@
+    </h4>
+    <div class="clearfix"></div>
+    <!-- Encablezado -->
+    <!-- Encablezado -->
+    @using (Ajax.BeginForm("JsFilterIndex", "OrdenesCompra", new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnBegin = "filter.begin",
+        OnSuccess = "filter.success",
+        OnFailure = "jshelper.failure"
+    }, new { id = "form-filter" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.Page)
+        <div class="card mb-3">
+            <div class="card-header">
+                <a class="text-decoration-none" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                    Filtro <i class="fa fa-filter"></i>
+                </a>
+            </div>
+            @*<div id="collapse1" class="panel-collapse collapse">*@
+            <div class="collapse show" id="collapseExample">
+                <div class="card-body">
+                    @Html.EditorFor(x => x.Buscar, "StringP", new { placeholder = "#Orden, Fecha, Nit" })
+                    <div class="form-group">
+                        <div class="float-end mb-3">
+                            <button id="btnFilter" type="submit" class="btn btn-info"><i class="fa fa-filter"></i> Aplicar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <!-- Filtro -->
+    <!-- Tabla -->
+    <div id="Grid1"></div>
+    <!-- Tabla -->
 </div>
+@section scripts{
+    <script>
+        var filter = {};
+
+        filter.btn = $('#btnFilter');
+        filter.grid = $('#Grid1');
+        filter.form = $('#form-filter');
+        filter.begin = function () {
+            filter.grid.fadeTo(0, 0.4);
+            filter.btn.prop('disabled', true);
+        }
+        filter.success = function (data) {
+            filter.grid.html(data);
+            filter.bindPaged();
+            filter.end();
+        }
+        filter.end = function () {
+            filter.grid.fadeTo('slow', 1);
+            filter.btn.prop('disabled', false);
+        }
+        filter.init = function () {
+            //$('#MaterialNombre, #BodegaDescripcion').attr('readonly', 'readonly');
+        }
+        filter.bindPaged = function () {
+            $(".pagination a").click(function () {
+                if (event.preventDefault) {
+                    event.preventDefault();
+                    //console.log('detenido');
+                    //console.log($(this).attr('href'));
+                    $('#Page').val($(this).attr('href'));
+                    filter.btn.trigger('click');
+                }
+            });
+        }
+        $(document).ready(() => {
+            filter.form.submit();
+        });
+    </script>
+}

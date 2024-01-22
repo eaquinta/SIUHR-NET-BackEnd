@@ -1,8 +1,7 @@
 ﻿@model Apphr.Application.AjustesInventario.DTOs.AjusteInventarioDTOIxFilter
 @using Newtonsoft.Json
 @{
-    ViewBag.Title = "Índice";
-    ViewBag.Entidad = "Ajustes Inventario";
+    ViewBag.Title = "Índice Ajustes Inventario";    
     ViewBag.Icon = "<i class=\"fas fa-list\"></i>";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
 }
@@ -30,7 +29,7 @@
     <!-- Encablezado -->
   
     <h4 class="my-2" style="line-height:38px;">
-        @ViewBag.Title @ViewBag.Entidad @Html.Raw(ViewBag.Icon)
+        @ViewBag.Title @Html.Raw(ViewBag.Icon)
         <a class="btn btn-success ms-3 float-end" href="@Url.Action("CEdit")"><i class="fa fa-plus"></i>&nbsp;@Apphr.Resources.Strings.NewRegister</a>
         @*<a class="btn btn-default float-end" href="@Url.Action("IndexDBF")">
                 SIAHR <i class="fas fa-link"></i>
@@ -71,9 +70,7 @@
     }
     <!-- Filtro -->
     <!-- Tabla -->
-    <div id="Grid1">
-
-    </div>
+    <div id="Grid1"></div>
     <!-- Tabla -->
 </div>
 
@@ -82,12 +79,12 @@
         let urls = @Html.Raw(JsonConvert.SerializeObject(new
               {
                   //FindDestinos = Url.Action("JsGetDestinosByFilter", "Destinos"),
-                  //FindBodegas = Url.Action("JsGetBodegasByFilter", "Bodegas"),
-                  //FindMateriales = Url.Action("JsGetMaterialesByFilter", "Materiales"),
-                  //FindProveedores = Url.Action("JsGetProveedoresByFilter", "Proveedores"),
+                  //FindBodegas = Url.Action("JsGetByFilter", "Bodegas"),
+                  //FindMateriales = Url.Action("JsGetByFilter", "Materiales"),
+                  //FindProveedores = Url.Action("JsGetByFilter", "Proveedores"),
                   //GetDestino = Url.Action("JsGetDestinoByCodigo", "Destinos"),
                   //GetBodega = Url.Action("JsGetBodegaByNombre", "Bodegas"),
-                  //GetMaterial = Url.Action("JsGetMaterialByCodigo", "Materiales"),
+                  //GetMaterial = Url.Action("JsGetByCodigo", "Materiales"),
                   //GetProveedor = Url.Action("JsGetProveedorByNit", "Proveedores"),
                   //GetPaciente = Url.Action("JsGetPacienteByHCA", "Pacientes", new { Area = "Medica" }),
                   //GetChild = Url.Action("JsGetChild"),
@@ -107,6 +104,7 @@
         }
         filter.success = function (data) {
             $('#Grid1').html(data);
+            filter.bindPaged();
             filter.end();
         }
         filter.end = function () {
@@ -118,7 +116,7 @@
                     event.preventDefault();
                     console.log('detenido');
                     console.log($(this).attr('href'));
-                    $('#page').val($(this).attr('href'));
+                    $('#Page').val($(this).attr('href'));
                     filter.btn.trigger('click');
                 }
             });

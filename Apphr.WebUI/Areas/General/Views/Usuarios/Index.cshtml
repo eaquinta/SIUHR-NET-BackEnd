@@ -9,9 +9,7 @@
     <!-- Encablezado -->
     <h4 class="my-3">
         @ViewBag.Title Usuarios <i class="far fa-list-alt"></i>
-        <a class="btn btn-success float-end" href="@Url.Action("Create")">
-            Adicionar <i class="fa fa-plus"></i>
-        </a>
+        <a class="btn btn-success float-end" href="@Url.Action("Create")">Adicionar <i class="fa fa-plus"></i></a>
     </h4>
     <div class="clearfix"></div>
     <!-- Encablezado -->
@@ -43,15 +41,12 @@
             <tr class="table-dark">
                 <th style="width:80px;">Acción</th>
                 <th>
-                    @*@Html.DisplayNameFor(model => model.UserName)*@
                     Usuario
                 </th>
                 <th>
-                    @*@Html.DisplayNameFor(model => model.Name)*@
                     Nombre
                 </th>
                 <th>
-                    @*@Html.DisplayNameFor(model => model.RoleNames)*@
                     Roles
                 </th>
             </tr>
@@ -94,7 +89,7 @@
             {
                 <!--Sin registros-->
                 <tr>
-                    <td class="text-center" colspan="3">@Apphr.Resources.Strings.NoRegister</td>
+                    <td class="text-center" colspan="4">@Apphr.Resources.Strings.NoRegister</td>
                 </tr>
                 <!--Sin registros-->
             }

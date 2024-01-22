@@ -33,7 +33,7 @@
     <!-- Form Title -->
     <h4>
         @ViewBag.Title @ViewBag.Entidad @Html.Raw(ViewBag.Icon)
-        <a class="btn btn-outline-dark btnReturn float-end" href="">Regresar</a>
+        <a class="btn btn-outline-dark btnReturn float-end" href=""><i class="fas fa-chevron-left"></i>&nbsp;Regresar</a>
     </h4>
     <hr />
     <div class="clearfix"></div>
@@ -47,71 +47,75 @@
         OnFailure = "master.saveFailure"
     }, new { id = "master-form" }))
     {
-        @Html.AntiForgeryToken()
-        @*@Html.HiddenFor(x => x.mode, new { value = "INS" })*@
-        @Html.HiddenFor(x => x.year)
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="row">
-            <div class="col-md-6">
-                @Html.LabelFor(x => x.SolicitudPedidoId, htmlAttributes: new { @class = "form-label", style = "font-weight:bold;" })
-                <div class="input-group onIns">
-                    <span class="input-group-text" id="basic-addon1">@Model.year-</span>
-                    @Html.TextBoxFor(x => x.serie, new { @class = "form-control" })
-                </div>
-                @Html.TextBoxFor(x => x.SolicitudPedidoId, new { @class = "form-control onUpd" })
-                @Html.ValidationMessageFor(x => x.serie, "", new { @class = "text-danger" })
-            </div>
-            <div class="col-md-6">@Html.EditorFor(x => x.Correlativo)</div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">@Html.EditorFor(x => x.Fecha)</div>
-            <div class="col-md-6">
-                @Html.LabelFor(model => model.Tipo, htmlAttributes: new { @class = "form-label", style = "font-weight:bold;" })
-                <div class="col">
-                    @Html.DropDownListFor(model => model.Tipo, (IEnumerable<SelectListItem>)ViewBag.ListTipo, new { @class = "form-control form-select" })
-                    @Html.ValidationMessageFor(model => model.Tipo, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                @Html.HiddenFor(x => x.DepartamentoId)
-                @Html.EditorFor(x => x.DepartamentoCodigo)
-            </div>
-            <div class="col-md-8">@Html.Editor("DepartamentoNombre", new { label = "Departamento Nombre" })</div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                @Html.HiddenFor(x => x.SeccionId)
-                @Html.EditorFor(x => x.SeccionCodigo)
-            </div>
-            <div class="col-md-8">@Html.Editor("SeccionNombre", new { label = "Seccion Nombre" })</div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">@Html.EditorFor(x => x.Elaboro)</div>
-            <div class="col-md-6">@Html.EditorFor(x => x.Solicito)</div>
-            <div class="col-md-6">@Html.EditorFor(x => x.JefeDepartamento)</div>
-            <div class="col-md-6">@Html.EditorFor(x => x.Gerente)</div>
-            <div class="col-md-6">@Html.EditorFor(x => x.Director)</div>
-            <div class="col-md-6">@Html.EditorFor(x => x.Observaciones)</div>
-        </div>
 
-        <!-- Botones Formulario -->
-        <div class="col-12 mt-1">
-            <div class="col-md-offset-2">
-                <button type="button" id="btnSaveMaster" class="btn btn-success">Guardar</button>
-                <button type="button" class="btn btn-success ms-2 float-end onUpd" data-bs-toggle="modal" onclick="child.rowCreate();" data-bs-target="#child-modal"> Adicionar Material <i class="fa fa-plus"></i></button>
-                <button type="button" class="btn btn-outline-dark ms-2 float-end onUpd" onclick="refreshGrid();"><i class="fas fa-sync"></i></button>
+        <div class="card border border-dark">
+            <div class="card-header background-inventory">
+                Datos Generales
+                <a class="" data-bs-toggle="collapse" href="#collapseFilter" role="button" aria-expanded="true" aria-controls="collapseFilter">
+                    <i class="fa fa-chevron-up fa-pull-right" style="margin-top: 5px;"></i>
+                </a>
             </div>
-        </div>
-        <!-- Botones Formulario -->
+            <div class="collapse show" id="collapseFilter">
+                <div class="card-body">
+
+                    @Html.AntiForgeryToken()
+                    @*@Html.HiddenFor(x => x.mode, new { value = "INS" })*@
+                    @Html.HiddenFor(x => x.year)
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="row">
+                        <div class="col-md-6">
+                            @Html.LabelFor(x => x.SolicitudPedidoId, htmlAttributes: new { @class = "form-label", style = "font-weight:bold;" })
+                            <div class="input-group onIns">
+                                <span class="input-group-text" id="basic-addon1">@Model.year-</span>
+                                @Html.TextBoxFor(x => x.serie, new { @class = "form-control" })
+                            </div>
+                            @Html.TextBoxFor(x => x.SolicitudPedidoId, new { @class = "form-control onUpd" })
+                            @Html.ValidationMessageFor(x => x.serie, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-6">@Html.EditorFor(x => x.Correlativo)</div>
+                        <div class="col-md-4">@Html.EditorFor(x => x.Fecha)</div>
+                        <div class="col-md-4">@Html.EditorFor(x => x.Tipo, new { optionsList = ViewBag.ListTipo })</div>
+                        <div class="col-md-4">@Html.EditorFor(x => x.TipoEvento, new { optionsList = ViewBag.ListTipoEvento })</div>
+                        <div class="col-md-4">
+                            @Html.HiddenFor(x => x.DepartamentoId)
+                            @Html.EditorFor(x => x.DepartamentoCodigo)
+                        </div>
+                        <div class="col-md-8">@Html.Editor("DepartamentoNombre", new { label = "Departamento Nombre" })</div>
+                        <div class="col-md-4">
+                            @Html.HiddenFor(x => x.SeccionId)
+                            @Html.EditorFor(x => x.SeccionCodigo)
+                        </div>
+                        <div class="col-md-8">@Html.Editor("SeccionNombre", new { label = "Seccion Nombre" })</div>
+                        <div class="col-md-6">@Html.EditorFor(x => x.Elaboro)</div>
+                        <div class="col-md-6">@Html.EditorFor(x => x.Solicito)</div>
+                        <div class="col-md-6">@Html.EditorFor(x => x.JefeDepartamento)</div>
+                        <div class="col-md-6">@Html.EditorFor(x => x.Gerente)</div>
+                        <div class="col-md-6">@Html.EditorFor(x => x.Director)</div>
+                        <div class="col-md-6">@Html.EditorFor(x => x.Observaciones)</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <button id="btnSaveMaster" type="submit" class="btn btn-success float-end">Guardar <i class="far fa-save"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>        
     }
+    <!-- Botones Formulario Detalle -->
+    <div class="row mt-2">
+        <div class="col-12">
+            <button type="button" class="btn btn-success onUpd" data-bs-toggle="modal" onclick="child.rowCreate();" data-bs-target="#child-modal"> Adicionar Material <i class="fa fa-plus"></i></button>
+            <button type="button" class="btn btn-outline-dark ms-2 float-end onUpd" onclick="master.refreshGrid();"><i class="fas fa-sync"></i> Refrescar</button>
+        </div>
+    </div>
+    <!-- Botones Formulario Detalle -->
     <!-- Formulario -->
     <!-- Formulario Detalle -->
     <div id="Grid1" class="table-responsive mt-2"></div>
     <!-- Botones formulario -->
     <div class="col-md-12 mt-2 onUpd">
-        <a class="btn btn-outline-dark btnReturn" href="">Regresar</a>
+        <a class="btn btn-outline-dark btnReturn" href=""><i class="fas fa-chevron-left"></i>&nbsp;Regresar</a>
         <div class="float-end">
             <a class="btn btn-outline-danger btn-eliminar" href="#"><i class="fas fa-trash"></i>&nbsp;Eliminar</a>
         </div>
@@ -133,14 +137,10 @@
                         <h5 id="myModalLabel" class="modal-title">Agregar Material</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body" id="formLinea">
+                    <div class="modal-body" id="form-body-child">
                         @Html.Partial("_CEditChild", Model.Child)
                     </div>
                     <div class="modal-footer">
-                        @*<input type="reset" value="Limpiar" class="btn btn-warning" />*@
-                        <button type="button" class="btn btn-warning" data-bs-dismiss="modal">
-                            Cerrar
-                        </button>
                         <input type="submit" id="btnSaveDTmodal" class="btn btn-primary" value="Guardar" />
                     </div>
                 </div>
@@ -153,15 +153,15 @@
     <script>
         var urlDetails = '@Url.Action("Details")';
         var urlCEdit = '@Url.Action("CEdit")';
-        var urlIndex = '@Url.Action("Index")';        
+        var urlIndex = '@Url.Action("Index")';
         var urlGetDestinoName = '@Url.Action("JsGetDestinoByCodigo", "Destinos")';
         var urlGrid = '@Url.Action("JsGrid")';
         var urlGetChild = '@Url.Action("JsGetChild")';
         var urlDeleteMaster = '@Url.Action("JsDeleteMaster")';
         var urlDeleteChild = '@Url.Action("JsDeleteChild")';
-        var urlFindMateriales = '@Url.Action("JsGetMaterialesByFilter", "Materiales")';
+        var urlFindMateriales = '@Url.Action("JsGetByFilter", "Materiales")';
         var urlFindDestinos = '@Url.Action("JsGetDestinosByFilter","Destinos")'
-        var urlGetMatByCod = '@Url.Action("JsGetMaterialByCodigo","Materiales")';
+        var urlGetMatByCod = '@Url.Action("JsGetByCodigo","Materiales")';
         var id1 = '@Model.SolicitudPedidoId';
     </script>
     <script src="~/Content/apphr/SolicitudPedido/CEdit.js"></script>

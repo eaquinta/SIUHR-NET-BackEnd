@@ -1,0 +1,9 @@
+﻿@model Apphr.Application.Bodegas.DTOs.BodegaDTOCEditDBF
+<div class="row">
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x._Mode)
+    @Html.EditorFor(x => x.CODIGO, new { style = "text-transform:uppercase" })
+    @Html.EditorFor(x => x.DESCRI, new { style = "text-transform:uppercase", oninput = "this.value = this.value.toUpperCase()" })
+    @Html.EditorFor(x => x.PROCED, new { style = "text-transform:uppercase", oninput = "this.value = this.value.toUpperCase()", placeholder = "H, P, D, M, R" })
+    @Html.EditorFor(x => x.BODMAT, new { style = "text-transform:uppercase" })
+</div>

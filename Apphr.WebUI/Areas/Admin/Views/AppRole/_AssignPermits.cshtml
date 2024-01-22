@@ -1,0 +1,50 @@
+﻿@model Apphr.WebUI.Application.AppRoles.DTOs.AppRoleDTOPermit
+
+
+@using (Ajax.BeginForm("JsAssignMaster", "AppRole", new AjaxOptions
+{
+    HttpMethod = "POST",
+    OnBegin = "assign.begin",
+    OnSuccess = "assign.success",
+    OnFailure = "assign.failure"
+}, new { id = "modal-form", enctype = "multipart/form-data", InsertionMode = InsertionMode.Replace })) // new { enctype = "multipart/form-data" }
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.Role.Id)
+    <div class="row">
+        <div class="col-12">@Html.DisplayFor(model => model.Role.Name, "StringD")</div>        
+    </div>
+    <div class="card mb-3">
+        <div class="card-header py-1">
+            Permisos <i class="fas fa-key"></i>
+        </div>
+        <div class="card-body">
+            <div class="list-group">
+                @for (int i = 0; i < Model.Permisos.Count; i++)
+                {                    
+                    @*@Html.LabelFor(m => m.Permisos[i].Assigned, Html.Raw(Model.Permisos[i].Icon + " " + Model.Permisos[i].Name))*@
+                    
+                    @*<br />*@
+
+                <div class="list-group-item list-group-item-light">
+                    <div class="form-check">
+                        @Html.CheckBoxFor(m => m.Permisos[i].Assigned, new { @class = "form-check-input" })
+                        @*<input class="form-check-input" type="checkbox" value="10" id="permit-10" name="SelectedPermits">*@
+                        <label class="form-check-label" for="permit-10">
+                            <!--<svg class="svg-inline--fa fa-plus fa-w-14" aria-hidden="true" focusable="false" data-prefix="fa" data-icon="plus" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"></path></svg>--><!-- <i class="fa fa-plus"></i> Font Awesome fontawesome.com --> <!--Crear-->
+                            @Html.Raw(Model.Permisos[i].Icon) @Model.Permisos[i].Name
+                        </label>
+                        @Html.HiddenFor(m => m.Permisos[i].PermissionId) 
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+
+
+    <hr class="mb-3 mt-3" />
+    <div class="col-12">
+        <input type="submit" id="modal-btn-save" class="btn btn-primary float-end" value="Guardar" />
+    </div>
+}

@@ -1,6 +1,7 @@
-﻿using Apphr.Domain.Entities;
-using Apphr.Domain.Enums;
+﻿using Apphr.Domain.Enums;
 using Apphr.WebUI.Models;
+using Apphr.WebUI.Models.Entities;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -11,9 +12,9 @@ using System.Web.Routing;
 
 namespace Apphr.WebUI.CustomAttributes
 {
-    public class AppAuthorizationAttribute: AuthorizeAttribute
+    public class AppAuthorizationAttribute : AuthorizeAttribute
     {
-        private ApphrDbContext db = new ApphrDbContext();
+        private ApphrDbContext db = new ApphrDbContext((HttpContext.Current.User != null) ? HttpContext.Current.User.Identity.GetUserId<int>() : -1);
         private readonly Permit[] Permisos;
 
         public AppAuthorizationAttribute(params Permit[] permisos)
@@ -34,12 +35,11 @@ namespace Apphr.WebUI.CustomAttributes
                 return false;
             }
             // Crea Entrada si no existe
-            if(!db.Controladores.Any(x => x.Area == areaName && x.Controller == controllerName ))
+            if (!db.Controladores.Any(x => x.Area == areaName && x.Controller == controllerName))
             {
                 db.Controladores.Add(new Controlador
                 {
-                    Detalle = (areaName + "/" + controllerName),
-                    //Action = actionName,
+                    Detalle = (areaName + " / " + controllerName),
                     Area = areaName,
                     Controller = controllerName
                 });
@@ -64,7 +64,7 @@ namespace Apphr.WebUI.CustomAttributes
                             ON(tt1.RoleId = tt2.AppRoleId)";
             var ArrayPermisos = db.Database.SqlQuery<Permit>(query, parameters.ToArray()).ToArray();
             IEnumerable<Permit> both = ArrayPermisos.Intersect(Permisos);
-            if(both.Any())
+            if (both.Any())
             {
                 return true;
             }
@@ -76,10 +76,10 @@ namespace Apphr.WebUI.CustomAttributes
             //foreach (Permit id in both)
             //    xxxx = id;
             //return GetUserRights(httpContext.User.Identity.Name.ToString());
-            
-          //  string privilegeLevels = string.Join("", GetUserRights(httpContext.User.Identity.Name.ToString())); // Call another method to get rights of the user from DB
 
-           // return privilegeLevels.Contains(this.AccessLevel);
+            //  string privilegeLevels = string.Join("", GetUserRights(httpContext.User.Identity.Name.ToString())); // Call another method to get rights of the user from DB
+
+            // return privilegeLevels.Contains(this.AccessLevel);
         }
 
         protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
@@ -90,7 +90,65 @@ namespace Apphr.WebUI.CustomAttributes
                             {
                                 controller = "Home",
                                 action = "NoAutorizado",
-                                Area ="",
+                                Area = "",
+                                returnUrl = filterContext.HttpContext.Request.Url.GetComponents(UriComponents.PathAndQuery, UriFormat.SafeUnescaped)
+                            })
+                        );
+        }
+    }
+
+    public class Can : AuthorizeAttribute
+    {
+        private ApphrDbContext db = new ApphrDbContext((HttpContext.Current.User != null) ? HttpContext.Current.User.Identity.GetUserId<int>() : -1);
+        private readonly string[] Permisos;
+
+        public Can(params string[] permisos)
+        {
+            this.Permisos = permisos;
+        }
+
+        protected override bool AuthorizeCore(HttpContextBase httpContext) {
+            string userName = httpContext.User.Identity.Name.ToString();
+            var isAuthorized = base.AuthorizeCore(httpContext);
+            if (!isAuthorized)
+                return false;
+
+            // Crea Entrada si no existe
+            foreach (string perm in Permisos)
+            {
+                if (!db.AppPermissions.Any(x => x.Name == perm))
+                {
+                    db.AppPermissions.Add(new AppPermission()
+                    {
+                        Name = perm
+                    });
+                    db.SaveChanges();
+                }
+            }            
+
+            if (userName == "eaquinta@yahoo.com")
+                return true;
+
+            if( db.AppPermissions.Where(x => Permisos.Contains(x.Name)).Any())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+
+        protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
+        {
+            filterContext.Result = new RedirectToRouteResult(
+                        new RouteValueDictionary(
+                            new
+                            {
+                                controller = "Home",
+                                action = "NoAutorizado",
+                                Area = "",
                                 returnUrl = filterContext.HttpContext.Request.Url.GetComponents(UriComponents.PathAndQuery, UriFormat.SafeUnescaped)
                             })
                         );

@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
+﻿using Apphr.WebUI.Models;
+using Apphr.WebUI.Models.Entities;
+using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Owin;
-using Apphr.WebUI.Models;
-using Apphr.Domain.Entities;
+using System.Web;
 
 [assembly: OwinStartup(typeof(Apphr.WebUI.Startup))]
 namespace Apphr.WebUI
@@ -19,7 +19,7 @@ namespace Apphr.WebUI
 
         private void CreateUserAndRoles()
         {
-            ApphrDbContext context = new ApphrDbContext();
+            ApphrDbContext context = new ApphrDbContext((HttpContext.Current.User != null) ? HttpContext.Current.User.Identity.GetUserId<int>() : -1);
 
             //var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
             var roleManager = new ApplicationRoleManager(new AppRoleStore(context));
@@ -31,35 +31,36 @@ namespace Apphr.WebUI
             // In Startup iam creating first Admin Role and creating a default Admin User     
             if (!roleManager.RoleExists("SysAdmin"))
             {
+                // Add Persona
+                var Persona = new Persona()
+                {
+                    FirstName = "Estuardo",
+                    LastName = "Quintanilla",
+                };
+                context.Personas.Add(Persona);
 
-                // first we create Admin rool    
-                //var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
+                // Roles
                 var role = new AppRole
                 {
                     Name = "SysAdmin"
                 };
                 roleManager.Create(role);
 
-                //Here we create a Admin super user who will maintain the website                   
-
+                // Usuario
                 var user = new AppUser()
                 {
                     UserName = "eaquinta@yahoo.com",
                     Email = "eaquinta@yahoo.com",
-                    PasswordHash = PasswordHash.HashPassword("1234")
+                    PasswordHash = PasswordHash.HashPassword("1234"),
+                    PersonaId = Persona.PersonId,
                 };
-
-
                 var chkUser = UserManager.Create(user);
 
-                //Add default User to Role Admin    
+                // Agregar Rol al usuario
                 if (chkUser.Succeeded)
                 {
                     UserManager.AddToRole(user.Id, "SysAdmin");
-
-                }
-
-
+                }               
             }
 
             // creating Creating Manager role     

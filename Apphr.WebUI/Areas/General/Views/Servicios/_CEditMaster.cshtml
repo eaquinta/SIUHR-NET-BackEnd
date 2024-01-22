@@ -1,0 +1,11 @@
+﻿@model Apphr.Application.Servicios.DTOs.ServicioDTOCEdit
+@Html.AntiForgeryToken()
+@Html.HiddenFor(x => x.ServicioId)
+@Html.EditorFor(x => x.Nombre)
+<div class="form-group mb-3">
+    @Html.LabelFor(model => model.Area, htmlAttributes: new { @class = "control-label" })
+    <div class="">
+        @Html.EnumDropDownListFor(model => model.Area, htmlAttributes: new { @class = "form-select" })
+        @Html.ValidationMessageFor(model => model.Area, "", new { @class = "text-danger" })
+    </div>
+</div>

@@ -1,0 +1,358 @@
+﻿@model Apphr.Application.Ortopedia.OrdenesCompra.DTOs.OrdenCompraDTOJsIxFilter
+
+@{
+    ViewBag.Accion = "Índice";
+    ViewBag.Entidad = "Ordenes Compras";
+    ViewBag.Icon = "<i class=\"far fa-list-alt\"></i>";
+
+    ViewBag.Title = ViewBag.Accion + " de " + ViewBag.Entidad;
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+@using Newtonsoft.Json
+@using Apphr.Resources
+
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index", "Home", new { Area = "Inventario" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <span>@ViewBag.Title</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Encablezado -->
+    <div class="row">
+        <div class="col-md-6 align-self-center">
+            <h4 class="mb-0">
+                @ViewBag.Title @Html.Raw(ViewBag.Icon)
+            </h4>
+        </div>
+        <div class="col-md-6 text-center">
+            <a class="btn btn-success float-md-end" onclick="entity.create();"> Adicionar <i class="fa fa-plus"></i></a>
+        </div>
+    </div>
+    <hr class="my-2" />
+<!-- Encablezado -->
+<!-- Permisos -->
+<div class="row mb-2">
+    <div class="col text-end">
+        <button id="icon-view" type="button" class="btn btn-info    btn-micro btn-round"><span class="fa fa-xs fa-eye"></span></button>
+        <button id="icon-create" type="button" class="btn btn-success btn-micro btn-round"><span class="fa fa-xs fa-plus"></span></button>
+        <button id="icon-edit" type="button" class="btn btn-primary btn-micro btn-round"><span class="fa fa-xs fa-edit"></span></button>
+        <button id="icon-delete" type="button" class="btn btn-danger  btn-micro btn-round"><span class="fa fa-xs fa-trash"></span></button>
+    </div>
+</div>
+<!-- Permisos -->
+<!-- Filtro -->
+@using (Ajax.BeginForm("JsFilterIndex", "SolicitudPedido", new AjaxOptions
+{
+    HttpMethod = "POST",
+    OnBegin = "filter.begin",
+    OnSuccess = "filter.success",
+    OnFailure = "filter.failure"
+}, new { id = "form-filter" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.Page)
+    <div class="card border border-dark mb-3">
+        <div class="card-header background-inventory">
+            Filtro
+            <a data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true" aria-controls="collapseExample">
+                <i class="fa fa-chevron-up fa-pull-right" style="margin-top: 5px;"></i>
+            </a>
+        </div>
+        <div class="collapse show" id="collapseExample">
+            <div class="card-body">
+                @Html.EditorFor(x => x.Buscar, "StringP", new { placeholder = "#OrdenCompra, Fecha" })
+                <div class="form-group">
+                    <div class="float-end mb-3">
+                        <button id="btn-filter" type="submit" class="btn btn-info"><i class="fa fa-filter"></i> Aplicar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<!-- Filtro -->
+<!-- Tabla -->
+<div id="grid-1"></div>
+<!-- Tabla -->
+<!-- Child-Modal -->
+@using (Ajax.BeginForm("JsSaveMaster", "SolicitudPedido", new AjaxOptions
+{
+    HttpMethod = "POST",
+    OnBegin = "child.begin",
+    OnSuccess = "child.success",
+    OnFailure = "child.failure"
+}, new { id = "form-child" }))
+{
+    @Html.Partial("_ChildModal")
+}
+<!-- Child-Modal -->
+<!-- Report-Modal -->
+@Html.Partial("_ReportModal")
+<!-- Report-Modal -->
+</div>
+
+@section Scripts {
+    <script>
+        let urls = @Html.Raw(JsonConvert.SerializeObject(new
+              {
+                  CEdit                 = Url.Action("CEdit"),
+                  Details               = Url.Action("Details"),
+                  DeleteMaster          = Url.Action("JsDeleteMaster"),
+                  GetCreateForm         = Url.Action("JsGetCreateForm"),
+                  FindSolicitudPedido   = Url.Action("JsFindSolicitudPedido", "SolicitudPedido", new { Area = "Ortopedia" }),
+                  FindProveedor         = Url.Action("JsGetByFilter", "Proveedores", new { Area = "Inventario"}),
+                  GetProveedor          = Url.Action("JsGetProveedorByNit", "Proveedores", new { Area = "Inventario" }),
+                  GetSolicitudPedido    = Url.Action("JsGetSolicitudPedidoByNoAnio", "SolicitudPedido", new { Area = "Ortopedia" })
+              }));
+        let permissions = @Html.Raw(JsonConvert.SerializeObject(ViewBag.Permissions));
+        let SinPrivilegios = '@Msg.privileges_none';
+    </script>
+    <script>
+        var filter          = {};
+        var entity          = {};
+        var grid            = {};
+        var child           = {};
+        filter.form         = $('#form-filter');
+        filter.btn          = $('#btn-filter');
+        filter.begin        = function () {
+            filter.btn.prop('disabled', true);
+            $('#grid-1').LoadingOverlay("show", { maxSize: 40 });
+        }
+        filter.success      = function (d) {
+            $('#grid-1').html(d);
+            filter.bindPaged();
+            filter.end();
+        }
+        filter.end          = function () {
+            filter.btn.prop('disabled', false);
+            $('#grid-1').LoadingOverlay("hide");
+        }
+        filter.bindPaged    = function () {
+            $(".pagination a").click(function () {
+                if (event.preventDefault) {
+                    event.preventDefault();
+                    console.log('detenido');
+                    console.log($(this).attr('href'));
+                    $('#Page').val($(this).attr('href'));
+                    filter.btn.trigger('click');
+                }
+            });
+        }
+        filter.failure      = function () {
+            jshelper.failure();
+            filter.end();
+        }
+        entity.view         = function (o) {
+            let id = $(o).data("id");
+            $('#modalLabel').html('Ver Orden de Compra');
+
+            jshelper.get('@Url.Action("JsViewMaster")', {id: id}, function (r) {
+                $('#form-body-child').html(r);
+            });
+            $('#child-modal > .modal-dialog > .modal-content .modal-footer').hide();
+            $('#child-modal').modal('show');
+        }
+        entity.create       = function (o) {
+            if (!permissions.Create) {
+                jshelper.error(SinPrivilegios);
+                return;
+            }
+            $('#modalLabel').text('Crear Orden de Compra');
+            jshelper.get(urls.GetCreateForm, {}, function (r) {
+                //console.log(r);
+                if (r.success == false) {
+                    jshelper.error(r.message);
+                }
+                else {
+                    $('#form-body-child').html(r);
+                    let modalForm = $("#form-child");
+                    jshelper.bindValidation(modalForm);
+
+                    child.clearForm();
+                    child.init();
+
+                    // Autocomplete
+                    $('#NumeroSP').autocomplete({
+                        maxShowItems: 5,
+                        source: function (request, response) {
+                            $.ajax({
+                                url: urls.FindSolicitudPedido,
+                                dataType: "json",
+                                data: { id: request.term },
+                                success: function (r) {
+                                    response($.map(r.data, function (item) {
+                                        //console.log(item);
+                                        return {
+                                            value: item.id,
+                                            label: item.text,
+                                            desc: item.desc,
+                                            anio: item.anio
+                                        };
+                                    }));
+                                }
+                            });
+                        },
+                        appendTo: "#form-body-child",
+                        select: function (event, ui) {
+                            console.log(ui);
+                            $('#NumeroSP').val(ui.item.label);
+                            $('#AnioSP').val(ui.item.anio);
+                            //child.fillSP(ui.item.value);
+                            event.preventDefault();
+                        }
+                    }).data("ui-autocomplete")._renderItem = jshelper.ACRenderItemLbl;
+                    $("#ProveedorNit").autocomplete({
+                        maxShowItems: 5,
+                        source: function (request, response) {
+                            $.ajax({
+                                url: urls.FindProveedor,
+                                dataType: "json",
+                                data: { val: request.term },
+                                success: function (r) {
+                                    response($.map(r.data, function (item) {
+                                        //console.log(item);
+                                        return {
+                                            value: item.Value,
+                                            label: item.Value,
+                                            desc: item.Text
+                                        };
+                                    }));
+                                }
+                            });
+                        },
+                        appendTo: "#form-body-child"
+                    }).data("ui-autocomplete")._renderItem = jshelper.ACRenderItem;
+                    // onblur
+                    $('#NumeroSP, #AnioSP').on('blur', child.fillSP);
+                    $('#ProveedorNit').on('blur', child.fillNit);
+
+                    $('#child-modal > .modal-dialog > .modal-content .modal-footer').show();
+                    $('#child-modal').modal('show');
+                }
+            });
+        }
+        entity.update       = function (o) {
+            event.preventDefault();
+
+            if (!permissions.Edit) {
+                jshelper.error(SinPrivilegios);
+                return;
+            }
+
+            let url = $(o).attr('href');
+            window.location.href = url;
+        }
+        entity.delete       = function (o) {
+            if (!permissions.Delete) {
+                jshelper.error(SinPrivilegios);
+                return;
+            }
+            let id      = $(o).data("model-id");
+            let year    = $(o).data("model-anio");
+            let oc      = $(o).data("model-oc");
+            jshelper.deleteConfirm(function () {
+                jshelper.deleteAjax(
+                    urls.DeleteMaster,
+                    { id: id },
+                    function () { filter.form.submit(); }
+                );
+            },
+                'Se eliminará la <strong>Orden de Compra #' + oc + ' año ' + year + '</strong> con todo su detalle, esta acción es irreversible !'
+            );
+        }
+        child.btnSave       = $('#btn-save-modal');
+        child.modal         = $('#child-modal');
+        child.begin         = function () {
+            child.btnSave.prop('disabled', true);
+        };
+        child.end           = function () {
+            child.btnSave.prop('disabled', false);
+        };
+        child.success       = function (r) {
+            //console.log(r);
+            jshelper.showAlert(r.success, r.message);
+            if (r.success) {
+                child.modal.modal('hide');
+                window.location.assign(urls.CEdit + '/' + r.data.OrdenCompraId);
+            }
+            child.end();
+        };
+        child.failure       = function () {
+            jshelper.failure();
+            child.end();
+        };
+        child.fillSP        = function () {
+            $.ajax({
+                type: "GET",
+                url: urls.GetSolicitudPedido,
+                data: { no: $("#NumeroSP").val(), anio: $("#AnioSP").val() },
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    //console.log(r);
+                    if (r.success) {
+                        $('#FechaSP').val(moment(r.data.Fecha).format('yyyy-MM-DD'));
+                        $('#SolicitudPedidoId').val(r.data.SolicitudPedidoId);
+                    }
+                    else {
+                        $('#FechaSP').val('');
+                        $('#SolicitudPedidoId').val('');
+                    }
+                },
+                failure: function (response) {
+                    console.log(response);
+                    jshelper.failure();
+                }
+            });
+        };
+        child.fillNit       = function () {
+            $.ajax({
+                type: "GET",
+                url: urls.GetProveedor,
+                data: { val: $("#ProveedorNit").val() },
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    //console.log(r);
+                    if (r.success) {
+                        $('#ProveedorNombre').val(r.data.Descripcion);
+                        $('#ProveedorId').val(r.data.ProveedorId);
+                    }
+                    else {
+                        $('#ProveedorNombre').val('');
+                        $('#ProveedorId').val('');
+                    }
+                },
+                failure: function (response) {
+                    console.log(response);
+                    jshelper.failure();
+                }
+            });
+        };
+        child.clearForm = function () {
+            $('#Numero, #NumeroSP, #AnioSP').val('');
+        }
+        child.init          = function () {
+            $('#FechaSP, #ProveedorNombre').attr('readonly', 'readonly').attr('tabindex', '-1');
+        };
+        // Autoload
+        $(function () {
+            jshelper.showPermissions();
+            filter.form.submit();
+            // Auctocomplete
+        });
+    </script>
+}

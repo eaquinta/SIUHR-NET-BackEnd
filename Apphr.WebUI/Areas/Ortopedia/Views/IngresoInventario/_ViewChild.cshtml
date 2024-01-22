@@ -1,0 +1,21 @@
+﻿@model Apphr.Application.Ortopedia.IngresosInventario.DTOs.IngresoInventarioDTOViewChild
+@if (Model == null)
+{
+    @Html.Partial("_RegisterNotFound")
+}
+else
+{
+    <div class="container-lg">
+        <div class="row">
+            <div class="col-md-4">@Html.DisplayFor(x => x.BodegaNombre, "StringD")</div>
+            <div class="col-md-8">@Html.DisplayFor(x => x.BodegaDescripcion, "StringD")</div>
+
+            <div class="col-md-4">@Html.DisplayFor(x => x.MaterialCodigo, "StringD")</div>
+            <div class="col-md-8">@Html.DisplayFor(x => x.MaterialNombre, "StringD")</div>
+
+            <div class="col-md-4">@Html.DisplayFor(x => x.Cantidad, "DecimalD")</div>
+            <div class="col-md-4">@Html.DisplayFor(x => x.Precio, "DecimalD")</div>
+            <div class="col-md-4">@Html.DisplayFor(x => x.Valor, "DecimalD")</div>
+        </div>
+    </div>
+}

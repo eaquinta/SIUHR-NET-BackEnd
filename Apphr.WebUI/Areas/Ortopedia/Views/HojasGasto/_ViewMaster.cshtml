@@ -1,0 +1,43 @@
+﻿@model Apphr.Application.Ortopedia.HojaGasto.DTOs.HojaGastoDTOViewMaster
+
+<div class="container-lg">
+    <div class="row">
+        <div class="col-md-6">@Html.DisplayFor(x => x.HojaControlSala, "StringD")</div>        
+        <div class="col-md-6">@Html.DisplayFor(x => x.Fecha, "DateD")</div>
+        <div class="col-md-12">@Html.DisplayFor(x => x.Observacion, "StringD")</div>
+    </div>
+    <!-- Tabla -->
+    <table id="myTable" class="table table-striped table-bordered display responsive nowrap" width="100%">
+        <thead class="table-dark">
+            <tr>
+                <th>Material</th>
+                <th class="text-end">Solicitado</th>
+                <th class="text-end">Valor</th>
+                <th class="text-end">Costo/U.</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Detalle != null && Model.Detalle.Any())
+            {
+                foreach (var item in Model.Detalle)
+                {
+                    <tr>
+                        <td>[@item.Material.Codigo] @item.Material.Descripcion (@item.Material.Codigi)</td>
+                        <td class="text-end">@string.Format("{0:N2}", item.Cantidad)</td>
+                        <td class="text-end">@string.Format("{0:N2}", item.Valor)</td>
+                        <td class="text-end">@string.Format("{0:N2}", item.Precio)</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <!--Sin registros-->
+                <tr>
+                    <td class="text-center" colspan="6">@Apphr.Resources.Strings.NoRegister</td>
+                </tr>
+                <!--Sin registros-->
+            }
+        </tbody>
+    </table>
+    <!-- Tabla -->
+</div>

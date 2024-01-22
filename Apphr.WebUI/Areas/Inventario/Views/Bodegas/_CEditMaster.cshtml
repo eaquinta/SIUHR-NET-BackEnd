@@ -1,0 +1,5 @@
+﻿@model Apphr.Application.Bodegas.DTOs.BodegaDTOCEdit
+@Html.AntiForgeryToken()
+@Html.HiddenFor(x => x.BodegaId)
+@Html.EditorFor(x => x.Nombre)
+@Html.EditorFor(x => x.Descripcion)

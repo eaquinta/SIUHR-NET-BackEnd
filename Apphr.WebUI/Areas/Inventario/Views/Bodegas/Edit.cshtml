@@ -1,4 +1,4 @@
-﻿@model Apphr.Application.Bodegas.DTOs.BodegaDTOEdit
+﻿@model Apphr.Application.Bodegas.DTOs.BodegaDTOCEdit
 @{
     ViewBag.Title = "Editar";
     ViewBag.Entidad = "Bodega";
@@ -48,7 +48,7 @@
         <!-- Botones formulario -->
         <div class="col-md-12 mt-3">
             <button type="submit" class="btn btn-warning"><i class="fas fa-edit"></i> Actualizar</button>
-            <a class="btn btn-outline-dark" href="@Url.Action("Details",new { id = Model.BodegaId })">Regresar</a>
+            <a class="btn btn-outline-dark" href="@Url.Action("Details",new { id = Model.BodegaId })"><i class="fas fa-chevron-left"></i>&nbsp;Regresar</a>
             <div class="float-end">
                 <a class="btn btn-outline-danger btn-eliminar" href="#"><i class="fas fa-trash"></i>&nbsp;Eliminar</a>
             </div>

@@ -1,5 +1,5 @@
-﻿using Apphr.Domain.Entities;
-using Apphr.WebUI.Models;
+﻿using Apphr.WebUI.Models;
+using Apphr.WebUI.Models.Entities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
@@ -23,19 +23,20 @@ namespace Apphr.WebUI
                 var port = int.Parse(ConfigurationManager.AppSettings["Port"].ToString());
                 var mailFrom = ConfigurationManager.AppSettings["MailFrom"].ToString();
                 var nameFrom = ConfigurationManager.AppSettings["NameFrom"].ToString();
+                var user = ConfigurationManager.AppSettings["User"].ToString();
                 var password = ConfigurationManager.AppSettings["Password"].ToString();
                 var host = ConfigurationManager.AppSettings["Host"].ToString();
                 using (MailMessage mailMessage = new MailMessage(mailFrom, message.Destination, message.Subject, message.Body))
                 {
                     mailMessage.From = new MailAddress(mailFrom, nameFrom);
                     mailMessage.IsBodyHtml = true;
-                    mailMessage.Bcc.Add(new MailAddress(mailFrom, nameFrom));
+                    //mailMessage.Bcc.Add(new MailAddress(mailFrom, nameFrom));
 
                     using (var client = new SmtpClient())
                     {
                         client.Host = host;
                         client.EnableSsl = true;
-                        NetworkCredential NetworkCred = new NetworkCredential(mailFrom, password);
+                        NetworkCredential NetworkCred = new NetworkCredential(user, password);
                         client.UseDefaultCredentials = false;
                         client.Credentials = NetworkCred;
                         client.Port = port;

@@ -1,0 +1,20 @@
+﻿@model Apphr.Application.IngresosAbastecimiento.DTOs.IngresoAbastecimientoDTOBase
+
+@using (Ajax.BeginForm("JsSaveIngreso", "ControlAbastecimiento", new AjaxOptions
+{
+    HttpMethod = "POST",
+    OnBegin = "ingreso.saveBegin",
+    OnSuccess = "ingreso.saveSuccess",
+    OnFailure = "ingreso.saveFailure"
+}, new { id = "form-child" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.IngresoAbastecimientoId)
+    @Html.HiddenFor(x => x.MaterialId)
+    @Html.HiddenFor(x => x.OrdenCompraId)
+    @Html.HiddenFor(x => x.ProveedorId)
+    @Html.EditorFor(x => x.Cantidad)
+    @Html.EditorFor(x => x.Fecha)
+
+    <input type="submit" id="btnSaveDTmodal" class="btn btn-primary float-end" value="Guardar" />
+}

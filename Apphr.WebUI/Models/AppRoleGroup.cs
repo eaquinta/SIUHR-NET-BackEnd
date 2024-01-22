@@ -1,10 +1,5 @@
-﻿using Apphr.Domain.Entities;
-using Microsoft.AspNet.Identity.EntityFramework;
-using System;
-using System.Collections.Generic;
+﻿using Apphr.WebUI.Models.Entities;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 
 namespace Apphr.WebUI.Models
 {

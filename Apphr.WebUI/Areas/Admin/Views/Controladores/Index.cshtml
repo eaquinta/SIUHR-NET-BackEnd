@@ -1,9 +1,15 @@
-﻿@model IEnumerable<Apphr.Domain.Entities.Controlador>
-
+﻿@model Apphr.Application.Controladores.DTOs.ControladorDTOIxFilter
+@using Newtonsoft.Json
+@using Apphr.Resources
 @{
-    ViewBag.Title = "Índice";
+    ViewBag.Pagina = "Índice";
+    ViewBag.Entidad = "Controladores";
+    ViewBag.Icon = "<i class=\"far fa-list-alt\"></i>";
+    ViewBag.Title = ViewBag.Pagina + " de " + ViewBag.Entidad;
     Layout = "~/Views/Shared/_AppLayout.cshtml";
 }
+
+<link href="~/Content/PagedList.css" rel="stylesheet" />
 
 <div class="container-lg">
     <!--BreadCrum-->
@@ -23,60 +29,271 @@
     <!--BreadCrum-->
     <!-- Encablezado -->
     <h4 class="my-3">
-        @ViewBag.Title Controladores <i class="far fa-list-alt"></i>
-        <a class="btn btn-success float-end" href="@Url.Action("Create")">
-            Adicionar <i class="fa fa-plus"></i>
-        </a>
+        @ViewBag.Title @Html.Raw(ViewBag.Icon)
+        <a class="btn btn-success float-end ms-3" onclick="entity.create();">Adicionar <i class="fa fa-plus"></i></a>
     </h4>
+    <hr class="mb-0" />
     <div class="clearfix"></div>
     <!-- Encablezado -->
-    <table class="table table-hover table-bordered">
-        <tr class="table-dark">
-            <th style="width:80px;">Acciones</th>
-            <th>
-                @Html.DisplayNameFor(model => model.Detalle)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Area)
-            </th>
-            @*<th>
-                    @Html.DisplayNameFor(model => model.Controller)
-                </th>*@
-            @*<th>
-                    @Html.DisplayNameFor(model => model.Action)
-                </th>*@
-        </tr>
-        @if (Model.Any())
-        {
-            foreach (var item in Model)
-            {
-                <tr>
-
-                    <!-- Acciones -->
-                    <td>
-                        <a class="btn btn-sm btn-info" href="@Url.Action("Details", new { id = item.AccionId })"><i class="fa fa-eye" aria-hidden="true"></i></a>
-                    </td>
-                    <!-- Acciones -->
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Detalle)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Area)
-                    </td>
-                    @*<td>
-                            @Html.DisplayFor(modelItem => item.Controller)
-                        </td>*@
-                    @*<td>
-                            @Html.DisplayFor(modelItem => item.Action)
-                        </td>*@
-                </tr>
-            }
-        }
-        else
-        {
-            <tr>
-                <td class="text-center" colspan="4">@Apphr.Resources.Strings.NoRegister</td>
-            </tr>
-        }
-    </table>
+    <!-- Permisos -->
+    <div class="row mb-2">
+        <div class="col text-end">
+            <button id="icon-view" type="button" class="btn btn-info    btn-micro btn-round"><span class="fa fa-xs fa-eye"></span></button>
+            <button id="icon-create" type="button" class="btn btn-success btn-micro btn-round"><span class="fa fa-xs fa-plus"></span></button>
+            <button id="icon-edit" type="button" class="btn btn-primary btn-micro btn-round"><span class="fa fa-xs fa-edit"></span></button>
+            <button id="icon-delete" type="button" class="btn btn-danger  btn-micro btn-round"><span class="fa fa-xs fa-trash"></span></button>
+        </div>
+    </div>
+    <!-- Permisos -->
+    <!-- Filtro -->
+    @using (Ajax.BeginForm("JsFilterIndex", "Materiales", new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnBegin = "filter.begin",
+        OnSuccess = "filter.success",
+        OnFailure = "filter.failure"
+    }, new { id = "form-filter" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.Page)
+        <div class="card border border-dark mb-3">
+            <div class="card-header background-inventory">
+                Filtro
+                <a data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true" aria-controls="collapseExample">
+                    <i class="fa fa-chevron-up fa-pull-right" style="margin-top: 5px;"></i>
+                </a>
+            </div>
+            @* add class *@
+            <div class="collapse show" id="collapseExample">
+                <div class="card-body">
+                    @Html.EditorFor(x => x.Buscar, "StringP", new { placeholder = "#Código, Descripción" })
+                    <div class="form-group">
+                        <div class="float-end mb-3">
+                            <button id="btn-filter" type="submit" class="btn btn-info"><i class="fa fa-filter"></i> Aplicar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <!-- Filtro -->
+    <!-- Tabla -->
+    <div id="grid-1"></div>
+    <!-- Tabla -->
+    <!-- Child-Modal -->
+    @using (Ajax.BeginForm("JsSaveMaster", "Controladores", new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnBegin = "child.begin",
+        OnSuccess = "child.success",
+        OnFailure = "child.failure"
+    }, new { id = "form-child" }))
+    {
+        @Html.Partial("_ChildModal")
+    }
+    <!-- Child-Modal -->
+    <!-- Report-Modal -->
+    @Html.Partial("_ReportModal")
+    <!-- Report-Modal -->
 </div>
+
+@section Scripts{
+    <script>
+        let urls = @Html.Raw(JsonConvert.SerializeObject(new
+              {
+                  //FindDestinos = Url.Action("JsGetDestinosByFilter", "Destinos"),
+                  //FindBodegas = Url.Action("JsGetByFilter", "Bodegas"),
+                  //FindMateriales = Url.Action("JsGetByFilter", "Materiales"),
+                  //FindProveedores = Url.Action("JsGetByFilter", "Proveedores"),
+                  //GetDestino = Url.Action("JsGetDestinoByCodigo", "Destinos"),
+                  //GetBodega = Url.Action("JsGetBodegaByNombre", "Bodegas"),
+                  //GetMaterial = Url.Action("JsGetByCodigo", "Materiales"),
+                  //GetProveedor = Url.Action("JsGetProveedorByNit", "Proveedores"),
+                  //GetPaciente = Url.Action("JsGetPacienteByHCA", "Pacientes", new { Area = "Medica" }),
+                  //GetChild = Url.Action("JsGetChild"),
+                  //CEdit = Url.Action("CEdit"),
+                  //Index = Url.Action("Index"),
+                  //Grid = Url.Action("JsGrid"),
+                  //Details = Url.Action("Details")
+                  //Print = Url.Action("Print")
+              }));
+        let permissions = @Html.Raw(JsonConvert.SerializeObject(ViewBag.Permissions));
+        let SinPrivilegios = '@Msg.privileges_none';
+    </script>
+    <script>
+        var filter = {};
+        var entity = {};
+        var child = {};
+        @*function SyncBodega(t) {
+            var BodegaId = $(t).data("id");
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("JsSyncBodega", "Bodegas")',
+                data: { id: BodegaId },
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    if (response.result) {
+                        toastr.success('Importado satisfactoriamente', 'Sincronizacion');
+                    }
+                    else {
+                        toastr.error('Error');
+                    }
+                },
+                failure: function (response) {
+                    jshelper.failure();
+                    //console.log(response);
+                }
+
+            });
+        }*@
+        filter.form = $('#form-filter');
+        filter.btn = $('#btn-filter');
+        filter.begin = function () {
+            filter.btn.prop('disabled', true);
+        }
+        filter.success = function (d) {
+            $('#grid-1').html(d);
+            filter.bindPaged();
+            filter.end();
+        }
+        filter.end = function () {
+            filter.btn.prop('disabled', false);
+        }
+        filter.failure = function () {
+            jshelper.failure();
+            filter.end();
+        }
+        filter.bindPaged = function () {
+            $(".pagination a").click(function () {
+                if (event.preventDefault) {
+                    event.preventDefault();
+                    //console.log('detenido');
+                    //console.log($(this).attr('href'));
+                    $('#Page').val($(this).attr('href'));
+                    filter.btn.trigger('click');
+                }
+            });
+        }
+
+        entity.view         = function (o) {
+            if (!permissions.View) {
+                jshelper.error(SinPrivilegios);
+                return;
+            }
+            let id = $(o).data("model-id");
+            $('#modalLabel').html('Ver Controlador');
+
+            jshelper.get('@Url.Action("JsViewMaster")', {id: id}, function (r) {
+                $('#form-body-child').html(r);
+            });
+            $('#child-modal > .modal-dialog > .modal-content .modal-footer').hide();
+            $('#child-modal').modal('show');
+        }
+        entity.create       = function (o) {
+            if (!permissions.Create) {
+                jshelper.error(SinPrivilegios);
+                return;
+            }
+            $('#modalLabel').text('Crear Controlador');
+            jshelper.get('@Url.Action("JsGetCreateForm")', {}, function (r) {
+                //console.log(r);
+                if (r.success == false) {
+                    //alert(r.message);
+                    jshelper.error(r.message);
+                }
+                else {
+                    $('#form-body-child').html(r);
+                    let modalForm = $("#form-child");
+                    jshelper.bindValidation(modalForm);
+                    //childInicial.init();
+                    $('#child-modal > .modal-dialog > .modal-content .modal-footer').show();
+                    $('#child-modal').modal('show');
+                }
+            });
+        }
+        entity.update = function (o) {
+            event.preventDefault();
+
+            if (!permissions.Edit) {
+                jshelper.error(SinPrivilegios);
+                return;
+            }
+
+            let id = $(o).data("model-id");
+            $('#modalLabel').html('Editar Controlador');
+            jshelper.get('@Url.Action("JsGetCEditForm")', { id: id }, function (r) {
+                //console.log(r);
+                if (r.success == false) {
+                    jshelper.error(r.message);
+                }
+                else {
+                    $('#form-body-child').html(r);
+                    let modalForm = $("#form-child");
+                    jshelper.bindValidation(modalForm);
+                    entity.bindFunctions();
+                    $('#child-modal > .modal-dialog > .modal-content .modal-footer').show();
+                    $('#child-modal').modal('show');
+                }
+            });
+            //let url = $(o).attr('href');
+            //window.location.href = url;
+        }
+        entity.delete = function (o) {
+            if (!permissions.Delete) {
+                jshelper.error(SinPrivilegios);
+                return;
+            }
+            let id = $(o).data("model-id");
+            let nombre = $(o).data("model-nombre");
+            jshelper.deleteConfirm(function () {
+                jshelper.deleteAjax(
+                    '@Url.Action("JsDeleteMaster")',
+                    { id: id },
+                    function () { filter.form.submit(); }
+                );
+            },
+                'Se eliminará la <strong>Control: ' + nombre + '</strong> con todo su detalle, esta acción es irreversible !'
+            );
+        }
+        entity.bindFunctions = function () {
+            $('#SelectedRoles').select2({
+                theme: "bootstrap-5",
+                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+                placeholder: $(this).data('placeholder'),
+                closeOnSelect: false,
+                allowClear: true,
+            });
+        }
+
+        child.btnSave = $('#btn-save-modal');
+        child.modal = $('#child-modal');
+        child.begin = function () {
+            child.btnSave.prop('disabled', true);
+        };
+        child.end = function () {
+            child.btnSave.prop('disabled', false);
+        };
+        child.success = function (r) {
+            //console.log(r);
+            jshelper.showAlert(r.success, r.message);
+            if (r.success) {
+                child.modal.modal('hide');
+                // Un solo nivel
+                filter.form.submit();
+                // Dos niveles
+                //window.location.replace(urls.CEdit + '/' + r.data.CirujanoId);
+            }
+            child.end();
+        };
+        child.failure = function () {
+            jshelper.failure();
+            child.end();
+        };
+
+        $(function () {
+            jshelper.showPermissions();
+            filter.form.submit();
+        });
+    </script>
+}

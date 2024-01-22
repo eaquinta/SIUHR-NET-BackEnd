@@ -48,7 +48,7 @@
     }, new { id = "form-filter" }))
     {
         @Html.AntiForgeryToken()
-        @Html.HiddenFor(x => x.page)
+        @Html.HiddenFor(x => x.Page)
         <div class="card mb-3">
             <div class="card-header">
                 <a class="text-decoration-none" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
@@ -104,7 +104,7 @@
                     event.preventDefault();
                     console.log('detenido');
                     console.log($(this).attr('href'));
-                    $('#page').val($(this).attr('href'));
+                    $('#Page').val($(this).attr('href'));
                     filter.btn.trigger('click');
                 }
             });

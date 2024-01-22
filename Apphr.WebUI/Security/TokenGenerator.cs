@@ -16,7 +16,7 @@ namespace Apphr.WebUI.Security
             var secretKey = ConfigurationManager.AppSettings["JWT_SECRET_KEY"];
             var audienceToken = ConfigurationManager.AppSettings["JWT_AUDIENCE_TOKEN"];
             var issuerToken = ConfigurationManager.AppSettings["JWT_ISSUER_TOKEN"];
-            var expireTime = ConfigurationManager.AppSettings["JWT_EXPIRE_MINUTES"];
+            var expireTime = ConfigurationManager.AppSettings["JWT_EXPIRE_DAYS"];
 
             var securityKey = new SymmetricSecurityKey(System.Text.Encoding.Default.GetBytes(secretKey));
             var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
@@ -31,7 +31,7 @@ namespace Apphr.WebUI.Security
                 issuer: issuerToken,
                 subject: claimsIdentity,
                 notBefore: DateTime.UtcNow,
-                expires: DateTime.UtcNow.AddMinutes(Convert.ToInt32(expireTime)),
+                expires: DateTime.UtcNow.AddDays(Convert.ToInt32(expireTime)), //.AddMinutes(Convert.ToInt32(expireTime)),
                 signingCredentials: signingCredentials);
 
             var jwtTokenString = tokenHandler.WriteToken(jwtSecurityToken);

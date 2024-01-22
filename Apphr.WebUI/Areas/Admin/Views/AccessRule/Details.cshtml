@@ -81,6 +81,12 @@
                                     <i class="fa fa-eye"></i> Ver
                                 </div>
                             }
+                            @if (Model.SelectedPermits.Contains(Permit.Create))
+                            {
+                                <div class="list-group-item list-group-item-warning">
+                                    <i class="fa fa-plus"></i> Crear
+                                </div>
+                            }
                             @if (Model.SelectedPermits.Contains(Permit.Edit))
                             {
                                 <div class="list-group-item list-group-item-warning">

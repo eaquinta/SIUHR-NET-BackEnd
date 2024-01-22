@@ -1,0 +1,25 @@
+﻿@model Apphr.Application.Ortopedia.HojaGasto.DTOs.HojaGastoDTOSelect
+@using (Ajax.BeginForm("JsAddFromHojaGasto", "DespachoInventario", new { Area = "Ortopedia" }, new AjaxOptions
+{
+    HttpMethod = "POST",
+    OnBegin   = "selectHG.begin",
+    OnSuccess = "selectHG.success",
+    OnFailure = "selectHG.failure"
+}, new { id = "form-select" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.ProveedorId)
+    @Html.HiddenFor(x => x.DevolucionId)
+    @Html.HiddenFor(x => x.DespachoInventarioId)
+    <div class="row">
+        <div class="col-12">@Html.EditorFor(x => x.HojaGastoId, new { optionsList = ViewBag.HojaGastoId })</div>
+        <div class="col-12">@Html.EditorFor(x => x.BodegaId, new { optionsList = ViewBag.BodegaId }) </div>
+        
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-12">
+            <button id="modal2-btn-submit" type="submit" class="btn btn-success float-end">Seleccionar</button>
+        </div>
+    </div>
+}

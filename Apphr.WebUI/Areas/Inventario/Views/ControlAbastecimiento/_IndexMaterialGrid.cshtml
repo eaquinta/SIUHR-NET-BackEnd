@@ -1,0 +1,53 @@
+﻿@model List<Apphr.Application.ControlAbastecimiento.DTOs.InicioAbastecimientoDTOIndex>
+
+
+<div class="table-responsive text-nowrap">
+    <table id="table" class="table table-sm table-striped table-hover nowrap table-bordered" width="100%" data-toggle="table">
+        <thead>
+            <tr>
+                <th style="width:75px;">Acciones</th>
+                <th class="text-center">Código</th>
+                <th>Nombre</th>
+                <th>Nit</th>
+                <th>Nombre Proveedor</th>
+                <th class="text-end text-wrap">Inicial</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-center">
+                            <div class="dropdown d-inline-block">
+                                <button class="btn btn-sm" type="button" id="ddBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="ddBtn">
+                                    <li><a class="dropdown-item" data-m="@item.MaterialId" data-d="@item.DestinoId" onclick="CambiarInicial(this);"><i class="fas fa-plus"></i> Cambiar Inv. Inical</a></li>                                    
+                                    <li><a class="dropdown-item" data-m="@item.MaterialId" data-p="@item.ProveedorId" onclick="EliminarInicial(this);"><i class="fas fa-trash"></i> Eliminar</a></li>                                    
+                                </ul>
+                            </div>
+                        </td>
+                        <td>@item.MaterialCodigo</td>
+                        <td class="ellipsis">
+                            <div class="popper" data-bs-container="body" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="top" data-bs-content="@item.MaterialDescripcion">@item.MaterialDescripcion</div>
+                        </td>
+                        <td>@item.ProveedorNit</td>
+                        <td>@item.ProveedorNombre</td>
+                        <td class="text-end">@string.Format("{0:N2}", item.Cantidad)</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <!--Sin registros-->
+                <tr>
+                    <td class="text-center" colspan="6">@Apphr.Resources.Strings.NoRegister</td>
+                </tr>
+                <!--Sin registros-->
+            }
+        </tbody>
+    </table>
+</div>

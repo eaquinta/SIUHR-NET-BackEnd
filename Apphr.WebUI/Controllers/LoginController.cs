@@ -34,17 +34,17 @@ namespace Apphr.WebUI.Controllers
 
         [HttpPost]
         [Route("authenticate")]
-        public IHttpActionResult Authenticate(LoginRequest login)
+        public IHttpActionResult Authenticate(string Username, string Password)
         {
-            if (login == null)
+            if (string.IsNullOrEmpty(Username)|| string.IsNullOrEmpty(Password))
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
 
             //TODO: Validate credentials Correctly, this code is only for demo !!
-            bool isCredentialValid = (login.Password == "3#yWbo>#Xp0^%J7lM-zc0E[v_wWzX=" && login.Username == "me@juanfrancisco.io");
+            bool isCredentialValid = (Password == "3#yWbo>#Xp0^%J7lM-zc0E[v_wWzX=" && Username == "me@juanfrancisco.io");
             //var tokenHandler = new JwtSecurityTokenHandler();
             if (isCredentialValid)
             {
-                var token =  TokenGenerator.GenerateTokenJwt(login.Username);
+                var token =  TokenGenerator.GenerateTokenJwt(Username);
                // var token = JwtManager.GenerateToken(login.Username);
                 return Ok(new { success = true, token });
             }

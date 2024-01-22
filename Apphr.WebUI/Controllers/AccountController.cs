@@ -1,17 +1,13 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
+﻿using Apphr.WebUI.Models;
+using Apphr.WebUI.Models.Entities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using Apphr.WebUI.Models;
-using Apphr.Domain.Entities;
-using Apphr.Application.Usuarios.DTOs;
-using System.Data.Entity;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Mvc;
 
 namespace Apphr.WebUI.Controllers
 {
@@ -58,7 +54,7 @@ namespace Apphr.WebUI.Controllers
         
         
         [AllowAnonymous]
-        public ActionResult Login(string returnUrl) // GET
+        public ActionResult Login(string returnUrl)                                                         // GET
         {
             ViewBag.ReturnUrl = returnUrl;
             return View();
@@ -69,7 +65,7 @@ namespace Apphr.WebUI.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)  // POST
+        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)                       // POST
         {            
             if (!ModelState.IsValid)
             {
@@ -215,7 +211,7 @@ namespace Apphr.WebUI.Controllers
             if (ModelState.IsValid)
             {
                 var user = await UserManager.FindByNameAsync(model.Email);
-                if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
+                if (user == null) //|| !(await UserManager.IsEmailConfirmedAsync(user.Id)))
                 {
                     // No revelar que el usuario no existe o que no está confirmado
                     return View("ForgotPasswordConfirmation");
@@ -223,10 +219,10 @@ namespace Apphr.WebUI.Controllers
 
                 // Para obtener más información sobre cómo habilitar la confirmación de cuentas y el restablecimiento de contraseña, visite https://go.microsoft.com/fwlink/?LinkID=320771
                 // Enviar correo electrónico con este vínculo
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                // await UserManager.SendEmailAsync(user.Id, "Restablecer contraseña", "Para restablecer la contraseña, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
-                // return RedirectToAction("ForgotPasswordConfirmation", "Account");
+                string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
+                await UserManager.SendEmailAsync(user.Id, "Restablecer contraseña", "Para restablecer la contraseña, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
+                return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
             // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
@@ -359,7 +355,7 @@ namespace Apphr.WebUI.Controllers
             }
         }
 
-        //
+
         // POST: /Account/ExternalLoginConfirmation
         [HttpPost]
         [AllowAnonymous]

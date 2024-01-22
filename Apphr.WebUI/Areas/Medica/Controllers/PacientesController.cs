@@ -1,6 +1,6 @@
 ﻿using Apphr.Application.Common.Models;
 using Apphr.Application.Pacientes.DTOs;
-using Apphr.Domain.Entities;
+using Apphr.WebUI.Models.Entities;
 using Apphr.WebUI.Controllers;
 using System;
 using System.Data.Entity;

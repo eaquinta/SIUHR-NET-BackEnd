@@ -1,0 +1,36 @@
+﻿@model Apphr.Application.Ortopedia.DespachosInventario.DTOs.DespachoInventarioDTOViewChild
+@if (Model == null)
+{
+    @Html.Partial("_RegisterNotFound")
+}
+else
+{
+    <div class="container-lg">
+        <div class="row">
+            <div class="col-md-4">@Html.DisplayFor(x => x.PacienteRM, "StringD")</div>
+            <div class="col-md-8">@Html.DisplayFor(x => x.PacienteNombreCompleto, "StringD")</div>
+
+            <div class="col-md-4">@Html.DisplayFor(x => x.BodegaNombre, "StringD")</div>
+            <div class="col-md-8">@Html.DisplayFor(x => x.BodegaDescripcion, "StringD")</div>
+
+            <div class="col-md-4">@Html.DisplayFor(x => x.MaterialCodigo, "StringD")</div>
+            <div class="col-md-8">@Html.DisplayFor(x => x.MaterialNombre, "StringD")</div>
+            <div class="col-md-6">@Html.DisplayFor(x => x.MaterialPrecio, "DecimalD")</div>
+            <div class="col-md-6">@Html.DisplayFor(x => x.UnidadMedida, "StringD")</div>
+
+            <div class="col-md-4">@Html.DisplayFor(x => x.ProveedorNit, "StringD")</div>
+            <div class="col-md-8">@Html.DisplayFor(x => x.ProveedorNombre, "StringD")</div>
+
+            <div class="col-md-4">@Html.DisplayFor(x => x.NumeroOC, "Int32D")</div>
+            <div class="col-md-4">@Html.DisplayFor(x => x.FechaOC, "DateD")</div>
+            <div class="col-md-4">@Html.DisplayFor(x => x.AnioOC, "Int32D")</div>
+
+            <div class="col-md-12">@Html.DisplayFor(x => x.CirujanoNombre, "StringD")</div>
+
+            <div class="col-md-4">@Html.DisplayFor(x => x.Cantidad, "DecimalD")</div>
+            <div class="col-md-4">@Html.DisplayFor(x => x.Precio, "DecimalD")</div>
+            <div class="col-md-4">@Html.DisplayFor(x => x.Valor, "DecimalD")</div>
+
+        </div>
+    </div>
+}

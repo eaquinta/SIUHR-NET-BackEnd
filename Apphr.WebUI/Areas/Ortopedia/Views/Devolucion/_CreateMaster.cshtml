@@ -1,0 +1,24 @@
+﻿@model Apphr.Application.Ortopedia.Devolucion.DTOs.DevolucionDTOCreate
+
+
+@using (Ajax.BeginForm("JsSaveMaster", "Devolucion", new { Area = "Ortopedia" }, new AjaxOptions
+{
+    HttpMethod = "POST",
+    OnBegin = "modal1.begin",
+    OnSuccess = "modal1.success",
+    OnFailure = "modal1.failure"
+}, new { id = "modal1-form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.DevolucionId)
+
+    <div class="row">
+        <div class="col-md-12">@Html.EditorFor(x => x.Fecha)</div>
+        <div class="col-md-12">@Html.EditorFor(x => x.ProveedorId, new { optionsList = ViewBag.ProveedorId })</div>
+        <div class="col-md-12">@Html.EditorFor(x => x.Observacion)</div>
+    </div>
+    <hr class="mb-3 mt-3" />
+    <div class="col-12">
+        <input type="submit" id="modal2-btn-save" class="btn btn-primary float-end" value="Guardar" />
+    </div>
+}

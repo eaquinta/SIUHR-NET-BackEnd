@@ -70,6 +70,15 @@ namespace Apphr.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Debe ser un Departamento / Servicio válido..
+        /// </summary>
+        public static string Destino_NotExist {
+            get {
+                return ResourceManager.GetString("Destino_NotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Debe ser un documento de referencia válido..
         /// </summary>
         public static string DocumentRef_NotValid {
@@ -106,6 +115,15 @@ namespace Apphr.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Debe ser una Orden de Compra válida..
+        /// </summary>
+        public static string OrdenCompra_NotExist {
+            get {
+                return ResourceManager.GetString("OrdenCompra_NotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Debe ser un RM Válido..
         /// </summary>
         public static string PacienteRM_NotExist {
@@ -120,6 +138,15 @@ namespace Apphr.Resources {
         public static string privileges_none {
             get {
                 return ResourceManager.GetString("privileges_none", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Debe ser un Nit de Proveedor válido..
+        /// </summary>
+        public static string Proveedor_NotExist {
+            get {
+                return ResourceManager.GetString("Proveedor_NotExist", resourceCulture);
             }
         }
         

@@ -1,0 +1,18 @@
+﻿@model Apphr.Application.Ortopedia.SolicitudesPedido.DTOs.SolicitudPedidoDTOCreate
+
+@Html.AntiForgeryToken()
+@Html.HiddenFor(x => x.SolicitudPedidoId)
+@Html.HiddenFor(x => x.Lineas)
+
+<div class="row">    
+    <div class="col-md-6">@Html.EditorFor(x => x.Numero)</div>
+    <div class="col-md-6">@Html.EditorFor(x => x.Fecha)</div>
+    <div class="col-md-6">@Html.EditorFor(x => x.TipoPrioridad, new { optionsList = ViewBag.ListTipoPrioridad })</div>
+    <div class="col-md-6">@Html.EditorFor(x => x.TipoEvento, new { optionsList = ViewBag.ListTipoEvento })</div>    
+    <div class="col-md-6">@Html.EditorFor(x => x.Elaboro)</div>
+    <div class="col-md-6">@Html.EditorFor(x => x.Solicito)</div>
+    <div class="col-md-6">@Html.EditorFor(x => x.JefeDepartamento)</div>
+    <div class="col-md-6">@Html.EditorFor(x => x.Gerente)</div>
+    <div class="col-md-6">@Html.EditorFor(x => x.Director)</div>
+    <div class="col-md-6">@Html.EditorFor(x => x.Observacion)</div>
+</div>

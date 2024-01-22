@@ -1,28 +1,28 @@
 ﻿using Apphr.Application.Common;
+using Apphr.Application.Common.Models;
 using Apphr.Application.SolicitudesDespachos.DTOs;
-using Apphr.Domain.Entities;
+using Apphr.Domain.EntitiesDBF;
+using Apphr.Domain.Enums;
+using Apphr.WebUI.Common;
 using Apphr.WebUI.Controllers;
+using Apphr.WebUI.CustomAttributes;
+using Apphr.WebUI.Models.Entities;
+using CrystalDecisions.CrystalReports.Engine;
 using PagedList;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
+using System.Data.Entity.SqlServer;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using System.Data;
-using System.Data.Entity;
-using Apphr.Application.Common.Models;
-using Apphr.WebUI.CustomAttributes;
-using Apphr.Domain.Enums;
-using Apphr.WebUI.Common;
-using System.Data.Entity.SqlServer;
-using System.IO;
-using CrystalDecisions.CrystalReports.Engine;
-using Apphr.Domain.EntitiesDBF;
 
 namespace Apphr.WebUI.Areas.Inventario.Controllers
 {
-	[Authorize]
+    [Authorize]
 	public class SolicitudesDespachoController : DbController
 	{
 		public ActionResult Index(SolicitudDespachoDTOIndex dto, int? page) //GET
@@ -96,7 +96,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 				dto.SeccionNombre = reg.Seccion.Descripcion;
 			}
 
-			ViewBag.Tipo = PrioridadTipo.GetSelectList();
+			ViewBag.Tipo = TipoPrioridad.GetSelectList();
 			return View(dto);
 		}
 
@@ -137,12 +137,12 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 				//dto.PacienteNombreCompleto = reg.Paciente?.Persona?.Name;
 			}
 
-			ViewBag.Tipo = PrioridadTipo.GetSelectList();
+			ViewBag.Tipo = TipoPrioridad.GetSelectList();
 			return View(dto);
 		}
 
 
-		[AppAuthorization(Permit.View)]
+		[Can("solicitud_despacho.ver")]
 		public async Task<ActionResult> Details(string id)
 		{
 			if (string.IsNullOrEmpty(id))
@@ -167,7 +167,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 		}
 
 
-		[AppAuthorization(Permit.View)]
+		[Can("solicitud_despacho.ver")]
 		public ActionResult DetailsDBF(string id)
 		{			
 			if (string.IsNullOrEmpty(id))
@@ -285,6 +285,8 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 		{
 			int pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
 			var regs = this.dbfContext.GetSolicitudesDespacho();
+			if (regs == null)
+				return PartialView("_ErrorSiahr");
 
 			if (!String.IsNullOrEmpty(Buscar))
 			{
@@ -317,7 +319,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 		}
 
 
-		[AppAuthorization(Permit.Edit)]
+		[Can("solicitud_despacho.editar")]
 		[HttpPost, ValidateAntiForgeryToken]
 		public JsonResult JsSaveMaster([Bind (Exclude = "")] SolicitudDespachoDTOCEdit dto)
 		{
@@ -358,13 +360,13 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Json(new { success = false, message = "ha ocurrido algun problema, intente nuevamenete, si el problema persiste comuniquese con el administrador.", messageEx = ex.Message, messageInner = ex.InnerException });
+				return Json(new { success = false, message = "ha ocurrido algun problema, intente nuevamenete, si el problema persiste comuniquese con el administrador.", messageEx = ex.Message, messageInner = ex.InnerException.InnerException.Message });
 			}
 		}
 
 
 
-		[AppAuthorization(Permit.Edit)]
+		[Can("solicitud_despacho.editar")]
 		[HttpPost, ValidateAntiForgeryToken]
 		public JsonResult JsSaveMasterMS([Bind(Exclude = "")] SolicitudDespachoDTOCEditMS dto)
 		{
@@ -426,14 +428,14 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Json(new { success = false, message = "ha ocurrido algun problema, intente nuevamenete, si el problema persiste comuniquese con el administrador.", messageEx = ex.Message, messageInner = ex.InnerException });
+				return Json(new { success = false, message = "ha ocurrido algun problema, intente nuevamenete, si el problema persiste comuniquese con el administrador.", messageEx = ex.Message, messageInner = ex.InnerException.InnerException.Message });
 			}
 		}
 
 
 
 
-		[AppAuthorization(Permit.Edit)]
+		[Can("solicitud_despacho.editar")]
 		[HttpPost, ValidateAntiForgeryToken]
 		public JsonResult JsSaveChild( SolicitudDespachoChildDTOCEdit dto)
         {
@@ -473,7 +475,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 			}
             catch (Exception ex)
             {
-				return Json(new { success = false, message = Resources.Msg.failure, messageEx = ex.Message, messageInner = ex.InnerException });
+				return Json(new { success = false, message = Resources.Msg.failure, messageEx = ex.Message, messageInner = ex.InnerException.InnerException.Message });
 			}
         }
 		
@@ -499,13 +501,13 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 				// Special Map
 				dto.MaterialCodigo = reg.Material.Codigo;
 				dto.MaterialNombre = reg.Material.Descripcion;
-				dto.MaterialPrecio = reg.Material.Precio??0;
+				dto.MaterialPrecio = reg.Material.Precio; //??0;
 
 				return Json(new { success = true, data = dto }, JsonRequestBehavior.AllowGet);
 			}
             catch (Exception ex)
             {
-				return Json(new { success = false, message = Apphr.Resources.Msg.failure, exmessage = ex.Message, exinner = ex.InnerException }, JsonRequestBehavior.AllowGet);
+				return Json(new { success = false, message = Apphr.Resources.Msg.failure, exmessage = ex.Message, exinner = ex.InnerException.InnerException.Message }, JsonRequestBehavior.AllowGet);
 			}
 			
         }
@@ -514,8 +516,8 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> JsDeleteMaster(string id) // POST
 		{
-			Permit[] permisosRequeridos = { Permit.Delete };
-			bool hasPermit = Utilidades.hasPermit(permisosRequeridos, ControllerContext, userName);
+			string[] permisosRequeridos = { "solicitud_despacho.eliminar" };
+			bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
 			if (!hasPermit)
 			{
 				return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);
@@ -540,8 +542,8 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> JsDeleteChild(int? id)
         {
-			Permit[] permisosRequeridos = { Permit.Delete };
-			bool hasPermit = Utilidades.hasPermit(permisosRequeridos, ControllerContext, userName);
+			string[] permisosRequeridos = { "solicitud_despacho.eliminar" };
+			bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
 			if (!hasPermit)
 			{
 				return Json(new { success = false, message = Resources.Msg.privileges_none }, JsonRequestBehavior.DenyGet);

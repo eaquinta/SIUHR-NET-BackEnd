@@ -1,4 +1,15 @@
-﻿/*Estadisticas*/
+﻿.preloader {
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    background-color: #ffffffd6;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 60px !important;
+    z-index: 9999;
+}
+
+/*Estadisticas*/
 .card-warning {
     background: #fbad4c;
 }
@@ -16,6 +27,15 @@
     position: static;
 }
 
+/*Tabla Cell Ellipse*/
+td.ellipsis div {
+    white-space: nowrap;    
+    width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/*Ajuste de iconos en menus*/
 .dropdown-item svg {
     width: 1rem !important;
 }
@@ -24,6 +44,16 @@
     background-color: #b5d6d6;
     font-weight: bold;
 }
+
+.background-siahr {
+    background-color: #f8d7da;
+    font-weight: bold;  
+}
+
+.dropdown-item a {
+    color: #212529;
+    text-decoration: none;
+}
 /*.table-title {
     color: #fff;
     background: #4b5366;
@@ -31,10 +61,6 @@
     margin: -0.5rem -1rem 10px;
     border-radius: 3px 3px 0 0;
 }*/
-
-
-
-
 /* Pannel with Collapse arrow */
 .card-header .svg-inline--fa {
     transition: .3s transform ease-in-out;
@@ -68,9 +94,84 @@
     border-radius: 5px;
 }
 
-/* Correccion de  Modal para tamanio */
+/* Correccion de Modal para tamanio */
 @media (max-width: 992px) {
     .modal-dialog {
         max-width: 90%;
     }
+}
+
+
+/* Spinner */
+#spinner-div {
+    position: absolute;
+    display: none;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    text-align: center;
+    background-color: rgb(0 0 0 / 20%) !important;
+    z-index: 9999;
+}
+
+.spinner-border {
+    display: block;
+    position: fixed;
+    top: calc(50% - (58px / 2));
+    right: calc(50% - (58px / 2));
+    color: red;
+}
+
+.form-label {
+    margin-bottom: 0.1rem;
+}
+.form-label-sm {
+    font-size: small;
+}
+
+/*Botones de permisos*/
+.btn-round {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+    .btn-round.btn-lg {
+        width: 48px;
+        height: 48px;
+    }
+
+    .btn-round.btn-sm {
+        width: 34px;
+        height: 34px;
+    }
+
+    .btn-round.btn-xs {
+        width: 24px;
+        height: 24px;
+        text-align: center;
+        padding: 1px 0;
+        font-size: 13px;
+        line-height: 0.1;
+    }
+
+    .btn-round.btn-micro {
+        width: 19px;
+        height: 19px;
+        text-align: center;
+        padding: 1px 0;
+        font-size: 13px;
+        line-height: 0.1;        
+    }
+/*corregir posicion de Swal*/
+body.swal2-height-auto {
+    height: 100% !important
+}
+
+/* Corregir Datatables*/
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate {
+    float: none;
+    text-align: center !important;
 }

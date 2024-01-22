@@ -1,0 +1,339 @@
+﻿@model Apphr.Application.Ortopedia.HojaGasto.DTOs.HojaGastoDTOIxFilter
+
+@{ 
+    ViewBag.Accion = "Índice";
+    ViewBag.Entidad = "Hojas de Gasto";
+    ViewBag.EntidadS = "Hoja de Gasto";
+    ViewBag.Icon = "<i class=\"far fa-list-alt\"></i>";
+
+    ViewBag.Title = ViewBag.Accion + " de " + ViewBag.Entidad;
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+@using Newtonsoft.Json
+@using Apphr.Resources
+
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+
+<div class="container-lg">
+    <!--BreadCrum-->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <a class="" href="@Url.Action("Index", "Home", new { Area = "Inventario" })" style="text-decoration:none">
+                    <i class="fa fa-home" title="Inicio"></i>
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="breadcrumb-item" data-aos="fade-left">
+                <span>@ViewBag.Title</span>
+            </li>
+        </ol>
+    </nav>
+    <!--BreadCrum-->
+    <!-- Encablezado -->
+    <div class="row">
+        <div class="col-md-6 align-self-center">
+            <h4 class="mb-0">
+                @ViewBag.Title @Html.Raw(ViewBag.Icon)
+            </h4>
+        </div>
+        <div class="col-md-6 text-center">
+            <a class="btn btn-success float-md-end" onclick="entity.create();"> Adicionar <i class="fa fa-plus"></i></a>
+        </div>
+    </div>
+    <hr class="my-2" />
+    <!-- Encablezado -->
+    <!-- Permisos -->
+    <div class="row mb-2">
+        <div class="col text-end">
+            <button id="icon-view" type="button" class="btn btn-info btn-micro btn-round"><span class="fa fa-xs fa-eye"></span></button>
+            <button id="icon-create" type="button" class="btn btn-success btn-micro btn-round"><span class="fa fa-xs fa-plus"></span></button>
+            <button id="icon-edit" type="button" class="btn btn-primary btn-micro btn-round"><span class="fa fa-xs fa-edit"></span></button>
+            <button id="icon-delete" type="button" class="btn btn-danger btn-micro btn-round"><span class="fa fa-xs fa-trash"></span></button>
+        </div>
+    </div>
+    <!-- Permisos -->
+    <!-- Filtro -->
+    @using (Ajax.BeginForm("JsIndexGrid", "HojasGasto", new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnBegin = "filter.begin",
+        OnSuccess = "filter.success",
+        OnFailure = "filter.failure"
+    }, new { id = "form-filter" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.Page)
+        <div class="card border border-dark mb-3">
+            <div class="card-header background-inventory">
+                Filtro
+                <a data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true" aria-controls="collapseExample">
+                    <i class="fa fa-chevron-up fa-pull-right" style="margin-top: 5px;"></i>
+                </a>
+            </div>
+            <div class="collapse show" id="collapseExample">
+                <div class="card-body">
+                    @Html.EditorFor(x => x.Buscar, "StringP", new { placeholder = "#Solicitud, Fecha, Departamento" })
+                    <div class="form-group">
+                        <div class="float-end mb-3">
+                            <button id="btn-filter" type="submit" class="btn btn-info"><i class="fa fa-filter"></i> Aplicar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <!-- Filtro -->
+    <!-- Tabla -->
+    <div id="grid-1"></div>
+    <!-- Tabla -->
+    <!-- Child-Modal -->
+    @using (Ajax.BeginForm("JsSaveMaster", "HojasGasto", new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnBegin = "modal.begin",
+        OnSuccess = "modal.success",
+        OnFailure = "modal.failure"
+    }, new { id = "form-child" }))
+    {
+        @Html.Partial("_ChildModal", new ViewDataDictionary { { "classHeader", "background-inventory" } })
+    }
+    <!-- Child-Modal -->
+    <!-- Report-Modal -->
+    @Html.Partial("_ReportModal")
+    <!-- Report-Modal -->
+</div>
+
+@section Scripts {
+    <script>
+        let urls = @Html.Raw(JsonConvert.SerializeObject(new
+              {
+                  CEdit         = Url.Action("CEdit"),
+                  FindServicios = Url.Action("JsGetByFilter","Servicios", new { Area = "General"}),
+                  FindCirujanos = Url.Action("JsGetByFilter","Cirujano", new { Area = "Ortopedia"}),
+                  GetPaciente = Url.Action("JsGetPacienteByHCA", "Paciente", new { Area = "Ortopedia" }),
+              }));
+        let permissions = @Html.Raw(JsonConvert.SerializeObject(ViewBag.Permissions));
+        let SinPrivilegios = '@Msg.privileges_none';
+    </script>
+    <script>
+        var filter          = {};
+        var entity          = {};
+        var modal           = {};
+
+        filter.form         = $('#form-filter');
+        filter.btn          = $('#btn-filter');
+        filter.begin        = function () {
+            filter.btn.prop('disabled', true);
+            $('#grid-1').LoadingOverlay("show", { maxSize: 40 });
+        }
+        filter.success      = function (d) {
+            $('#grid-1').html(d);
+            filter.bindPaged();
+            filter.end();
+        }
+        filter.end          = function () {
+            filter.btn.prop('disabled', false);
+            $('#grid-1').LoadingOverlay("hide");
+        }
+        filter.bindPaged    = function () {
+            $(".pagination a").click(function () {
+                if (event.preventDefault) {
+                    event.preventDefault();
+                    //console.log('detenido');
+                    //console.log($(this).attr('href'));
+                    $('#Page').val($(this).attr('href'));
+                    filter.btn.trigger('click');
+                }
+            });
+        }
+
+        entity.view         = function (o) {
+            let id = $(o).data("model-id");
+
+            jshelper.get('@Url.Action("JsViewMaster")', { id: id }, function (r) {
+                $('#modalLabel').html('Ver @ViewBag.EntidadS');
+                $('#form-body-child').html(r);
+                $('#child-modal > .modal-dialog > .modal-content .modal-footer').hide();
+                $('#child-modal').modal('show');
+            });
+
+        }
+        entity.create       = function (o) {
+            if (!permissions.Create) {
+                jshelper.error(SinPrivilegios);
+                return;
+            }
+
+            jshelper.get('@Url.Action("JsGetCreateForm")', {}, function (r) {
+                //console.log(r);
+                if (r.success == false) {
+                    //alert(r.message);
+                    jshelper.error(r.message);
+                }
+                else {
+                    $('#modalLabel').text('Crear @ViewBag.EntidadS');
+                    $('#form-body-child').html(r);
+                    let modalForm = $("#form-child");
+                    jshelper.bindValidation(modalForm);
+                    modal.init();
+                    modal.bindFunctions();
+                    $('#child-modal > .modal-dialog > .modal-content .modal-footer').show();
+                    $('#child-modal').modal('show');
+                }
+            });
+        }
+        entity.update       = function (o) {
+            event.preventDefault();
+
+            if (!permissions.Edit) {
+                jshelper.error(SinPrivilegios);
+                return;
+            }
+
+            let url = $(o).data('action');
+            window.location.href = url;
+        }
+        entity.delete       = function (o) {
+            if (!permissions.Delete) {
+                jshelper.error(SinPrivilegios);
+                return;
+            }
+            let id = $(o).data("model-id");
+            let hg = $(o).data("model-hoja-gasto");
+            jshelper.deleteConfirm(function () {
+                jshelper.deleteAjax(
+                    '@Url.Action("JsDeleteMaster")',
+                    { id: id },
+                    function () { filter.form.submit(); }
+                );
+            },
+                'Se eliminará la <strong>@ViewBag.EntidadS #' + hg + '</strong> con todo su detalle, esta acción es irreversible !'
+            );
+        }
+
+        modal.btnSave       = $('#btn-save-modal');
+        modal.modal         = $('#child-modal');
+        modal.begin         = function () {
+            modal.btnSave.prop('disabled', true);
+        }
+        modal.end           = function () {
+            modal.btnSave.prop('disabled', false);
+        }
+        modal.success       = function (r) {
+            //console.log(r);
+            jshelper.showAlert(r.success, r.message);
+            if (r.success) {
+                modal.modal.modal('hide');
+                window.location.replace(urls.CEdit + '/' + r.data.HojaGastoId);
+            }
+            modal.end();
+        }
+        modal.failure       = function () {
+            jshelper.failure();
+            modal.end();
+        }
+        modal.bindFunctions = function () {
+            // Select & Autocomplete
+            $('#ServicioId').select2({
+                theme: "bootstrap-5",
+                dropdownParent: $('#form-body-child'),
+                placeholder: "Seleccionar Servicio",
+                language: "es",
+                ajax: {
+                    url: urls.FindServicios,
+                    dataType: 'json',
+                    data: function (p) {
+                        return {
+                            f: p.term,
+                        };
+                    },
+                    processResults: function (r) {
+                        return {
+                            results: $.map(r.data, function (item) {
+                                return {
+                                    text: item.text.trim(),
+                                    id: item.id,
+                                    html: item.html
+                                }
+                            })
+                        };
+                    }
+                },
+            });
+            $('#CirujanoId').select2({
+                theme: "bootstrap-5",
+                dropdownParent: $('#form-body-child'),
+                placeholder: "Seleccionar Cirujano",
+                language: "es",
+                ajax: {
+                    url: urls.FindCirujanos,
+                    dataType: 'json',
+                    data: function (p) {
+                        return {
+                            f: p.term,
+                        };
+                    },
+                    processResults: function (r) {
+                        return {
+                            results: $.map(r.data, function (item) {
+                                return {
+                                    text: item.text.trim(),
+                                    id: item.id,
+                                    html: item.html
+                                }
+                            })
+                        };
+                    }
+                },
+            });
+            // Blur
+            $('#PacienteRM').on('blur', function () {
+                $.ajax({
+                    type: "GET",
+                    url: urls.GetPaciente,
+                    data: { registro: $(this).val() },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (r) {
+                        $('#PacienteId').val('');
+                        $('#PacienteNombreCompleto').val('');
+                        //console.log(r);
+                        if (r.success) {
+                            if (r.data != null) {
+                                $('#PacienteId').val(r.data.PacienteId);
+                                $('#PacienteNombreCompleto').val(r.data.Nombre);
+                                $('#Servicio').focus();
+                            }
+                            if (r.isNew) {
+                                $('#PacienteRM').removeData('previousValue');
+                                $('#form-child').validate().element('#PacienteRM');
+                            }
+                        }
+                    },
+                    failure: function (response) {
+                        console.log(response);
+                        jshelper.failure();
+                    }
+                });
+            });
+            // Other Functions
+            $('#add-servicio-btn').click(function () {
+                window.open('@Url.Action("Index","Servicios", new { Area = "General" })', '_blank');
+            });
+            $('#add-cirujano-btn').click(function () {
+                window.open('@Url.Action("Index","Cirujano", new { Area = "Ortopedia" })', '_blank');
+            });
+        }
+        modal.init          = function () {
+            $('#PacienteNombreCompleto').attr('readonly', 'readonly').attr('tabindex', '-1');        
+        }
+
+        // Autoload
+        $(function () {
+            jshelper.showPermissions();
+            filter.form.submit();
+        });
+    </script>
+}
