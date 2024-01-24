@@ -100,21 +100,23 @@ namespace Apphr.WebUI.CustomAttributes
     public class Can : AuthorizeAttribute
     {
         private ApphrDbContext db = new ApphrDbContext((HttpContext.Current.User != null) ? HttpContext.Current.User.Identity.GetUserId<int>() : -1);
-        private readonly string[] Permisos;
+        private readonly string[] permisosRequeridos;
+        private int userId;
 
         public Can(params string[] permisos)
         {
-            this.Permisos = permisos;
+            this.permisosRequeridos = permisos;
         }
 
         protected override bool AuthorizeCore(HttpContextBase httpContext) {
+            userId = httpContext.User.Identity.GetUserId<int>();
             string userName = httpContext.User.Identity.Name.ToString();
             var isAuthorized = base.AuthorizeCore(httpContext);
             if (!isAuthorized)
                 return false;
 
             // Crea Entrada si no existe
-            foreach (string perm in Permisos)
+            foreach (string perm in permisosRequeridos)
             {
                 if (!db.AppPermissions.Any(x => x.Name == perm))
                 {
@@ -129,7 +131,16 @@ namespace Apphr.WebUI.CustomAttributes
             if (userName == "eaquinta@yahoo.com")
                 return true;
 
-            if( db.AppPermissions.Where(x => Permisos.Contains(x.Name)).Any())
+            List<String> userPermits = (
+                       from p in db.AppUserRoles
+                       where p.UserId == userId
+                       join rp in db.AppRolePermissions on p.RoleId equals rp.AppRoleId
+                       join perm in db.AppPermissions on rp.AppPermissionId equals perm.PermissionId
+                       select perm.Name
+                   ).Distinct().ToList();
+
+            if (userPermits.Where(x => permisosRequeridos.Contains(x)).Any())
+            //if ( db.AppPermissions.Where(x => permisosRequeridos.Contains(x.Name)).Any())
             {
                 return true;
             }

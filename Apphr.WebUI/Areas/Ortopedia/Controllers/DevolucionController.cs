@@ -32,7 +32,7 @@ namespace Apphr.WebUI.Areas.Ortopedia.Controllers
         [Can("devolucion.ver")]
         public ActionResult Index()
         {
-            ViewBag.Permissions = Utilidades.GetPermissions(ControllerContext, userName);
+            ViewBag.Permissions = Utilidades.GetCans(userId);
             return View();
         }
 
@@ -323,7 +323,7 @@ namespace Apphr.WebUI.Areas.Ortopedia.Controllers
                     new SelectListItem { Selected = true, Text = dto.ProveedorNit, Value = dto.ProveedorId.ToString() }
                 }, "Value", "Text");
 
-            ViewBag.Permissions = Utilidades.GetPermissions(ControllerContext, userName);
+            ViewBag.Permissions = Utilidades.GetCans(userId);
             return View(dto);
         }
         public async Task<ActionResult> JsCEditGrid(int? id, string mode)                   // GET 
@@ -347,7 +347,7 @@ namespace Apphr.WebUI.Areas.Ortopedia.Controllers
                 .ToListAsync();
             ViewBag.Mode = mode;
             ViewBag.ProveedorId = new SelectList(Enumerable.Empty<SelectListItem>());
-            ViewBag.Permissions = Utilidades.GetPermissions(ControllerContext, userName);
+            ViewBag.Permissions = Utilidades.GetCans(userId);
             return PartialView("_CEditGrid", dto);
         }
 

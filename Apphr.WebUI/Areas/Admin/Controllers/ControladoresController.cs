@@ -25,7 +25,7 @@ namespace Apphr.WebUI.Areas.Admin.Controllers
         [Can("controlador.ver")]
         public ActionResult Index() // GET
         {
-            ViewBag.Permissions = Utilidades.GetPermissions(ControllerContext, userName);
+            ViewBag.Permissions = Utilidades.GetCans(userId);
             return View();
             //return View(await db.Controladores.ToListAsync());
         }

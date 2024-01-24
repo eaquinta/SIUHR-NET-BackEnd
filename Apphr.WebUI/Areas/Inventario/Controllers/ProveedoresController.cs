@@ -128,7 +128,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
         [Can("proveedor.ver")]
         public ActionResult Index() //GET
         {
-            ViewBag.Permissions = Utilidades.GetPermissions(ControllerContext, userName);
+            ViewBag.Permissions = Utilidades.GetCans(userId);
             return View();
         }
 

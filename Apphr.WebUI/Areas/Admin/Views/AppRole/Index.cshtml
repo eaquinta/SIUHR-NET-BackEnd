@@ -108,7 +108,7 @@
                 });
         }
         entity.create = function (o) {
-            if (!permissions.Create) {
+            if (!jshelper.hasPermit("roles.crear")) {
                 jshelper.error(SinPrivilegios);
                 return;
             }
@@ -134,7 +134,7 @@
         entity.update = function (o) {
             event.preventDefault();
 
-            if (!permissions.Edit) {
+            if (!jshelper.hasPermit("roles.editar")) {
                 jshelper.error(SinPrivilegios);
                 return;
             }
@@ -162,7 +162,7 @@
             //window.location.href = url;
         }
         entity.delete = function (o) {
-            if (!permissions.Delete) {
+            if (!jshelper.hasPermit("roles.eliminar")) {
                 jshelper.error(SinPrivilegios);
                 return;
             }
@@ -179,10 +179,11 @@
             );
         }
         entity.asignPermits = function (o) {
-            if (!permissions.Assign) {
-                jshelper.error(SinPrivilegios);
-                retrun ;
-            }
+            if (!jshelper.hasPermit("roles.asignar")) { return; };
+            //if (!jshelper.hasPermit("roles.asignar"]) {
+            //    jshelper.error(SinPrivilegios);
+            //    return;
+            //}
             let id = $(o).data("model-id");
             jshelper.get('@Url.Action("JsAsingPermitsMaster")', {id:id}, function (r) {
                 //console.log(r);
@@ -279,11 +280,10 @@
             jshelper.failure();
             assign.end();
         };
-
         
 
-
-        $(document).ready(function () {
+        $(document).ready(function () {           
+            jshelper.showPermissions('roles.');
             dataTable = $('#myTable').DataTable({
                 responsive: {
                     details: {

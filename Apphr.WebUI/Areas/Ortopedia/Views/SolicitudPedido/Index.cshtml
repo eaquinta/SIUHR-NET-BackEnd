@@ -38,7 +38,7 @@
             </h4>
         </div>
         <div class="col-md-6 text-center">            
-            <a class="btn btn-success float-md-end" onclick="entity.create();"> Adicionar <i class="fa fa-plus"></i></a>
+            @*<a class="btn btn-success float-md-end" onclick="entity.create();"> Adicionar <i class="fa fa-plus"></i></a>*@
         </div>
     </div>
     <hr class="my-2" />
@@ -46,10 +46,10 @@
     <!-- Permisos -->
     <div class="row mb-2">
         <div class="col text-end">
-            <button id="icon-view" type="button" class="btn btn-info    btn-micro btn-round"><span class="fa fa-xs fa-eye"></span></button>
-            <button id="icon-create" type="button" class="btn btn-success btn-micro btn-round"><span class="fa fa-xs fa-plus"></span></button>
-            <button id="icon-edit" type="button" class="btn btn-primary btn-micro btn-round"><span class="fa fa-xs fa-edit"></span></button>
-            <button id="icon-delete" type="button" class="btn btn-danger  btn-micro btn-round"><span class="fa fa-xs fa-trash"></span></button>
+            <button id="icon-view" type="button" class="btn btn-info      btn-micro btn-round d-none"><span class="fa fa-xs fa-eye"></span></button>
+            <button id="icon-create" type="button" class="btn btn-success btn-micro btn-round d-none"><span class="fa fa-xs fa-plus"></span></button>
+            <button id="icon-edit" type="button" class="btn btn-primary   btn-micro btn-round d-none"><span class="fa fa-xs fa-edit"></span></button>
+            <button id="icon-delete" type="button" class="btn btn-danger  btn-micro btn-round d-none"><span class="fa fa-xs fa-trash"></span></button>
         </div>
     </div>
     <!-- Permisos -->
@@ -149,7 +149,11 @@
                 }
             });
         }
-        entity.view         = function (o) {
+        entity.view = function (o) {
+            if (!jshelper.hasPermit("solicitud_pedido.ver")) {
+                jshelper.error(SinPrivilegios);
+                return;
+            }
             let id = $(o).data("id");
             $('#modalLabel').html('Ver Solicitud de Pedido');
 
@@ -160,7 +164,7 @@
             $('#child-modal').modal('show');
         }
         entity.create       = function (o) {
-            if (!permissions.Create) {
+            if (!jshelper.hasPermit("solicitud_pedido.crear")) {
                 jshelper.error(SinPrivilegios);
                 return;
             }
@@ -182,8 +186,8 @@
         }
         entity.update       = function (o) {
             event.preventDefault();
-
-            if (!permissions.Edit) {
+            
+            if (!jshelper.hasPermit("solicitud_pedido.editar")) {
                 jshelper.error(SinPrivilegios);
                 return;
             }
@@ -191,9 +195,9 @@
             let url = $(o).attr('href');
             window.location.href = url;
         }
-        entity.delete       = function (o) {
-            if (!permissions.Delete) {
-                jshelper.error(SinPrivilegios);
+        entity.delete = function (o) {
+            //debugger;
+            if (!jshelper.hasPermit("solicitud_pedido.eliminar")) {                
                 return;
             }
             let id      = $(o).data("model-id");
@@ -238,7 +242,7 @@
         }
         // Autoload
         $(function () {
-            jshelper.showPermissions();
+            jshelper.showPermissions('solicitud_pedido.');
             filter.form.submit();
             // autocomplete
 

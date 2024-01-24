@@ -25,7 +25,7 @@ namespace Apphr.WebUI.Areas.Admin.Controllers
         [Can("roles.ver")]
         public ActionResult Index() // GET
         {
-            ViewBag.Permissions = Utilidades.GetPermissions(ControllerContext, userName);
+            ViewBag.Permissions = Utilidades.GetCans(userId);
             return View();
         }
 
@@ -90,7 +90,7 @@ namespace Apphr.WebUI.Areas.Admin.Controllers
 
         public async Task<ActionResult> JsCEditMaster(int? id)                              // GET 
         {
-            string[] permisosRequeridos = { "Role.editar" };
+            string[] permisosRequeridos = { "roles.editar" };
             bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
             if (!hasPermit)
             {
@@ -164,8 +164,9 @@ namespace Apphr.WebUI.Areas.Admin.Controllers
                     reg.Name = dto.Name;
                     reg.Description = dto.Description;
                     await db.SaveChangesAsync();
+                    var data = new {Id = reg.Id, Name = reg.Name };
 
-                    return Json(new { success = true, message = Resources.Msg.success_edit, data = reg }, JsonRequestBehavior.DenyGet);
+                    return Json(new { success = true, message = Resources.Msg.success_edit, data = data }, JsonRequestBehavior.DenyGet);
                 }
             }
             catch (Exception ex)

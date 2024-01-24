@@ -107,15 +107,34 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
         }
 
         [ValidateAntiForgeryToken]
-        public ActionResult JsFilterExistenciasDBF(string Bodega, DateTime AFec, bool isDetail, int? page) // GET
+        public ActionResult JsFilterExistenciasDBF(string Bodega, DateTime AFec, string Material, bool isDetail, int? page) // GET
         {
             //int pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
             IEnumerable<ReporteExistenciasDBF> regs;
             dbfContext.SetYear(AFec.Year);
             if (isDetail)
-                regs = dbfContext.GetExistenciasDetalle(Bodega, AFec);
+            {
+                if (string.IsNullOrEmpty(Material))
+                {
+                    regs = dbfContext.GetExistenciasDetalle(Bodega, AFec);
+                }
+                else
+                {
+                    regs = dbfContext.GetExistenciasDetalle(Bodega, Material, AFec);
+                }
+            }
             else
-                regs = dbfContext.GetExistencias(Bodega, AFec);
+            {
+                if (string.IsNullOrEmpty(Material))
+                {
+                    regs = dbfContext.GetExistencias(Bodega, AFec);
+                }
+                else
+                {
+                    regs = dbfContext.GetExistencias(Bodega, Material, AFec);
+                }
+                    
+            }
 
             if (regs == null)
             {

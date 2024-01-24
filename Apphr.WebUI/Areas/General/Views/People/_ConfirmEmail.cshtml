@@ -1,186 +1,95 @@
 ﻿@model Apphr.Application.Personas.DTOs.PersonaDTOEmailConfirm
+
 <!DOCTYPE html>
-<html>
-
+<html lang="es-gt">
 <head>
-    <title></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <style type="text/css">
-        @@media screen {
-            @@font-face {
-                font-family: 'Lato';
-                font-style: normal;
-                font-weight: 400;
-                src: local('Lato Regular'), local('Lato-Regular'), url(https://fonts.gstatic.com/s/lato/v11/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
-            }
-
-            @@font-face {
-                font-family: 'Lato';
-                font-style: normal;
-                font-weight: 700;
-                src: local('Lato Bold'), local('Lato-Bold'), url(https://fonts.gstatic.com/s/lato/v11/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
-            }
-
-            @@font-face {
-                font-family: 'Lato';
-                font-style: italic;
-                font-weight: 400;
-                src: local('Lato Italic'), local('Lato-Italic'), url(https://fonts.gstatic.com/s/lato/v11/RYyZNoeFgb0l7W3Vu1aSWOvvDin1pK8aKteLpeZ5c0A.woff) format('woff');
-            }
-
-            @@font-face {
-                font-family: 'Lato';
-                font-style: italic;
-                font-weight: 700;
-                src: local('Lato Bold Italic'), local('Lato-BoldItalic'), url(https://fonts.gstatic.com/s/lato/v11/HkF_qI1x_noxlxhrhMQYELO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
-            }
-        }
-
-        /* CLIENT-SPECIFIC STYLES */
-        body,
-        table,
-        td,
-        a {
-            -webkit-text-size-adjust: 100%;
-            -ms-text-size-adjust: 100%;
-        }
-
-        table,
-        td {
-            mso-table-lspace: 0pt;
-            mso-table-rspace: 0pt;
-        }
-
-        img {
-            -ms-interpolation-mode: bicubic;
-        }
-
-        /* RESET STYLES */
-        img {
-            border: 0;
-            height: auto;
-            line-height: 100%;
-            outline: none;
-            text-decoration: none;
-        }
-
-        table {
-            border-collapse: collapse !important;
-        }
-
-        body {
-            height: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            width: 100% !important;
-        }
-
-        /* iOS BLUE LINKS */
-        a[x-apple-data-detectors] {
-            color: inherit !important;
-            text-decoration: none !important;
-            font-size: inherit !important;
-            font-family: inherit !important;
-            font-weight: inherit !important;
-            line-height: inherit !important;
-        }
-
-        /* MOBILE STYLES */
-        @@media screen and (max-width:600px) {
-            h1 {
-                font-size: 32px !important;
-                line-height: 32px !important;
-            }
-        }
-
-        /* ANDROID CENTER FIX */
-        div[style*="margin: 16px 0;"] {
-            margin: 0 !important;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Confirmar email</title>    
 </head>
-
-<body style="background-color: #f4f4f4; margin: 0 !important; padding: 0 !important;">
-    <!-- HIDDEN PREHEADER TEXT -->
-    <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Lato', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">
-        Se ha creado su cuenta, debe confirmarla.
-    </div>
-    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-        <!-- LOGO -->
-        <tr>
-            <td bgcolor="#FFA73B" align="center">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                    <tr>
-                        <td align="center" valign="top" style="padding: 40px 10px 40px 10px;"> </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td bgcolor="#FFA73B" align="center" style="padding: 0px 10px 0px 10px;">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                    <tr>
-                        <td bgcolor="#ffffff" align="center" valign="top" style="padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;">
-                            <h1 style="font-size: 48px; font-weight: 400; margin: 2;">Bienvenido!</h1> <img src=" https://img.icons8.com/clouds/100/000000/handshake.png" width="125" height="120" style="display: block; border: 0px;" />
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td bgcolor="#f4f4f4" align="center" style="padding: 0px 10px 0px 10px;">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 0px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">Hola @Model.Nombre, <br /> tu usuario es: <strong>@Model.Email</strong> <br /> contraseña es: <strong>@Model.Contrasena</strong> <br />debes cambiarla lo antes posible.</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">Para confirmar su cuenta de correo electrónico, haga clic en el siguiente boton.</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td bgcolor="#ffffff" align="left">
-                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                <tr>
-                                    <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 60px 30px;">
-                                        <table border="0" cellspacing="0" cellpadding="0">
+<body>
+    <table class="x_wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation" style="box-sizing: border-box; background-color: rgb(237, 242, 247); margin: 0px; padding: 0px; width: 100%;" min-scale="0.6543859649122807">
+        <tbody>
+            <tr>
+                <td align="center" style="box-sizing:border-box">
+                    <table class="x_content" width="100%" cellpadding="0" cellspacing="0" role="presentation" style="box-sizing:border-box; margin:0; padding:0; width:100%">
+                        <tbody>
+                            <tr>
+                                <td class="x_header" style="box-sizing:border-box; padding:25px 0; text-align:center">
+                                    <a href="http://ortopedia.hospitalroosevelt.gob.gt" target="_blank" rel="noopener noreferrer" data-auth="NotApplicable" style="box-sizing:border-box; color:#3d4852; font-size:19px; font-weight:bold; text-decoration:none; display:inline-block" data-linkindex="0" previewlistener="true">Ortopedia</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="x_body" width="100%" cellpadding="0" cellspacing="0" style="box-sizing:border-box; background-color:#edf2f7; border-bottom:1px solid #edf2f7; border-top:1px solid #edf2f7; margin:0; padding:0; width:100%">
+                                    <table class="x_inner-body" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation" style="box-sizing:border-box; background-color:#ffffff; border-color:#e8e5ef; border-radius:2px; border-width:1px; box-shadow:0 2px 0 rgba(0,0,150,0.025),2px 4px 0 rgba(0,0,150,0.015); margin:0 auto; padding:0; width:570px">
+                                        <tbody>
                                             <tr>
-                                                <td align="center" style="border-radius: 3px;" bgcolor="#FFA73B"><a href="@Model.Url" target="_blank" style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #FFA73B; display: inline-block;">Confirmar email</a></td>
+                                                <td class="x_content-cell" style="box-sizing:border-box; max-width:100vw; padding:32px">
+                                                    <h1 style="box-sizing:border-box; color:#3d4852; font-size:18px; font-weight:bold; margin-top:0; text-align:left">Hola! @Model.Nombre,</h1>
+                                                    <h2 style="box-sizing:border-box; color:#3d4852; font-size:16px; margin-top:0; text-align:left">Tus credenciales son,</h2>
+                                                    <p style="box-sizing:border-box; color:#3d4852; font-size:16px; margin-top:0; text-align:left">usuario: <strong>@Model.Email</strong><br />contraseña: <strong>@Model.Contrasena</strong></p>
+                                                    <p style="box-sizing:border-box; font-size:16px; line-height:1.5em; margin-top:0; text-align:left">Haga clic en el botón a continuación para confirmar su dirección de correo electrónico.</p>
+                                                    <table class="x_action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation" style="box-sizing:border-box; margin:30px auto; padding:0; text-align:center; width:100%">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td align="center" style="box-sizing:border-box">
+                                                                    <table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="box-sizing:border-box">
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td align="center" style="box-sizing:border-box">
+                                                                                    <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="box-sizing:border-box">
+                                                                                        <tbody>
+                                                                                            <tr>
+                                                                                                <td style="box-sizing:border-box"><a href="@Model.Url" target="_blank" rel="noopener noreferrer" data-auth="NotApplicable" class="x_button x_button-primary" style="box-sizing:border-box; border-radius:4px; color:#fff; display:inline-block; overflow:hidden; text-decoration:none; background-color:#2d3748; border-bottom:8px solid #2d3748; border-left:18px solid #2d3748; border-right:18px solid #2d3748; border-top:8px solid #2d3748" data-linkindex="1" previewlistener="true">Confirme su dirección de correo electrónico</a> </td>
+                                                                                            </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <p style="box-sizing:border-box; font-size:16px; line-height:1.5em; margin-top:0; text-align:left">Si no creó una cuenta, no es necesario realizar ninguna otra acción.</p>
+                                                    <p style="box-sizing:border-box; font-size:16px; line-height:1.5em; margin-top:0; text-align:left">
+                                                        Saludos,<br aria-hidden="true">Ortopedia
+                                                    </p>
+                                                    <table class="x_subcopy" width="100%" cellpadding="0" cellspacing="0" role="presentation" style="box-sizing:border-box; border-top:1px solid #e8e5ef; margin-top:25px; padding-top:25px">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td style="box-sizing:border-box">
+                                                                    <p style="box-sizing:border-box; line-height:1.5em; margin-top:0; text-align:left; font-size:14px">Si tiene problemas para hacer clic en el botón "Confirme su dirección de correo electrónico", copie y pegue la siguiente URL en su navegador web: <span class="x_break-all" style="box-sizing:border-box; word-break:break-all"><a href="http://admision.test:8080/email/verify/4/988ae5ff6272375092ad386397a902a05efd3346?expires=1698676996&amp;signature=277707cb38cdceece526ff6cbe1a22878d73174d4a2be6b26f99b71896866d50" target="_blank" rel="noopener noreferrer" data-auth="NotApplicable" style="box-sizing:border-box; color:#3869d4" data-linkindex="2" previewlistener="true">@Model.Url</a></span></p>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
                                             </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr> <!-- COPY -->
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 0px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">Si el boton no funciona copie el sigueinte link en su explorador</p>
-                        </td>
-                    </tr> <!-- COPY -->
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;"><a href="@Model.Url" target="_blank" style="color: #FFA73B;">@Model.Url</a></p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">Si  tiene alguna duda, responda este email, será un gusto atenderle.</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td bgcolor="#ffffff" align="left" style="padding: 0px 30px 40px 30px; border-radius: 0px 0px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                            <p style="margin: 0;">Saludos!,<br>Hospital Roosevelt</p>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="box-sizing:border-box">
+                                    <table class="x_footer" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation" style="box-sizing:border-box; margin:0 auto; padding:0; text-align:center; width:570px">
+                                        <tbody>
+                                            <tr>
+                                                <td class="x_content-cell" align="center" style="box-sizing:border-box; max-width:100vw; padding:32px">
+                                                    <p style="box-sizing:border-box; line-height:1.5em; margin-top:0; color:#b0adc5; font-size:12px; text-align:center">© 2024 Ortopedia. Todos los derechos resevados.</p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
     </table>
 </body>
 </html>

@@ -25,12 +25,42 @@ namespace Apphr.Infrastructure.Persistence.DBF
                 return null;
             }
         }
-
+        public IEnumerable<ReporteExistenciasDBF> GetExistencias(string bodega, string material ,DateTime afec)
+        {
+            try
+            {
+                using (DataTable dt = GetDataSQL($"SELECT mt.Codigo, mt.Unimed, mi.Codigi, mi.CanMov, mi.Valmov, mt.Descri FROM (SELECT Codmate, Codigi, SUM(IIF(INLIST(TIPO, 'APE', 'ING', 'DEV', 'TR+', 'AJU'),1,-1) * Canmov) AS Canmov, SUM(IIF(INLIST(TIPO, 'APE', 'ING', 'DEV', 'TR+', 'AJU'),1,-1)* Valmov) AS Valmov FROM MOVINVEN.DBF WHERE Codbode = '{bodega}' AND ((anomov*10000)+(mesmov*100)+(diamov*1) <= ({afec.Year}*10000)+({afec.Month}*100)+({afec.Day}*1)) ORDER BY Codmate,Codigi GROUP BY Codmate, Codigi) AS mi LEFT JOIN material.dbf mt ON mi.Codmate = mt.Codigo AND mi.codigi = mt.codigi WHERE mt.Codigo='{material}'"))
+                {
+                    return (from DataRow dr in dt.Rows
+                            select ReporteExistenciasDBF.MapDataRow(dr));
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
         public IEnumerable<ReporteExistenciasDBF> GetExistenciasDetalle(string bodega, DateTime afec)
         {
             try
             {
                 using (DataTable dt = GetDataSQL($"SELECT mt.Codigo, mi.Vence, mt.Unimed, mi.Codigi, mi.CanMov, mi.Valmov, mt.Descri FROM (SELECT Codmate, Vence, Codigi, SUM(IIF(INLIST(TIPO, 'APE', 'ING', 'DEV', 'TR+', 'AJU'), 1, -1) * Canmov) AS Canmov, SUM(IIF(INLIST(TIPO, 'APE', 'ING', 'DEV', 'TR+', 'AJU'), 1, -1) * Valmov) AS Valmov FROM MOVINVEN.DBF WHERE Codbode = '{bodega}' AND ((anomov*10000)+(mesmov*100)+(diamov*1) <= ({afec.Year}*10000)+({afec.Month}*100)+({afec.Day}*1)) ORDER BY Codmate, Codigi, Vence GROUP BY Codmate, Codigi, Vence) AS mi LEFT JOIN material.dbf mt ON mi.Codmate = mt.Codigo AND mi.codigi = mt.codigi"))            
+                {
+                    return (from DataRow dr in dt.Rows
+                            select ReporteExistenciasDBF.MapDataRow(dr));
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public IEnumerable<ReporteExistenciasDBF> GetExistenciasDetalle(string bodega, string material, DateTime afec)
+        {
+            try
+            {
+                using (DataTable dt = GetDataSQL($"SELECT mt.Codigo, mi.Vence, mt.Unimed, mi.Codigi, mi.CanMov, mi.Valmov, mt.Descri FROM (SELECT Codmate, Vence, Codigi, SUM(IIF(INLIST(TIPO, 'APE', 'ING', 'DEV', 'TR+', 'AJU'), 1, -1) * Canmov) AS Canmov, SUM(IIF(INLIST(TIPO, 'APE', 'ING', 'DEV', 'TR+', 'AJU'), 1, -1) * Valmov) AS Valmov FROM MOVINVEN.DBF WHERE Codbode = '{bodega}' AND ((anomov*10000)+(mesmov*100)+(diamov*1) <= ({afec.Year}*10000)+({afec.Month}*100)+({afec.Day}*1)) ORDER BY Codmate, Codigi, Vence GROUP BY Codmate, Codigi, Vence) AS mi LEFT JOIN material.dbf mt ON mi.Codmate = mt.Codigo AND mi.codigi = mt.codigi WHERE mt.Codigo='{material}'"))
                 {
                     return (from DataRow dr in dt.Rows
                             select ReporteExistenciasDBF.MapDataRow(dr));

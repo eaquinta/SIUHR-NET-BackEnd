@@ -25,7 +25,8 @@ namespace Apphr.WebUI.Areas.Ortopedia.Controllers
         [Can("solicitud_pedido.ver")]
         public ActionResult Index()                                                             // GET 
         {
-            ViewBag.Permissions = Utilidades.GetPermissions(ControllerContext, userName);
+            ViewBag.Permissions = Utilidades.GetCans(userId);            
+            //ViewBag.Permissions = Utilidades.GetCans(userId);
             return View();
         }
 
@@ -55,7 +56,7 @@ namespace Apphr.WebUI.Areas.Ortopedia.Controllers
             ViewBag.Mode = Mode;
             ViewBag.ListTipo = TipoPrioridad.GetSelectList();
             ViewBag.ListTipoEvento = TipoEvento.GetSelectList();
-            ViewBag.Permissions = Utilidades.GetPermissions(ControllerContext, userName);
+            ViewBag.Permissions = Utilidades.GetCans(userId);            
             return View(dto);
         }
 

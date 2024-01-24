@@ -163,8 +163,8 @@
             child.rowDelete     = function (o) {
                 let id = $(o).data('model-id');
                 let mt = $(o).data('model-material');
-                if (!permissions.Delete) {
-                    jshelper.error(SinPrivilegios);
+                if (!jshelper.hasPermit("solicitud_pedido.eliminar")) {
+                    //jshelper.error(SinPrivilegios);
                 } else {
                     jshelper.deleteConfirm(function () {
                         jshelper.deleteAjax(
@@ -178,8 +178,8 @@
                 }
             };
             child.rowEdit       = function (o) {
-                if (!permissions.Edit) {
-                    jshelper.error(SinPrivilegios);
+                if (!jshelper.hasPermit("solicitud_pedido.editar")) {
+                    //jshelper.error(SinPrivilegios);
                 } else {
                     let id = $(o).data("model-id");
                     $('#modalLabel').text('Editar Material');
@@ -349,7 +349,7 @@
                 $("#Observaciones").val('');
             };
             master.delete       = function () {
-                if (!permissions.Delete) {
+                if (!jshelper.hasPermit("solicitud_pedido.eliminar")) {
                     jshelper.error(SinPrivilegios);
                     return;
                 }
@@ -366,7 +366,7 @@
             };
             master.initForm     = function () {
                 $('.btn-return').attr("href", urls.Index);
-                if (!permissions.Edit) {
+                if (!jshelper.hasPermit("solicitud_pedido.editar")) {
                     $('#form-master input, #form-master textarea').attr('readonly', 'readonly').attr('tabindex', '-1');
                     $('#form-master select').attr('disabled', true);
                     master.btnSave.hide();

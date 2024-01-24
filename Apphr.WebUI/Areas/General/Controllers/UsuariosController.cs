@@ -1,19 +1,19 @@
-﻿using Apphr.Application.Usuarios.DTOs;
+﻿using Apphr.Application.Facilitadores.DTOs;
+using Apphr.Application.Usuarios.DTOs;
+using Apphr.WebUI.Common;
 using Apphr.WebUI.Controllers;
+using Apphr.WebUI.CustomAttributes;
+using Apphr.WebUI.Models.Entities;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
-using System.Web.Mvc;
 using System.Threading.Tasks;
-using Apphr.Application.Facilitadores.DTOs;
-using Apphr.WebUI.Models.Entities;
-using System.Data.SqlClient;
-using System.Collections.Generic;
-using Microsoft.AspNet.Identity;
 using System.Web;
-using Microsoft.AspNet.Identity.Owin;
-using Apphr.WebUI.CustomAttributes;
-using Apphr.Domain.Enums;
+using System.Web.Mvc;
 
 namespace Apphr.WebUI.Areas.General.Controllers
 {
@@ -58,60 +58,7 @@ namespace Apphr.WebUI.Areas.General.Controllers
                 regs = await db.Database.SqlQuery<UsuarioDTOIxRow>(query).ToListAsync();
             }
 
-            //var regs = (from user in db.Users
-            //      join person in db.Personas on user.PersonaId equals person.PersonId select new { user, person });
-            //if (vm.F != null)
-            //{
-            //    if (!string.IsNullOrEmpty(vm.F.Buscar))
-            //        regs = regs.Where(x => x.user.UserName.Contains(vm.F.Buscar));
-            //    //if (!string.IsNullOrEmpty(vm.F.Apellido))
-            //    //    regs = regs.Where(x => x.NombrePaciente.Contains(vm.F.Apellido));
-            //    //if (vm.F.ServicioId != null)
-            //    //    regs = regs.Where(x => x.ServicioId == vm.F.ServicioId);               
-            //}
-            //else
-            //{
-            //    //regs = regs.Where(x => x.FechaEgreso == null);
-            //}
-            //vm.Result = regs.ToList()
-            //            .Select(p => new UsuarioDTOIxRow()
-            //            {
-            //                Id = p.user.Id,
-            //                UserName = p.user.UserName,
-            //                Name = p.person,
-            //                RoleNames = string.Join(", ", p.RoleNames)
-            //            });
-            ////vm.C = C;
-            //// Errores personalizados
-            //DTT.Add("error.nofacilitador", new ToastTemplate()
-            //{
-            //    Title = "Error",
-            //    Message = "Debe ser asignado a facilitadores para continuar",
-            //    Type = "error"
-            //});
-            ////vm.C.ToastTemplates = GetToastList(Toast);
-
-
-            //regs = (from user in db.Users
-            //            join person in db.Personas on user.PersonaId equals person.PersonId                        
-            //            select new
-            //            {
-            //                UserId = user.Id,
-            //                Username = user.UserName,
-            //                Name = person.Name,
-            //                RoleNames = (from userRole in user.Roles
-            //                             join role in db.Roles on userRole.RoleId equals role.Id
-            //                             select role.Name).ToList()
-            //            })
-            //            .ToList()
-            //            .Select(p => new UsuarioDTOIxRow()
-            //            {
-            //                Id = p.UserId,
-            //                UserName = p.Username,
-            //                Name = p.Name,
-            //                RoleNames = string.Join(", ", p.RoleNames)
-            //            });
-
+            ViewBag.Permissions = Utilidades.GetCans(userId);
             return View(new UsuarioDTOIndex() { Result = regs });           
         }
 

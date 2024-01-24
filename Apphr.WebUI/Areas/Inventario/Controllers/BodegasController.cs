@@ -35,7 +35,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
         [Can("bodega.ver")]
         public ActionResult Index()                                                         //GET
         {
-            ViewBag.Permissions = Utilidades.GetPermissions(ControllerContext, userName);
+            ViewBag.Permissions = Utilidades.GetCans(userId);
             return View();
         }
 
@@ -215,7 +215,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
         public ActionResult IndexDBF(int? Anio)                                             // GET
         {
             var dto = new BodegaDTOIxFilterDBF { Anio = (Anio == null) ? AnioActual : Anio.Value };
-            ViewBag.Permissions = Utilidades.GetPermissions(ControllerContext, userName);
+            ViewBag.Permissions = Utilidades.GetCans(userId);
             return View("Dbf/Index",dto);
         }
         [ValidateAntiForgeryToken]

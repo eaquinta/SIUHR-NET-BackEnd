@@ -29,6 +29,8 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
         {
 			MaterialRep = new MaterialRepository(db);
         }
+
+		[Can("material.ver")]
 		public ActionResult IndexDBF(MaterialDTOIndexDBF dto, string currentFilter, string searchString, int? page) // GET
 		{
 			int pageIndex = 1;
@@ -80,7 +82,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 		[Can("material.ver")]
 		public ActionResult Index()			//GET
 		{
-			ViewBag.Permissions = Utilidades.GetPermissions(ControllerContext, userName);
+			ViewBag.Permissions = Utilidades.GetCans(userId);
 			return View();
 		}
 

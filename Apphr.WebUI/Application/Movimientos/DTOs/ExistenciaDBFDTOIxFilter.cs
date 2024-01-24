@@ -17,6 +17,8 @@ namespace Apphr.Application.Movimientos.DTOs
 
         [Required]
         public string Bodega { get; set; }
+        [Display(Name ="Codigo de Material (opcional)")]
+        public string Material { get; set; }
         public bool isDetail { get; set; }
     }
 }

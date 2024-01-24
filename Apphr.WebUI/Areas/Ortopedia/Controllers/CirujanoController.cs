@@ -22,7 +22,7 @@ namespace Apphr.WebUI.Areas.Ortopedia.Controllers
         [Can("cirujano.ver")]
         public ActionResult Index()                                                     // GET 
         {
-            ViewBag.Permissions = Utilidades.GetPermissions(ControllerContext, userName);
+            ViewBag.Permissions = Utilidades.GetCans(userId);
             return View();
         }
 

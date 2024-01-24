@@ -78,10 +78,10 @@ namespace Apphr.WebUI.Areas.General.Controllers
         }
 
     #region SQL
-        [Can("persona.ver")]
+        [Can("personas.ver")]
         public ActionResult Index()                                                         // GET 
         {
-            ViewBag.Permissions = Utilidades.GetPermissions(ControllerContext, userName);
+            ViewBag.Permissions = Utilidades.GetCans(userId);
             return View();
         }
 
@@ -155,7 +155,7 @@ namespace Apphr.WebUI.Areas.General.Controllers
 
         public async Task<ActionResult> JsCEditMaster(int? id)                              // GET 
         {
-            string[] permisosRequeridos = { "persona.editar" };
+            string[] permisosRequeridos = { "personas.editar" };
             bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
             if (!hasPermit)
             {
@@ -281,7 +281,7 @@ namespace Apphr.WebUI.Areas.General.Controllers
         [ValidateAntiForgeryToken]
         public async Task<JsonResult> JsDeleteMaster(int id)                                // POST 
         {
-            string[] permisosRequeridos = { "persona.eliminar" };
+            string[] permisosRequeridos = { "personas.eliminar" };
             bool hasPermit = await Utilidades.Can(permisosRequeridos, userId);
             if (!hasPermit)
             {

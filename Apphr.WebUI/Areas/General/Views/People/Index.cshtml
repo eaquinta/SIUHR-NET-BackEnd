@@ -125,8 +125,7 @@
                 });
         }
         entity.create = function (o) {
-            if (!permissions.Create) {
-                jshelper.error(SinPrivilegios);
+            if (!jshelper.hasPermit("personas.crear")) {
                 return;
             }
 
@@ -151,8 +150,7 @@
         entity.update = function (o) {
             event.preventDefault();
 
-            if (!permissions.Edit) {
-                jshelper.error(SinPrivilegios);
+            if (!jshelper.hasPermit("personas.eliminar")) {                
                 return;
             }
 
@@ -179,7 +177,7 @@
             //window.location.href = url;
         }
         entity.delete = function (o) {
-            if (!permissions.Delete) {
+            if (!jshelper.hasPermit("personas.eliminar")) {
                 jshelper.error(SinPrivilegios);
                 return;
             }
@@ -196,7 +194,7 @@
             );
         }
         entity.asignUser = function (o) {
-            if (!permissions.Assign) {
+            if (!jshelper.hasPermit("personas.asignar")) {
                 jshelper.error(SinPrivilegios);
                 retrun ;
             }

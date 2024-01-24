@@ -700,6 +700,7 @@
     <Compile Include="Areas\Ortopedia\Controllers\PacienteController.cs" />
     <Compile Include="Areas\Ortopedia\Controllers\SolicitudPedidoController.cs" />
     <Compile Include="Areas\Ortopedia\OrtopediaAreaRegistration.cs" />
+    <Compile Include="Common\CanPermit.cs" />
     <Compile Include="Common\Utilidades.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AuditLogController.cs" />
@@ -3752,6 +3753,7 @@
     <Content Include="Areas\Admin\Views\AppRole\_ViewMaster.cshtml" />
     <Content Include="Areas\Admin\Views\AppRole\_AssignPermits.cshtml" />
     <Content Include="Areas\Inventario\Views\Movimientos\_ExistenciasDBFGridDetalle.cshtml" />
+    <Content Include="Areas\General\Views\People\_ConfirmEmail - Copia.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Shared\_AppLayout.cshtml" />

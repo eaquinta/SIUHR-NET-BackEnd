@@ -3,6 +3,8 @@ using Apphr.WebUI.Models.Entities;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Owin;
+using System.Data.Entity.Migrations;
+using System.Linq;
 using System.Web;
 
 [assembly: OwinStartup(typeof(Apphr.WebUI.Startup))]
@@ -29,22 +31,40 @@ namespace Apphr.WebUI
 
 
             // In Startup iam creating first Admin Role and creating a default Admin User     
-            if (!roleManager.RoleExists("SysAdmin"))
+            //if (!roleManager.RoleExists("SysAdmin"))
+            //{
+
+            //context.AppPermissions.AddOrUpdate(
+            //    p => p.Name,
+            //    new Models.Entities.AppPermission { Name = "roles.ver" },
+            //    new Models.Entities.AppPermission { Name = "roles.crear" },
+            //    new Models.Entities.AppPermission { Name = "roles.editar" },
+            //    new Models.Entities.AppPermission { Name = "roles.eliminar" },
+            //    new Models.Entities.AppPermission { Name = "roles.asignar" }
+            //   );
+
+
+            // Add Persona
+            var Persona = new Persona()
             {
-                // Add Persona
-                var Persona = new Persona()
-                {
-                    FirstName = "Estuardo",
-                    LastName = "Quintanilla",
-                };
-                context.Personas.Add(Persona);
+                FirstName = "Estuardo",
+                LastName = "Quintanilla",
+            };
+            context.Personas.AddOrUpdate(
+                p => p.PersonId,
+                Persona
+                );
+
+
+
+                //context.Personas.Add(Persona);
 
                 // Roles
-                var role = new AppRole
-                {
-                    Name = "SysAdmin"
-                };
-                roleManager.Create(role);
+                //var role = new AppRole
+                //{
+                //    Name = "SysAdmin"
+                //};
+                //roleManager.Create(role);
 
                 // Usuario
                 var user = new AppUser()
@@ -57,35 +77,35 @@ namespace Apphr.WebUI
                 var chkUser = UserManager.Create(user);
 
                 // Agregar Rol al usuario
-                if (chkUser.Succeeded)
-                {
-                    UserManager.AddToRole(user.Id, "SysAdmin");
-                }               
-            }
+                //if (chkUser.Succeeded)
+                //{
+                //    UserManager.AddToRole(user.Id, "SysAdmin");
+                //}               
+            //}
 
             // creating Creating Manager role     
-            if (!roleManager.RoleExists("Manager"))
-            {
-                //var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
-                var role = new AppRole
-                {
-                    Name = "Manager"
-                };
-                roleManager.Create(role);
+            //if (!roleManager.RoleExists("Manager"))
+            //{
+            //    //var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
+            //    var role = new AppRole
+            //    {
+            //        Name = "Manager"
+            //    };
+            //    roleManager.Create(role);
 
-            }
+            //}
 
             // creating Creating Employee role     
-            if (!roleManager.RoleExists("Employee"))
-            {
-                //var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
-                var role = new AppRole
-                {
-                    Name = "Employee"
-                };
-                roleManager.Create(role);
+            //if (!roleManager.RoleExists("Employee"))
+            //{
+            //    //var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
+            //    var role = new AppRole
+            //    {
+            //        Name = "Employee"
+            //    };
+            //    roleManager.Create(role);
 
-            }
+            //}
 
         }
 

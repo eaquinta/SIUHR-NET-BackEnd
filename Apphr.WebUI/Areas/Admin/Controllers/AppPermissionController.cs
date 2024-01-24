@@ -20,7 +20,7 @@ namespace Apphr.WebUI.Areas.Admin.Controllers
         [Can("permisos.ver")]
         public ActionResult Index()
         {
-            ViewBag.Permissions = Utilidades.GetPermissions(ControllerContext, userName);
+            ViewBag.Permissions = Utilidades.GetCans(userId);
             return View();
         }
 

@@ -34,6 +34,43 @@ namespace Apphr.WebUI.Common
             return new DateTime(var.Year, var.Month, DateTime.DaysInMonth(var.Year,var.Month));
         }
         
+        public static ExpandoObject GetCans(int userId)
+        {
+            List<String> allPermits;
+            List<String> userPermits = new List<string>();
+            using (ApphrDbContext db = new ApphrDbContext((HttpContext.Current.User != null) ? HttpContext.Current.User.Identity.GetUserId<int>() : -1))
+            {                
+                
+                allPermits = db.AppPermissions.Select(s => s.Name).ToList();
+                 
+                if (userId != 1)                
+                {
+                    userPermits = (
+                        from p in db.AppUserRoles
+                        where p.UserId == userId
+                        join rp in db.AppRolePermissions on p.RoleId equals rp.AppRoleId
+                        join perm in db.AppPermissions on rp.AppPermissionId equals perm.PermissionId
+                        select perm.Name
+                    ).Distinct().ToList();
+                }
+            }
+            var res = new ExpandoObject();
+            
+            ((IDictionary<String, Object>)res).Add("su", (userId == 1));
+            
+            foreach (var field in allPermits)
+            {
+                if (userPermits.Contains(field) || userId == 1) // master userPermits.Contains(field) ||
+                {
+                    ((IDictionary<String, Object>)res).Add(field, true);
+                }
+                else
+                {
+                    ((IDictionary<String, Object>)res).Add(field, false);
+                }
+            }
+            return res;
+        }
         public static ExpandoObject GetPermissions(ControllerContext controllerContext, string userName)
         {
             string controllerName = (string)controllerContext.RouteData.GetRequiredString("controller");
@@ -82,8 +119,7 @@ namespace Apphr.WebUI.Common
         public static async Task<bool> Can(string[] Permisos, int userId)
         {
             var userName = HttpContext.Current.User.Identity.GetUserName();            
-            if (userName == "eaquinta@yahoo.com")
-                return true;
+            
             using (ApphrDbContext db = new ApphrDbContext((HttpContext.Current.User != null) ? HttpContext.Current.User.Identity.GetUserId<int>() : -1))
             {
 
@@ -99,6 +135,8 @@ namespace Apphr.WebUI.Common
                         db.SaveChanges();
                     }
                 }
+                if (userId == 1)
+                    return true;
 
                 var query = from appUser in db.Users
                             join appUserRole in db.AppUserRoles on appUser.Id equals appUserRole.UserId into userRoles

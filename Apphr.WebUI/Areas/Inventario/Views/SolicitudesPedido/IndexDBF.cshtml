@@ -1,4 +1,6 @@
-﻿@using PagedList.Mvc
+﻿@*@using PagedList.Mvc*@
+@using Newtonsoft.Json
+@using Apphr.Resources
 
 @model Apphr.Application.SolicitudesPedido.DTOs.SolicitudPedidoDTOIxDBFFilter
 
@@ -97,7 +99,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <object type="application/pdf" data="@*@Url.Action("Print", new { id = Model.Solicitud })*@" width="100%" height="500" style="height: 85vh;">No Support</object>
+                    <object type="application/pdf" data="@*@Url.Action(" Print", new { id=Model.Solicitud })*@" width="100%" height="500" style="height: 85vh;">No Support</object>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -110,7 +112,15 @@
 
 @section Scripts{
     <script>
+
+        let permissions = @Html.Raw(JsonConvert.SerializeObject(ViewBag.Permissions));
+        let SinPrivilegios = '@Msg.privileges_none';
+    </script>
+    <script>
         function ImportSolicitudPedido(t) {
+            if (!jshelper.hasPermit("solicitud_pedido.importar")) {               
+                return;
+            }
             let id = $(t).data("id");
             let year = $(t).data("year");
             $.ajax({
@@ -133,6 +143,9 @@
         }
 
         function Details(t) {
+            if (!jshelper.hasPermit("solicitud_pedido.ver")) {                
+                return;
+            }
             let id = $(t).data("id");
             let year = $(t).data("year");
             $('#modalLabel').html('Solicitud Pedido SIAHR');
@@ -195,21 +208,24 @@
                 $('#page').val("");
             });
         });
-        
+
         function Print(t) {
             event.preventDefault();
+            if (!jshelper.hasPermit("solicitud_pedido.imprimir")) {                
+                return;
+            }
             let id = $(t).data("id");
             let year = $(t).data("year");
 
-            let url = '@Url.Action("Print")'; 
+            let url = '@Url.Action("Print")';
 
             var objElem = $('<object id="rptObject" type="application/pdf" data="" width="100%" height="500" style="height: 75vh;">No Support</object>');
             var urlReport = url + '?id=' + id + '&year=' + year;
             $('#reportModal .modal-body').html(objElem);
             $('#rptObject').attr('data', urlReport);
-           
+
             $('#reportModal').modal('show');
-                    
+
         }
     </script>
 }

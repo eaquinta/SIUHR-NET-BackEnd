@@ -1,6 +1,19 @@
 ﻿/* v1.0 */
 jshelper = {};
 jshelper.debug = false;
+jshelper.hasPermit = function (can) {
+    if (permissions["su"]) { return true; }
+    if (permissions[can] === undefined) {
+        jshelper.error('Debe crear el permiso "' + can +'"');
+        return false;
+    }
+    if (permissions[can]) {
+        return true;
+    } else {
+        jshelper.error(SinPrivilegios);
+        return false;
+    }
+}
 jshelper.bindFormData = function (campo, formularioOrigen, formularioDestino) {
     $('#' + formularioDestino + ' #' + campo).val($('#' + formularioOrigen + ' #' + campo).val());
 }
@@ -30,21 +43,20 @@ jshelper.error = function (msg) {
 jshelper.failure = function () {   
     toastr.error('Ago Salio mal, Por favor intente nuevamente, si el problema persiste comuniquese con el administrador del sistema.', 'Alert de Error');
 };
-jshelper.showPermissions = function () {
-    if (permissions != null) {
-        if (!permissions.View) {
-            $('#icon-view').hide();
+jshelper.showPermissions = function (prefix) {
+    if (permissions != null) {        
+        if (permissions.hasOwnProperty(prefix + "ver") && permissions[prefix + "ver"] === true) {
+            $('#icon-view').removeClass('d-none');
         }
-        if (!permissions.Create) {
-            $('#icon-create').hide();
-            $('#btn-add-child').hide();
+        if (permissions.hasOwnProperty(prefix + "crear") && permissions[prefix + "crear"] === true) {
+            $('#icon-create').removeClass('d-none');
+            $('#btn-add-child').removeClass('d-none');
         }
-        if (!permissions.Edit) {
-            $('#icon-edit').hide();
-            $('#btnSaveMaster').hide();
+        if (permissions.hasOwnProperty(prefix + "editar") && permissions[prefix + "editar"] === true) {
+            $('#icon-edit').removeClass('d-none');
         }
-        if (!permissions.Delete) {
-            $('#icon-delete').hide();
+        if (permissions.hasOwnProperty(prefix + "eliminar") && permissions[prefix + "eliminar"] === true) {
+            $('#icon-delete').removeClass('d-none');
         }
     }
 }

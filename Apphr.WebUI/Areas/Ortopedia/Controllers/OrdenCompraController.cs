@@ -34,7 +34,7 @@ namespace Apphr.WebUI.Areas.Ortopedia.Controllers
         [Can("orden_compra.ver")]
         public ActionResult Index()                                                     // GET 
         {
-            ViewBag.Permissions = Utilidades.GetPermissions(ControllerContext, userName);
+            ViewBag.Permissions = Utilidades.GetCans(userId);
             return View();
         }
 
@@ -71,7 +71,7 @@ namespace Apphr.WebUI.Areas.Ortopedia.Controllers
                    {
                          new SelectListItem { Selected = true,Text = dto.ProveedorNit,Value = dto.ProveedorId.ToString() }
                    }, "Value", "Text");
-            ViewBag.Permissions = Utilidades.GetPermissions(ControllerContext, userName);
+            ViewBag.Permissions = Utilidades.GetCans(userId);
             return View(dto);
         }
 

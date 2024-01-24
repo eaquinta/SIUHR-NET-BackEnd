@@ -74,6 +74,8 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
 
             var rows = mapper.Map<List<SolicitudPedidoDTOBase>>(regs.ToList());
             dto.Result = (PagedList<SolicitudPedidoDTOBase>)rows.ToPagedList(pageIndex, pageSize);
+            ViewBag.Permissions = Utilidades.GetCans(userId);
+
             return View(dto);
         }
 
@@ -144,6 +146,7 @@ namespace Apphr.WebUI.Areas.Inventario.Controllers
         public ActionResult IndexDBF() // GET
         {            
             ViewBag.AnioList = ControlAbastecimientoRep.AnioList();
+            ViewBag.Permissions = Utilidades.GetCans(userId);
             var dto = new SolicitudPedidoDTOIxDBFFilter();            
             return View(dto);
         }

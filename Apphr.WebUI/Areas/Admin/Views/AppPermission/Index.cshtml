@@ -119,8 +119,7 @@
                 });
         }
         entity.create = function (o) {
-            if (!permissions.Create) {
-                jshelper.error(SinPrivilegios);
+            if (!jshelper.hasPermit("permisos.crear")) {                
                 return;
             }
 
@@ -145,7 +144,7 @@
         entity.update = function (o) {
             event.preventDefault();
 
-            if (!permissions.Edit) {
+            if (!jshelper.hasPermit("permisos.editar")) {
                 jshelper.error(SinPrivilegios);
                 return;
             }
@@ -173,7 +172,7 @@
             //window.location.href = url;
         }
         entity.delete = function (o) {
-            if (!permissions.Delete) {
+            if (!jshelper.hasPermit("permisos.eliminar")) {
                 jshelper.error(SinPrivilegios);
                 return;
             }
@@ -190,9 +189,8 @@
             );
         }
         entity.asignUser = function (o) {
-            if (!permissions.Assign) {
-                jshelper.error(SinPrivilegios);
-                retrun ;
+            if (!jshelper.hasPermit("permisos.asignar")) {                
+                return ;
             }
             let id = $(o).data("model-id");
             jshelper.get('@Url.Action("JsAsingUserMaster")', {id:id}, function (r) {
@@ -291,6 +289,7 @@
 
 
         $(document).ready(function () {
+            jshelper.showPermissions('permisos.');
             dataTable = $('#myTable').DataTable({
                 responsive: {
                     details: {
@@ -334,9 +333,7 @@
                                                 <ul class="dropdown-menu">
                                                     <li><a class="dropdown-item" data-model-id="` + row.PermissionId + `" onclick="entity.view(this);"><i class="far fa-eye"></i> Ver</a></li>
                                                     <li><a class="dropdown-item" data-model-id="` + row.PermissionId + `" onclick="entity.update(this);"><i class="far fa-edit"></i> Editar</a></li>
-                                                    <li><a class="dropdown-item" data-model-id="` + row.PermissionId + `" data-model-name="` + row.Name + `" onclick="entity.delete(this);"><i class="fas fa-trash-alt"></i> Eliminar</a></li>
-                                                    <li><hr class="dropdown-divider"></li>
-                                                    <li><a class="dropdown-item" data-model-id="` + row.PermissionId + `" onclick="entity.asignUser(this);"><i class="fas fa-user-plus"></i> Asignar Usuario</a></li>
+                                                    <li><a class="dropdown-item" data-model-id="` + row.PermissionId + `" data-model-name="` + row.Name + `" onclick="entity.delete(this);"><i class="fas fa-trash-alt"></i> Eliminar</a></li>                                                    
                                                 </ul>
                                             </div>`; }
                     },

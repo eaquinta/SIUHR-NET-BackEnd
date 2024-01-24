@@ -29,7 +29,7 @@ namespace Apphr.WebUI.Areas.Ortopedia.Controllers
 		[Can("hoja_gasto.ver")]
 		public ActionResult Index()																	// GET
         {
-			ViewBag.Permissions = Utilidades.GetPermissions(ControllerContext, userName);
+			ViewBag.Permissions = Utilidades.GetCans(userId);
 			return View();
         }
 
@@ -220,7 +220,7 @@ namespace Apphr.WebUI.Areas.Ortopedia.Controllers
                     new SelectListItem { Selected = true, Text = dto.Cirujano.Nombre, Value = dto.CirujanoId.ToString() }
                 }, "Value", "Text");
 
-            ViewBag.Permissions = Utilidades.GetPermissions(ControllerContext, userName);
+            ViewBag.Permissions = Utilidades.GetCans(userId);
             return View(dto);
         }
 

@@ -63,7 +63,8 @@
                 <div class="card-body">
                     @Html.EditorFor(x => x.Bodega, new { placeholder = "#Bodega" })
                     @Html.EditorFor(x => x.AFec)
-                    @Html.CheckBoxFor(m => m.isDetail)  Detalle                   
+                    @Html.EditorFor(x => x.Material)
+                    @Html.CheckBoxFor(m => m.isDetail)  Detalle
                     @*@Html.EditorFor(x => x.Year, "DropDownP", new { optionsList = _yearList, label = "Año" })*@
                     <div class="form-group">
                         <div class="float-end mb-3">

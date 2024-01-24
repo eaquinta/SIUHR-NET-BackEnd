@@ -51,7 +51,7 @@ namespace Apphr.WebUI.Models
     public class ApphrDbContext : IdentityDbContext<AppUser, AppRole, int, AppUserLogin, AppUserRole, AppUserClaim>
     {
         public int UserId { get; set; } = -1;
-        public string UserName { get; private set; }
+        public string UserName { get; private set; } = "Anonymus";
 
         public ApphrDbContext() : base("DefaultConnection")
         {
@@ -69,7 +69,7 @@ namespace Apphr.WebUI.Models
             ////    ? userName
             ////    : "Anonymous";
             ////    // this.getUserName();
-            UserName = "Usuario";
+           // UserName = this.getUserName();
         }
 
         // Aplication Entites
